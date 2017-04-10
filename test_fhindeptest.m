@@ -32,7 +32,7 @@ else
     scatter(x,y); xlabel('x'); ylabel('y');
 end
 grid on;
-subplot(3,6,7); plot(1:M,filter(b,a,dist_M1),1:M,filter(b,a,dist_W1));
+subplot(3,6,7); plot(1:M,filter(b,a,dist_M1),1:M,filter(b,a,dist_W1),1:M,filter(b,a,dist_V1),1:M,filter(b,a,dist_H1));
 grid on; title('x indep. y'); ylabel('distance');
 legend('M','W');
 subplot(3,6,13); plot(xi,f_M,xi,f_W); grid on;
@@ -54,7 +54,7 @@ else
     scatter(x,y); xlabel('x'); ylabel('y');
 end
 grid on;
-subplot(3,6,8); plot(1:M,filter(b,a,dist_M2),1:M,filter(b,a,dist_W2));
+subplot(3,6,8); plot(1:M,filter(b,a,dist_M2),1:M,filter(b,a,dist_W2),1:M,filter(b,a,dist_V2),1:M,filter(b,a,dist_H2));
 grid on; title('y=x'); ylabel('distance');
 subplot(3,6,14); plot(xi,f_M,xi,f_W); grid on;
 title(sprintf('%0.02f / %0.02f', ...
@@ -75,7 +75,7 @@ else
     scatter(x,y); xlabel('x'); ylabel('y');
 end
 grid on;
-subplot(3,6,9); plot(1:M,filter(b,a,dist_M3),1:M,filter(b,a,dist_W3));
+subplot(3,6,9); plot(1:M,filter(b,a,dist_M3),1:M,filter(b,a,dist_W3),1:M,filter(b,a,dist_V3),1:M,filter(b,a,dist_H3));
 grid on; title('squared'); ylabel('distance');
 subplot(3,6,15); plot(xi,f_M,xi,f_W); grid on;
 title(sprintf('%0.02f / %0.02f', ...
@@ -96,7 +96,7 @@ else
     scatter(x,y); xlabel('x'); ylabel('y');
 end
 grid on;
-subplot(3,6,10); plot(1:M,filter(b,a,dist_M4),1:M,filter(b,a,dist_W4));
+subplot(3,6,10); plot(1:M,filter(b,a,dist_M4),1:M,filter(b,a,dist_W4),1:M,filter(b,a,dist_V4),1:M,filter(b,a,dist_H4));
 grid on; title('cubic'); ylabel('distance');
 subplot(3,6,16); plot(xi,f_M,xi,f_W); grid on;
 title(sprintf('%0.02f / %0.02f', ...
