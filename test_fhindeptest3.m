@@ -45,51 +45,51 @@ dist_sinu = fhindeptest3(x,y,num_shuffle);
 uv = copularnd('Gaussian', 0.2, M);
 dist_gauss_copula = fhindeptest3(uv(:,1),uv(:,2),num_shuffle);
 
-% numPlots = min(6,num_shuffle+1);
-% for ii=1:numPlots
-%     
-%     dist_M = dist_indep(:,ii*2-1);
-%     dist_W = dist_indep(:,ii*2);
-%     f_M = ksdensity(dist_M,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
-%     f_W = ksdensity(dist_W,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
-%     
-%     subplot(4,numPlots,ii);
-% %     plot(1:M,filter(b,a,dist_M),1:M,filter(b,a,dist_W)); grid on; ylabel('distance');
-%     plot(xi,f_M,xi,f_W); grid on;
-%     title(sprintf('Indep. / %0.02f / %0.02f / %0.02f', ...
-%                emd(f_M,f_W,xi), ...
-%                abs(skewness(dist_M)), abs(skewness(dist_W)) ));
-%     
-%     dist_M = dist_linear(:,ii*2-1);
-%     dist_W = dist_linear(:,ii*2);
-%     f_M = ksdensity(dist_M,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
-%     f_W = ksdensity(dist_W,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
-%     subplot(4,numPlots,ii+numPlots);
-%     plot(xi,f_M,xi,f_W); grid on;
-%     title(sprintf('Linear / %0.02f / %0.02f / %0.02f', ...
-%                emd(f_M,f_W,xi), ...
-%                abs(skewness(dist_M)), abs(skewness(dist_W)) ));
-%     
-%     dist_M = dist_quadratic(:,ii*2-1);
-%     dist_W = dist_quadratic(:,ii*2);
-%     f_M = ksdensity(dist_M,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
-%     f_W = ksdensity(dist_W,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
-%     subplot(4,numPlots,ii+2*numPlots);
-%     plot(xi,f_M,xi,f_W); grid on;
-%     title(sprintf('Quadratic / %0.02f / %0.02f / %0.02f', ...
-%                emd(f_M,f_W,xi), ...
-%                abs(skewness(dist_M)), abs(skewness(dist_W)) ));
-%     
-%     dist_M = dist_cubic(:,ii*2-1);
-%     dist_W = dist_cubic(:,ii*2);
-%     f_M = ksdensity(dist_M,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
-%     f_W = ksdensity(dist_W,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
-%     subplot(4,numPlots,ii+3*numPlots);
-%     plot(xi,f_M,xi,f_W); grid on;
-%     title(sprintf('Cubic / %0.02f / %0.02f / %0.02f', ...
-%                emd(f_M,f_W,xi), ...
-%                abs(skewness(dist_M)), abs(skewness(dist_W)) )); 
-% end
+numPlots = min(2,num_shuffle+1);
+for ii=1:numPlots
+    
+    dist_M = dist_indep(:,ii*2-1);
+    dist_W = dist_indep(:,ii*2);
+    f_M = ksdensity(dist_M,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
+    f_W = ksdensity(dist_W,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
+    
+    subplot(4,numPlots,ii);
+%     plot(1:M,filter(b,a,dist_M),1:M,filter(b,a,dist_W)); grid on; ylabel('distance');
+    plot(xi,f_M,xi,f_W); grid on;
+    title(sprintf('Indep. / %0.02f / %0.02f / %0.02f', ...
+               kldivergence(f_M,f_W,xi), ...
+               abs(skewness(dist_M)), abs(skewness(dist_W)) ));
+    
+    dist_M = dist_linear(:,ii*2-1);
+    dist_W = dist_linear(:,ii*2);
+    f_M = ksdensity(dist_M,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
+    f_W = ksdensity(dist_W,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
+    subplot(4,numPlots,ii+numPlots);
+    plot(xi,f_M,xi,f_W); grid on;
+    title(sprintf('Linear / %0.02f / %0.02f / %0.02f', ...
+               kldivergence(f_M,f_W,xi), ...
+               abs(skewness(dist_M)), abs(skewness(dist_W)) ));
+    
+    dist_M = dist_quadratic(:,ii*2-1);
+    dist_W = dist_quadratic(:,ii*2);
+    f_M = ksdensity(dist_M,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
+    f_W = ksdensity(dist_W,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
+    subplot(4,numPlots,ii+2*numPlots);
+    plot(xi,f_M,xi,f_W); grid on;
+    title(sprintf('Quadratic / %0.02f / %0.02f / %0.02f', ...
+               kldivergence(f_M,f_W,xi), ...
+               abs(skewness(dist_M)), abs(skewness(dist_W)) ));
+    
+    dist_M = dist_cubic(:,ii*2-1);
+    dist_W = dist_cubic(:,ii*2);
+    f_M = ksdensity(dist_M,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
+    f_W = ksdensity(dist_W,xi,'Bandwidth',kernel_bw,'Kernel',kernel_type);
+    subplot(4,numPlots,ii+3*numPlots);
+    plot(xi,f_M,xi,f_W); grid on;
+    title(sprintf('Cubic / %0.02f / %0.02f / %0.02f', ...
+               kldivergence(f_M,f_W,xi), ...
+               abs(skewness(dist_M)), abs(skewness(dist_W)) )); 
+end
 
 % Run KS-Tests of distribution of distances between the original and
 % shuffled versions for each dependency type
