@@ -407,6 +407,10 @@ for M=MVec
     quadraticDep  = zeros(3,length(noiseVec));
     cubicDep      = zeros(3,length(noiseVec));
     sinusoidalDep = zeros(3,length(noiseVec));
+    hiFreqSinDep  = zeros(3,length(noiseVec));
+    fourthRootDep = zeros(3,length(noiseVec));
+    circleDep     = zeros(3,length(noiseVec));
+    stepDep       = zeros(3,length(noiseVec));
                     % 1 - using tau directly
                     % 2 - segmenting into regions
                     
@@ -416,17 +420,30 @@ for M=MVec
         t2 = 0; c2 = 0; c22 = 0;
         t3 = 0; c3 = 0; c33 = 0;
         t4 = 0; c4 = 0; c44 = 0;
+        t5 = 0; c5 = 0; c55 = 0;
+        t6 = 0; c6 = 0; c66 = 0;
+        t7 = 0; c7 = 0; c77 = 0;
+        t8 = 0; c8 = 0; c88 = 0;
         parfor mcSimNum=1:numMCSim
             x = rand(M,1)*(xMax-xMin)+xMin;
             y1 = x + noise*(l/num_noise)*randn(M,1);
             y2 = 4*(x-.5).^2 + noise*(l/num_noise)*randn(M,1);
             y3 = 128*(x-1/3).^3-48*(x-1/3).^3-12*(x-1/3)+10* noise*(l/num_noise)*randn(M,1);
             y4 = sin(4*pi*x) + 2*noise*(l/num_noise)*randn(M,1);
-            
+            y5 = sin(16*pi*x) + noise*(l/num_noise)*randn(M,1);
+            y6 = x.^(1/4) + noise*(l/num_noise)*randn(M,1);
+            y7=(2*binornd(1,0.5,M,1)-1) .* (sqrt(1 - (2*x - 1).^2)) + noise/4*l/num_noise*randn(M,1);
+            y8 = (x > 0.5) + noise*5*l/num_noise*randn(M,1);
+            y9 = rand(M,1)*(xMax-xMin)+xMin;
+
             U1 = pobs([x y1]);
             U2 = pobs([x y2]);
             U3 = pobs([x y3]);
             U4 = pobs([x y4]);
+            U5 = pobs([x y5]);
+            U6 = pobs([x y6]);
+            U7 = pobs([x y7]);
+            U8 = pobs([x y8]);
             
             t1 = t1 + corr(x,y1,'type','kendall');
             c1 = c1 + corr(x,y1,'type','kendall');
@@ -460,11 +477,71 @@ for M=MVec
                         abs(corr(r4(:,1),r4(:,2),'type','kendall'))*0.2275 + ...
                         abs(corr(r5(:,1),r5(:,2),'type','kendall'))*0.1517);
             c44 = c44 + cim(x,y4);
+            
+            t5 = t5 + corr(x,y5,'type','kendall');
+            c5 = c5 + corr(x,y5,'type','kendall');
+            c55 = c55 + cim(x,y5);
+            
+            t6 = t6 + corr(x,y6,'type','kendall');
+            zz1 = 0; zz2 = 0.02900;   r1 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w1 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.09158; r2 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w2 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.1528;  r3 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w3 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.2108;  r4 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w4 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.2715;  r5 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w5 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.3339;  r6 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w6 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.3999;  r7 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w7 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.4613;  r8 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w8 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.5227;  r9 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w9 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.5893;  r10 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w10 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.6547;  r11 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w11 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.7135;  r12 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w12 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.7734;  r13 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w13 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.8438;  r14 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w14 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.9074;  r15 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w15 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.9694;  r16 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w16 = zz2-zz1;
+            zz1 = zz2; zz2 = 1;       r17 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w17 = zz2-zz1;
+            c6 = c6 + ( abs(corr(r1(:,1),r1(:,2),'type','kendall'))*w1 + ...
+                        abs(corr(r2(:,1),r2(:,2),'type','kendall'))*w2 + ...
+                        abs(corr(r3(:,1),r3(:,2),'type','kendall'))*w3 + ...
+                        abs(corr(r4(:,1),r4(:,2),'type','kendall'))*w4 + ...
+                        abs(corr(r5(:,1),r5(:,2),'type','kendall'))*w5 + ...
+                        abs(corr(r6(:,1),r6(:,2),'type','kendall'))*w6 + ...
+                        abs(corr(r7(:,1),r7(:,2),'type','kendall'))*w7 + ...
+                        abs(corr(r8(:,1),r8(:,2),'type','kendall'))*w8 + ...
+                        abs(corr(r9(:,1),r9(:,2),'type','kendall'))*w9 + ...
+                        abs(corr(r10(:,1),r10(:,2),'type','kendall'))*w10 + ...
+                        abs(corr(r11(:,1),r11(:,2),'type','kendall'))*w11 + ...
+                        abs(corr(r12(:,1),r12(:,2),'type','kendall'))*w12 + ...
+                        abs(corr(r13(:,1),r13(:,2),'type','kendall'))*w13 + ...
+                        abs(corr(r14(:,1),r14(:,2),'type','kendall'))*w14 + ...
+                        abs(corr(r15(:,1),r15(:,2),'type','kendall'))*w15 + ...
+                        abs(corr(r16(:,1),r16(:,2),'type','kendall'))*w16 + ...
+                        abs(corr(r17(:,1),r17(:,2),'type','kendall'))*w17);
+            c66 = c66 + cim(x,y6);
+            
+            t7 = t7 + corr(x,y7,'type','kendall');
+            r1 = inBoundedPts(U7(:,1),U7(:,2),0,0.5,0,0.5); 
+            r2 = inBoundedPts(U7(:,1),U7(:,2),0.5,1,0,0.5);
+            r3 = inBoundedPts(U7(:,1),U7(:,2),0,0.5,0.5,1);
+            r4 = inBoundedPts(U7(:,1),U7(:,2),0.5,1,0.5,1);
+            c7 = c7 + ( abs(corr(r1(:,1),r1(:,2),'type','kendall'))*0.25 + ...
+                        abs(corr(r2(:,1),r2(:,2),'type','kendall'))*0.25 + ...
+                        abs(corr(r3(:,1),r3(:,2),'type','kendall'))*0.25 + ...
+                        abs(corr(r4(:,1),r4(:,2),'type','kendall'))*0.25);
+            c77 = c77 + cim(x,y7);
+            
+            t8 = t8 + corr(x,y8,'type','kendall');
+            c8 = c8 + corr(x,y8,'type','kendall');
+            c88 = c88 + cim(x,y8);
         end
         linearDep(1,l) = t1/numMCSim; linearDep(2,l) = c1/numMCSim; linearDep(3,l) = c11/numMCSim;
         quadraticDep(1,l) = t2/numMCSim; quadraticDep(2,l) = c2/numMCSim; quadraticDep(3,l) = c22/numMCSim;
         cubicDep(1,l) = t3/numMCSim; cubicDep(2,l) = c3/numMCSim; cubicDep(3,l) = c33/numMCSim;
         sinusoidalDep(1,l) = t4/numMCSim; sinusoidalDep(2,l) = c4/numMCSim; sinusoidalDep(3,l) = c44/numMCSim;
+        hiFreqSinDep(1,l) = t5/numMCSim; hiFreqSinDep(2,l) = c5/numMCSim; hiFreqSinDep(3,l) = c55/numMCSim;
+        fourthRootDep(1,l) = t6/numMCSim; fourthRootDep(2,l) = c6/numMCSim; fourthRootDep(3,l) = c66/numMCSim;
+        circleDep(1,l) = t7/numMCSim; circleDep(2,l) = c7/numMCSim; circleDep(3,l) = c77/numMCSim;
+        stepDep(1,l) = t8/numMCSim; stepDep(2,l) = c8/numMCSim; stepDep(3,l) = c88/numMCSim;
     end
 
     % save the data
@@ -491,21 +568,98 @@ else
     load(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/regionDetection_M_%d.mat', M));
 end
 
-subplot(2,2,1);
+subplot(2,4,1);
 hh1 = plot(noiseVec,linearDep(1,:),'o-.', ...
      noiseVec,linearDep(2,:),'+-.', ...
      noiseVec,linearDep(3,:),'d-.');
+grid on;
 xlabel('noise');
-legend('SSE[M(u,v)]','SSE[W(u,v)]','EIG');
+legend('\tau','CIM Theoretical','CIM Actual');
+title(sprintf('Linear Dependency M=%d',M));
+hh1(1).LineWidth = 1.5; 
+hh1(2).LineWidth = 1.5; 
+hh1(3).LineWidth = 1.5; 
+
+subplot(2,4,2);
+hh1 = plot(noiseVec,quadraticDep(1,:),'o-.', ...
+     noiseVec,quadraticDep(2,:),'+-.', ...
+     noiseVec,quadraticDep(3,:),'d-.');
+grid on;
+xlabel('noise');
+legend('\tau','CIM Theoretical','CIM Actual');
+title(sprintf('Quadratic Dependency M=%d',M));
+hh1(1).LineWidth = 1.5; 
+hh1(2).LineWidth = 1.5; 
+hh1(3).LineWidth = 1.5; 
+
+subplot(2,4,3);
+hh1 = plot(noiseVec,cubicDep(1,:),'o-.', ...
+     noiseVec,cubicDep(2,:),'+-.', ...
+     noiseVec,cubicDep(3,:),'d-.');
+grid on;
+xlabel('noise');
+legend('\tau','CIM Theoretical','CIM Actual');
 title(sprintf('Cubic Dependency M=%d',M));
 hh1(1).LineWidth = 1.5; 
 hh1(2).LineWidth = 1.5; 
 hh1(3).LineWidth = 1.5; 
 
-plot(linearDep(1,:)); hold on; plot(linearDep(2,:)); plot(linearDep(3,:)); grid on;
-subplot(2,2,2);
-plot(quadraticDep(1,:)); hold on; plot(quadraticDep(2,:)); plot(quadraticDep(3,:)); grid on;
-subplot(2,2,3);
-plot(cubicDep(1,:)); hold on; plot(cubicDep(2,:)); plot(cubicDep(3,:)); grid on;
-subplot(2,2,4);
-plot(sinusoidalDep(1,:)); hold on; plot(sinusoidalDep(2,:)); plot(sinusoidalDep(3,:)); grid on;
+subplot(2,4,4);
+hh1 = plot(noiseVec,sinusoidalDep(1,:),'o-.', ...
+     noiseVec,sinusoidalDep(2,:),'+-.', ...
+     noiseVec,sinusoidalDep(3,:),'d-.');
+grid on;
+xlabel('noise');
+legend('\tau','CIM Theoretical','CIM Actual');
+title(sprintf('Sinusoidal Dependency M=%d',M));
+hh1(1).LineWidth = 1.5; 
+hh1(2).LineWidth = 1.5; 
+hh1(3).LineWidth = 1.5; 
+
+subplot(2,4,5);
+hh1 = plot(noiseVec,hiFreqSinDep(1,:),'o-.', ...
+     noiseVec,hiFreqSinDep(2,:),'+-.', ...
+     noiseVec,hiFreqSinDep(3,:),'d-.');
+grid on;
+xlabel('noise');
+legend('\tau','CIM Theoretical','CIM Actual');
+title(sprintf('HF Sin Dependency M=%d',M));
+hh1(1).LineWidth = 1.5; 
+hh1(2).LineWidth = 1.5; 
+hh1(3).LineWidth = 1.5; 
+
+subplot(2,4,6);
+hh1 = plot(noiseVec,fourthRootDep(1,:),'o-.', ...
+     noiseVec,fourthRootDep(2,:),'+-.', ...
+     noiseVec,fourthRootDep(3,:),'d-.');
+grid on;
+xlabel('noise');
+legend('\tau','CIM Theoretical','CIM Actual');
+title(sprintf('Fourth-Root Dependency M=%d',M));
+hh1(1).LineWidth = 1.5; 
+hh1(2).LineWidth = 1.5; 
+hh1(3).LineWidth = 1.5; 
+
+subplot(2,4,7);
+hh1 = plot(noiseVec,circleDep(1,:),'o-.', ...
+     noiseVec,circleDep(2,:),'+-.', ...
+     noiseVec,circleDep(3,:),'d-.');
+grid on;
+xlabel('noise');
+legend('\tau','CIM Theoretical','CIM Actual');
+title(sprintf('Circular Dependency M=%d',M));
+hh1(1).LineWidth = 1.5; 
+hh1(2).LineWidth = 1.5; 
+hh1(3).LineWidth = 1.5; 
+
+subplot(2,4,8);
+hh1 = plot(noiseVec,stepDep(1,:),'o-.', ...
+     noiseVec,stepDep(2,:),'+-.', ...
+     noiseVec,stepDep(3,:),'d-.');
+grid on;
+xlabel('noise');
+legend('\tau','CIM Theoretical','CIM Actual');
+title(sprintf('Step-Function Dependency M=%d',M));
+hh1(1).LineWidth = 1.5; 
+hh1(2).LineWidth = 1.5; 
+hh1(3).LineWidth = 1.5; 
