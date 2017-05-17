@@ -538,8 +538,8 @@ for M=MVec
         quadraticDep(1,l) = t2/numMCSim; quadraticDep(2,l) = c2/numMCSim; quadraticDep(3,l) = c22/numMCSim;
         cubicDep(1,l) = t3/numMCSim; cubicDep(2,l) = c3/numMCSim; cubicDep(3,l) = c33/numMCSim;
         sinusoidalDep(1,l) = t4/numMCSim; sinusoidalDep(2,l) = c4/numMCSim; sinusoidalDep(3,l) = c44/numMCSim;
-        hiFreqSinDep(1,l) = t6/numMCSim; hiFreqSinDep(2,l) = c6/numMCSim; hiFreqSinDep(3,l) = c66/numMCSim;
-        fourthRootDep(1,l) = t5/numMCSim; fourthRootDep(2,l) = c5/numMCSim; fourthRootDep(3,l) = c55/numMCSim;
+        hiFreqSinDep(1,l) = t5/numMCSim; hiFreqSinDep(2,l) = c5/numMCSim; hiFreqSinDep(3,l) = c55/numMCSim;
+        fourthRootDep(1,l) = t6/numMCSim; fourthRootDep(2,l) = c6/numMCSim; fourthRootDep(3,l) = c66/numMCSim;
         circleDep(1,l) = t7/numMCSim; circleDep(2,l) = c7/numMCSim; circleDep(3,l) = c77/numMCSim;
         stepDep(1,l) = t8/numMCSim; stepDep(2,l) = c8/numMCSim; stepDep(3,l) = c88/numMCSim;
     end
