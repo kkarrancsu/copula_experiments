@@ -127,9 +127,9 @@ for M=MVec
     if(ispc)
         save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\distVec_M_%d.mat', M));
     elseif(ismac)
-        save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/distVec_M_%d.mat', M));
+        save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/distVec_M_%d.mat', M));
     else
-        save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/distVec_M_%d.mat', M));
+        save(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/distVec_M_%d.mat', M));
     end
 end
 
@@ -139,13 +139,12 @@ M = 100;
 if(ispc)
     load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\distVec_M_%d.mat', M));
 elseif(ismac)
-    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/distVec_M_%d.mat', M));
+    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/distVec_M_%d.mat', M));
 else
-    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/distVec_M_%d.mat', M));
+    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/distVec_M_%d.mat', M));
 end
 
 figure;
-
 subplot(2,2,1);
 plot(noiseVec,distancesTensor(1,:),'b.-', ...
      noiseVec,distancesTensor(2,:),'r.-', ...
@@ -153,36 +152,69 @@ plot(noiseVec,distancesTensor(1,:),'b.-', ...
 grid on;
 xlabel('noise');
 ylabel('Metric');
-legend('M [SSE]','W [SSE]','EIG');
+legend('SSE[M(u,v)]','SSE[W(u,v)]','EIG');
 title(sprintf('Linear Dependency M=%d',M));
 
 subplot(2,2,2);
-plot(noiseVec,distancesVec_parabola(1,:),'b.-', ...
-     noiseVec,distancesVec_parabola(2,:),'r.-', ...
-     noiseVec,distancesVec_parabola(3,:),'k.-');
+plot(noiseVec,distancesVec_parabola(1,:),'o-.', ...
+     noiseVec,distancesVec_parabola(2,:),'+-.', ...
+     noiseVec,distancesVec_parabola(3,:),'d-.');
 grid on;
 xlabel('noise');
 ylabel('Metric');
-legend('M [SSE]','W [SSE]','EIG');
+legend('SSE[M(u,v)]','SSE[W(u,v)]','EIG');
 title(sprintf('Quadratic Dependency M=%d',M));
 
 subplot(2,2,3);
-plot(noiseVec,distancesVec_cubic(1,:),'b.-', ...
-     noiseVec,distancesVec_cubic(2,:),'r.-', ...
-     noiseVec,distancesVec_cubic(3,:),'k.-');
+plot(noiseVec,distancesVec_cubic(1,:),'o-.', ...
+     noiseVec,distancesVec_cubic(2,:),'+-.', ...
+     noiseVec,distancesVec_cubic(3,:),'d-.');
 grid on;
 xlabel('noise');
 ylabel('Metric');
-legend('M [SSE]','W [SSE]','EIG');
+legend('SSE[M(u,v)]','SSE[W(u,v)]','EIG');
 title(sprintf('Cubic Dependency M=%d',M));
 
 subplot(2,2,4);
-plot(noiseVec,distancesVec_sinusoid(1,:),'b.-', ...
-     noiseVec,distancesVec_sinusoid(2,:),'r.-', ...
-     noiseVec,distancesVec_sinusoid(3,:),'k.-');
+plot(noiseVec,distancesVec_sinusoid(1,:),'o-.', ...
+     noiseVec,distancesVec_sinusoid(2,:),'+-.', ...
+     noiseVec,distancesVec_sinusoid(3,:),'d-.');
 grid on;
 xlabel('noise');
 ylabel('Metric');
-legend('M [SSE]','W [SSE]','EIG');
+legend('SSE[M(u,v)]','SSE[W(u,v)]','EIG');
 title(sprintf('Sinusoidal Dependency M=%d',M));
 
+figure;
+subplot(1,3,1);
+plot(noiseVec,distancesTensor(1,:),'o-.', ...
+     noiseVec,distancesVec_parabola(1,:),'+-.', ...
+     noiseVec,distancesVec_cubic(1,:),'d-.', ...
+     noiseVec,distancesVec_sinusoid(1,:),'v-.');
+grid on;
+xlabel('noise');
+ylabel('Metric');
+legend('Linear','Parabola','Cubic','Sinusoid');
+title(sprintf('SSE[M(u,v)] M=%d',M));
+
+subplot(1,3,2);
+plot(noiseVec,distancesTensor(2,:),'o-.', ...
+     noiseVec,distancesVec_parabola(2,:),'+-.', ...
+     noiseVec,distancesVec_cubic(2,:),'d-.', ...
+     noiseVec,distancesVec_sinusoid(2,:),'v-.');
+grid on;
+xlabel('noise');
+ylabel('Metric');
+legend('Linear','Parabola','Cubic','Sinusoid');
+title(sprintf('SSE[W(u,v)] M=%d',M));
+
+subplot(1,3,3);
+plot(noiseVec,distancesTensor(3,:),'o-.', ...
+     noiseVec,distancesVec_parabola(3,:),'+-.', ...
+     noiseVec,distancesVec_cubic(3,:),'d-.', ...
+     noiseVec,distancesVec_sinusoid(3,:),'v-.');
+grid on;
+xlabel('noise');
+ylabel('Metric');
+legend('Linear','Parabola','Cubic','Sinusoid');
+title(sprintf('EIG M=%d',M));
