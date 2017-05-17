@@ -479,23 +479,23 @@ for M=MVec
             c44 = c44 + cim(x,y4);
             
             t5 = t5 + abs(corr(x,y5,'type','kendall'));
-            zz1 = 0; zz2 = 0.02900;   r1 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w1 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.09158; r2 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w2 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.1528;  r3 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w3 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.2108;  r4 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w4 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.2715;  r5 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w5 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.3339;  r6 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w6 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.3999;  r7 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w7 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.4613;  r8 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w8 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.5227;  r9 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w9 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.5893;  r10 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w10 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.6547;  r11 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w11 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.7135;  r12 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w12 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.7734;  r13 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w13 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.8438;  r14 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w14 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.9074;  r15 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w15 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.9694;  r16 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w16 = zz2-zz1;
-            zz1 = zz2; zz2 = 1;       r17 = inBoundedPts(U6(:,1),U6(:,2),zz1,zz2,0,1); w17 = zz2-zz1;
+            zz1 = 0; zz2 = 0.02900;   r1 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w1 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.09158; r2 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w2 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.1528;  r3 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w3 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.2108;  r4 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w4 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.2715;  r5 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w5 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.3339;  r6 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w6 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.3999;  r7 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w7 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.4613;  r8 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w8 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.5227;  r9 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w9 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.5893;  r10 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w10 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.6547;  r11 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w11 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.7135;  r12 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w12 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.7734;  r13 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w13 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.8438;  r14 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w14 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.9074;  r15 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w15 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.9694;  r16 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w16 = zz2-zz1;
+            zz1 = zz2; zz2 = 1;       r17 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w17 = zz2-zz1;
             c5 = c5 + ( abs(corr(r1(:,1),r1(:,2),'type','kendall'))*w1 + ...
                         abs(corr(r2(:,1),r2(:,2),'type','kendall'))*w2 + ...
                         abs(corr(r3(:,1),r3(:,2),'type','kendall'))*w3 + ...
@@ -513,11 +513,11 @@ for M=MVec
                         abs(corr(r15(:,1),r15(:,2),'type','kendall'))*w15 + ...
                         abs(corr(r16(:,1),r16(:,2),'type','kendall'))*w16 + ...
                         abs(corr(r17(:,1),r17(:,2),'type','kendall'))*w17);
-            c55 = c55 + cim(x,y6);
+            c55 = c55 + cim(x,y5);
             
-            t6 = t6 + abs(corr(x,y5,'type','kendall'));
-            c6 = c6 + abs(corr(x,y5,'type','kendall'));
-            c66 = c66 + cim(x,y5);
+            t6 = t6 + abs(corr(x,y6,'type','kendall'));
+            c6 = c6 + abs(corr(x,y6,'type','kendall'));
+            c66 = c66 + cim(x,y6);
             
             t7 = t7 + abs(corr(x,y7,'type','kendall'));
             r1 = inBoundedPts(U7(:,1),U7(:,2),0,0.5,0,0.5); 
