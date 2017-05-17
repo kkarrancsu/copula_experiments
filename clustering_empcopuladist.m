@@ -399,7 +399,7 @@ numMCSim = 100;
 for M=MVec
     % Test Empirical copula distance as a distance measure under various
     % amounts of noise
-    num_noise_test_min = 1;
+    num_noise_test_min = 0;
     num_noise_test_max = 30;
     noiseVec = num_noise_test_min:num_noise_test_max;
     
@@ -413,7 +413,7 @@ for M=MVec
     stepDep       = zeros(3,length(noiseVec));
                     % 1 - using tau directly
                     % 2 - segmenting into regions
-                    
+                  
     for l=noiseVec
         dispstat(sprintf('Computing for noise level=%d >> M=%d',l,M),'keepthis', 'timestamp');
         t1 = 0; c1 = 0; c11 = 0;
@@ -534,14 +534,14 @@ for M=MVec
             c8 = c8 + abs(corr(x,y8,'type','kendall'));
             c88 = c88 + cim(x,y8);
         end
-        linearDep(1,l) = t1/numMCSim; linearDep(2,l) = c1/numMCSim; linearDep(3,l) = c11/numMCSim;
-        quadraticDep(1,l) = t2/numMCSim; quadraticDep(2,l) = c2/numMCSim; quadraticDep(3,l) = c22/numMCSim;
-        cubicDep(1,l) = t3/numMCSim; cubicDep(2,l) = c3/numMCSim; cubicDep(3,l) = c33/numMCSim;
-        sinusoidalDep(1,l) = t4/numMCSim; sinusoidalDep(2,l) = c4/numMCSim; sinusoidalDep(3,l) = c44/numMCSim;
-        hiFreqSinDep(1,l) = t5/numMCSim; hiFreqSinDep(2,l) = c5/numMCSim; hiFreqSinDep(3,l) = c55/numMCSim;
-        fourthRootDep(1,l) = t6/numMCSim; fourthRootDep(2,l) = c6/numMCSim; fourthRootDep(3,l) = c66/numMCSim;
-        circleDep(1,l) = t7/numMCSim; circleDep(2,l) = c7/numMCSim; circleDep(3,l) = c77/numMCSim;
-        stepDep(1,l) = t8/numMCSim; stepDep(2,l) = c8/numMCSim; stepDep(3,l) = c88/numMCSim;
+        linearDep(1,l+1) = t1/numMCSim; linearDep(2,l+1) = c1/numMCSim; linearDep(3,l+1) = c11/numMCSim;
+        quadraticDep(1,l+1) = t2/numMCSim; quadraticDep(2,l+1) = c2/numMCSim; quadraticDep(3,l+1) = c22/numMCSim;
+        cubicDep(1,l+1) = t3/numMCSim; cubicDep(2,l+1) = c3/numMCSim; cubicDep(3,l+1) = c33/numMCSim;
+        sinusoidalDep(1,l+1) = t4/numMCSim; sinusoidalDep(2,l+1) = c4/numMCSim; sinusoidalDep(3,l+1) = c44/numMCSim;
+        hiFreqSinDep(1,l+1) = t5/numMCSim; hiFreqSinDep(2,l+1) = c5/numMCSim; hiFreqSinDep(3,l+1) = c55/numMCSim;
+        fourthRootDep(1,l+1) = t6/numMCSim; fourthRootDep(2,l+1) = c6/numMCSim; fourthRootDep(3,l+1) = c66/numMCSim;
+        circleDep(1,l+1) = t7/numMCSim; circleDep(2,l+1) = c7/numMCSim; circleDep(3,l+1) = c77/numMCSim;
+        stepDep(1,l+1) = t8/numMCSim; stepDep(2,l+1) = c8/numMCSim; stepDep(3,l+1) = c88/numMCSim;
     end
 
     % save the data
