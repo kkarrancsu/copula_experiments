@@ -378,7 +378,6 @@ subplot(3,3,9); scatter(U9(:,1),U9(:,2)); grid on; title('Independence');
 figtitle(sprintf('Noise=%0.02f\n', l));
 
 %% simulate the difference between computing monotonic and detecting the region exactly
-
 clear;
 clc;
 
@@ -388,21 +387,17 @@ num_noise = 30;                    % The number of different noise levels used
 noise = 3;                         % A constant to determine the amount of noise
 
 MVec = 100:100:1000;
-
-options=optimset('Display', 'off');
-
+num_noise_test_min = 0;
+num_noise_test_max = 30;
+noiseVec = num_noise_test_min:num_noise_test_max;
+numMCSim = 100;
+        
 dispstat('','init'); % One time only initialization
 dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
-
-numMCSim = 100;
 
 for M=MVec
     % Test Empirical copula distance as a distance measure under various
     % amounts of noise
-    num_noise_test_min = 0;
-    num_noise_test_max = 30;
-    noiseVec = num_noise_test_min:num_noise_test_max;
-    
     linearDep     = zeros(3,length(noiseVec));
     quadraticDep  = zeros(3,length(noiseVec));
     cubicDep      = zeros(3,length(noiseVec));
@@ -665,3 +660,105 @@ hh1(2).LineWidth = 1.5;
 hh1(3).LineWidth = 1.5; 
 
 figtitle(sprintf('M=%d\n', M));
+
+%% test how adding new points to the empirical copula affects the SSE distance metric
+
+clear;
+clc;
+
+xMin = 0;
+xMax = 1;
+num_noise = 30;                    % The number of different noise levels used
+noise = 3;                         % A constant to determine the amount of noise
+K = 25;
+
+MVec = 100:100:1000;
+num_noise_test_min = 0;
+num_noise_test_max = 30;
+noiseVec = num_noise_test_min:num_noise_test_max;
+numMCSim = 100;
+
+M = MVec(5);
+l = 0;
+x = rand(M,1)*(xMax-xMin)+xMin;
+y1 = x + noise*(l/num_noise)*randn(M,1);
+
+U1 = pobs([x y1]);
+
+distVec = zeros(M,1);
+for ii=2:M
+    pts = U1(1:ii,:);
+    C_uv = empcopulacdf(pts,K,'deheuvels');
+    
+    xx = rand(ii,1);
+    yy = xx;
+    UU = pobs([xx yy]);
+    M_uv = empcopulacdf(UU, K, 'deheuvels');
+    distVec(ii) = empCopulaDistance(C_uv,M_uv,'sse');
+end
+distVec = distVec(2:end);   % first entry means nothing
+plot(distVec)
+
+%% Test how the empirical copula varies over different regions of co-monotonicity and counter-monotonicity
+
+clear;
+clc;
+
+xMin = 0;
+xMax = 1;
+num_noise = 30;                    % The number of different noise levels used
+noise = 3;                         % A constant to determine the amount of noise
+K = 25;
+
+MVec = 100:100:1000;
+num_noise_test_min = 0;
+num_noise_test_max = 30;
+noiseVec = num_noise_test_min:num_noise_test_max;
+numMCSim = 100;
+
+M = MVec(5);
+l = 0.1;
+
+x = rand(M,1)*(xMax-xMin)+xMin;
+
+y1 = x + noise*(l/num_noise)*randn(M,1);
+y2 = 4*(x-.5).^2 + noise*(l/num_noise)*randn(M,1);
+y3 = 128*(x-1/3).^3-48*(x-1/3).^3-12*(x-1/3)+10* noise*(l/num_noise)*randn(M,1);
+y4 = sin(4*pi*x) + 2*noise*(l/num_noise)*randn(M,1);
+y5 = sin(16*pi*x) + noise*(l/num_noise)*randn(M,1);
+y6 = x.^(1/4) + noise*(l/num_noise)*randn(M,1);
+y7=(2*binornd(1,0.5,M,1)-1) .* (sqrt(1 - (2*x - 1).^2)) + noise/4*l/num_noise*randn(M,1);
+y8 = (x > 0.5) + noise*5*l/num_noise*randn(M,1);
+
+[y1Regions, E1_copula, u1] = cosf_experiments(x,y1);
+[y2Regions, E2_copula, u2] = cosf_experiments(x,y2);
+[y3Regions, E3_copula, u3] = cosf_experiments(x,y3);
+[y4Regions, E4_copula, u4] = cosf_experiments(x,y4);
+% y5Regions = cosf_experiments(x,y5);
+% y6Regions = cosf_experiments(x,y6);
+% y7Regions = cosf_experiments(x,y7);
+% y8Regions = cosf_experiments(x,y8);
+
+celldisp(y1Regions)
+celldisp(y2Regions)
+% celldisp(y3Regions)
+% celldisp(y4Regions)
+% celldisp(y5Regions)
+% celldisp(y6Regions)
+% celldisp(y7Regions)
+% celldisp(y8Regions)
+
+sz = 10;
+
+subplot(2,2,1); plot(u1, E1_copula, '-.b*', 'LineWidth', 5); hold on; scatter(pobs(x),pobs(y1),sz,'MarkerEdgeColor',[0 .5 .5],...
+              'MarkerFaceColor',[0 .7 .7],...
+              'LineWidth',1.5); grid on; title('y=x')
+subplot(2,2,2); plot(u2, E2_copula, '-.b*', 'LineWidth', 5); hold on; scatter(pobs(x),pobs(y2),sz,'MarkerEdgeColor',[0 .5 .5],...
+              'MarkerFaceColor',[0 .7 .7],...
+              'LineWidth',1.5); grid on; title('y=x^2');
+subplot(2,2,3); plot(u3, E3_copula, '-.b*', 'LineWidth', 5); hold on; scatter(pobs(x),pobs(y3),sz,'MarkerEdgeColor',[0 .5 .5],...
+              'MarkerFaceColor',[0 .7 .7],...
+              'LineWidth',1.5); grid on; title('y=x^3')
+subplot(2,2,4); plot(u4, E4_copula, '-.b*', 'LineWidth', 5); hold on; scatter(pobs(x),pobs(y4),sz,'MarkerEdgeColor',[0 .5 .5],...
+              'MarkerFaceColor',[0 .7 .7],...
+              'LineWidth',1.5); grid on; title('y=sin(x)');
