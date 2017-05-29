@@ -850,6 +850,277 @@ end
 
 %% plot the results for the point-additionp
 
+M = 400;
+if(ispc)
+    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\pointAddition_M_%d.mat', M));
+elseif(ismac)
+    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/pointAddition_M_%d.mat', M));
+else
+    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/pointAddition_M_%d.mat', M));
+end
+
+noiseLevelsToPlot = [0,20];
+
+depIdx = 1;
+subplot(3,3,depIdx);
+for noiseIdx=noiseLevelsToPlot
+    y = distCellM{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-*'); hold on;
+end
+for noiseIdx=noiseLevelsToPlot
+    y = distCellW{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-.v'); hold on;
+end
+grid on;
+xlabel('ii'); ylabel('Distance');
+legendCell = cell(1,length(noiseLevelsToPlot)*2);
+legendCellIdx = 1;
+for jj=1:length(noiseLevelsToPlot)
+    for ii=1:length(noiseLevelsToPlot)
+        if(jj==1)
+            legendCell{legendCellIdx} = sprintf('M(%d)',noiseLevelsToPlot(ii));
+        else
+            legendCell{legendCellIdx} = sprintf('W(%d)',noiseLevelsToPlot(ii));
+        end
+        legendCellIdx = legendCellIdx + 1;
+    end
+end
+legend(legendCell);
+title('Linear');
+
+depIdx = depIdx + 1;
+subplot(3,3,depIdx);
+for noiseIdx=noiseLevelsToPlot
+    y = distCellM{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-*'); hold on;
+end
+for noiseIdx=noiseLevelsToPlot
+    y = distCellW{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-.v'); hold on;
+end
+grid on;
+xlabel('ii'); ylabel('Distance');
+legendCell = cell(1,length(noiseLevelsToPlot)*2);
+legendCellIdx = 1;
+for jj=1:length(noiseLevelsToPlot)
+    for ii=1:length(noiseLevelsToPlot)
+        if(jj==1)
+            legendCell{legendCellIdx} = sprintf('M(%d)',noiseLevelsToPlot(ii));
+        else
+            legendCell{legendCellIdx} = sprintf('W(%d)',noiseLevelsToPlot(ii));
+        end
+        legendCellIdx = legendCellIdx + 1;
+    end
+end
+legend(legendCell);
+title('Quadratic');
+
+depIdx = depIdx + 1;
+subplot(3,3,depIdx);
+for noiseIdx=noiseLevelsToPlot
+    y = distCellM{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-*'); hold on;
+end
+for noiseIdx=noiseLevelsToPlot
+    y = distCellW{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-.v'); hold on;
+end
+grid on;
+xlabel('ii'); ylabel('Distance');
+legendCell = cell(1,length(noiseLevelsToPlot)*2);
+legendCellIdx = 1;
+for jj=1:length(noiseLevelsToPlot)
+    for ii=1:length(noiseLevelsToPlot)
+        if(jj==1)
+            legendCell{legendCellIdx} = sprintf('M(%d)',noiseLevelsToPlot(ii));
+        else
+            legendCell{legendCellIdx} = sprintf('W(%d)',noiseLevelsToPlot(ii));
+        end
+        legendCellIdx = legendCellIdx + 1;
+    end
+end
+legend(legendCell);
+title('Cubic');
+
+depIdx = depIdx + 1;
+subplot(3,3,depIdx);
+for noiseIdx=noiseLevelsToPlot
+    y = distCellM{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-*'); hold on;
+end
+for noiseIdx=noiseLevelsToPlot
+    y = distCellW{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-.v'); hold on;
+end
+grid on;
+xlabel('ii'); ylabel('Distance');
+legendCell = cell(1,length(noiseLevelsToPlot)*2);
+legendCellIdx = 1;
+for jj=1:length(noiseLevelsToPlot)
+    for ii=1:length(noiseLevelsToPlot)
+        if(jj==1)
+            legendCell{legendCellIdx} = sprintf('M(%d)',noiseLevelsToPlot(ii));
+        else
+            legendCell{legendCellIdx} = sprintf('W(%d)',noiseLevelsToPlot(ii));
+        end
+        legendCellIdx = legendCellIdx + 1;
+    end
+end
+legend(legendCell);
+title('LF-Sin');
+
+depIdx = depIdx + 1;
+subplot(3,3,depIdx);
+for noiseIdx=noiseLevelsToPlot
+    y = distCellM{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-*'); hold on;
+end
+for noiseIdx=noiseLevelsToPlot
+    y = distCellW{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-.v'); hold on;
+end
+grid on;
+xlabel('ii'); ylabel('Distance');
+legendCell = cell(1,length(noiseLevelsToPlot)*2);
+legendCellIdx = 1;
+for jj=1:length(noiseLevelsToPlot)
+    for ii=1:length(noiseLevelsToPlot)
+        if(jj==1)
+            legendCell{legendCellIdx} = sprintf('M(%d)',noiseLevelsToPlot(ii));
+        else
+            legendCell{legendCellIdx} = sprintf('W(%d)',noiseLevelsToPlot(ii));
+        end
+        legendCellIdx = legendCellIdx + 1;
+    end
+end
+legend(legendCell);
+title('HF-Sin');
+
+depIdx = depIdx + 1;
+subplot(3,3,depIdx);
+for noiseIdx=noiseLevelsToPlot
+    y = distCellM{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-*'); hold on;
+end
+for noiseIdx=noiseLevelsToPlot
+    y = distCellW{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-.v'); hold on;
+end
+grid on;
+xlabel('ii'); ylabel('Distance');
+legendCell = cell(1,length(noiseLevelsToPlot)*2);
+legendCellIdx = 1;
+for jj=1:length(noiseLevelsToPlot)
+    for ii=1:length(noiseLevelsToPlot)
+        if(jj==1)
+            legendCell{legendCellIdx} = sprintf('M(%d)',noiseLevelsToPlot(ii));
+        else
+            legendCell{legendCellIdx} = sprintf('W(%d)',noiseLevelsToPlot(ii));
+        end
+        legendCellIdx = legendCellIdx + 1;
+    end
+end
+legend(legendCell);
+title('Fourth-Root');
+
+depIdx = depIdx + 1;
+subplot(3,3,depIdx);
+for noiseIdx=noiseLevelsToPlot
+    y = distCellM{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-*'); hold on;
+end
+for noiseIdx=noiseLevelsToPlot
+    y = distCellW{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-.v'); hold on;
+end
+grid on;
+xlabel('ii'); ylabel('Distance');
+legendCell = cell(1,length(noiseLevelsToPlot)*2);
+legendCellIdx = 1;
+for jj=1:length(noiseLevelsToPlot)
+    for ii=1:length(noiseLevelsToPlot)
+        if(jj==1)
+            legendCell{legendCellIdx} = sprintf('M(%d)',noiseLevelsToPlot(ii));
+        else
+            legendCell{legendCellIdx} = sprintf('W(%d)',noiseLevelsToPlot(ii));
+        end
+        legendCellIdx = legendCellIdx + 1;
+    end
+end
+legend(legendCell);
+title('Circular');
+
+depIdx = depIdx + 1;
+subplot(3,3,depIdx);
+for noiseIdx=noiseLevelsToPlot
+    y = distCellM{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-*'); hold on;
+end
+for noiseIdx=noiseLevelsToPlot
+    y = distCellW{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-.v'); hold on;
+end
+grid on;
+xlabel('ii'); ylabel('Distance');
+legendCell = cell(1,length(noiseLevelsToPlot)*2);
+legendCellIdx = 1;
+for jj=1:length(noiseLevelsToPlot)
+    for ii=1:length(noiseLevelsToPlot)
+        if(jj==1)
+            legendCell{legendCellIdx} = sprintf('M(%d)',noiseLevelsToPlot(ii));
+        else
+            legendCell{legendCellIdx} = sprintf('W(%d)',noiseLevelsToPlot(ii));
+        end
+        legendCellIdx = legendCellIdx + 1;
+    end
+end
+legend(legendCell);
+title('Step-Function');
+
+depIdx = depIdx + 1;
+subplot(3,3,depIdx);
+for noiseIdx=noiseLevelsToPlot
+    y = distCellM{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-*'); hold on;
+end
+for noiseIdx=noiseLevelsToPlot
+    y = distCellW{noiseIdx+1,depIdx};
+    x = 1:length(y);
+    plot(x,y,'-.v'); hold on;
+end
+grid on;
+xlabel('ii'); ylabel('Distance');
+legendCell = cell(1,length(noiseLevelsToPlot)*2);
+legendCellIdx = 1;
+for jj=1:length(noiseLevelsToPlot)
+    for ii=1:length(noiseLevelsToPlot)
+        if(jj==1)
+            legendCell{legendCellIdx} = sprintf('M(%d)',noiseLevelsToPlot(ii));
+        else
+            legendCell{legendCellIdx} = sprintf('W(%d)',noiseLevelsToPlot(ii));
+        end
+        legendCellIdx = legendCellIdx + 1;
+    end
+end
+legend(legendCell);
+title('Independence');
 %% Test how the empirical copula varies over different regions of co-monotonicity and counter-monotonicity
 
 clear;
