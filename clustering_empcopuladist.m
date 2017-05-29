@@ -661,6 +661,26 @@ hh1(3).LineWidth = 1.5;
 
 figtitle(sprintf('M=%d\n', M));
 
+%% E-Copula experiments, why does distance never goto 0?
+
+clear;
+clc;
+
+M = 200;
+x = rand(M,1);
+y = x;
+[U1,V1] = pobs_sorted(x,y); UU1 = [U1 V1];
+C_uv = ecopula(U1,V1);
+M_uv = min(U1,V1)';
+W_uv = max(U1+V1-1,0)';
+
+d1 = empCopulaDistance(C_uv,M_uv,'sse')
+d2 = empCopulaDistance(C_uv,W_uv,'sse')
+
+plot(1:M,C_uv,1:M,M_uv,1:M,W_uv); grid on;
+legend('C','M','W')
+
+
 %% test how adding new points to the empirical copula affects the SSE distance metric
 
 clear;
@@ -730,11 +750,11 @@ for M=MVec
             distVecM_dep8 = zeros(1,M); distVecW_dep8 = zeros(1,M);
             distVecM_dep9 = zeros(1,M); distVecW_dep9 = zeros(1,M);
             
-            parfor ii=2:M
+            for ii=2:M
                 pts = UU1(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
                 C_uv = ecopula(ptsU,ptsV);
-                M_uv = min(ptsU,ptsV);
-                W_uv = max(ptsU+ptsV-1,0);
+                M_uv = min(ptsU,ptsV)';
+                W_uv = max(ptsU+ptsV-1,0)';
                 distVecM_dep1(ii) = empCopulaDistance(C_uv,M_uv,'sse');
                 distVecW_dep1(ii) = empCopulaDistance(C_uv,W_uv,'sse');
                 
@@ -850,7 +870,7 @@ end
 
 %% plot the results for the point-additionp
 
-M = 400;
+M = 100;
 if(ispc)
     load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\pointAddition_M_%d.mat', M));
 elseif(ismac)
@@ -859,7 +879,7 @@ else
     load(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/pointAddition_M_%d.mat', M));
 end
 
-noiseLevelsToPlot = [0,20];
+noiseLevelsToPlot = [0,15];
 
 depIdx = 1;
 subplot(3,3,depIdx);
