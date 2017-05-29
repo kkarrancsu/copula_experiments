@@ -678,6 +678,9 @@ noiseVec = num_noise_test_min:num_noise_test_max;
 numMCSim = 100;
 numDepTypes = 9;
 
+dispstat('','init'); % One time only initialization
+dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
+
 distCellM = cell(length(noiseVec),numDepTypes);
 distCellW = cell(length(noiseVec),numDepTypes);
 for M=MVec
@@ -693,6 +696,8 @@ for M=MVec
         distVecM_dep8_mc = zeros(1,M-1); distVecW_dep8_mc = zeros(1,M-1);
         distVecM_dep9_mc = zeros(1,M-1); distVecW_dep9_mc = zeros(1,M-1);
 
+        dispstat(sprintf('Computing for noise level=%d >> M=%d',l,M),'keepthis', 'timestamp');
+        
         for mcSimNum=1:numMCSim
             x = rand(M,1)*(xMax-xMin)+xMin;
             y1 = x + noise*(l/num_noise)*randn(M,1);
@@ -724,6 +729,7 @@ for M=MVec
             distVecM_dep7 = zeros(1,M); distVecW_dep7 = zeros(1,M);
             distVecM_dep8 = zeros(1,M); distVecW_dep8 = zeros(1,M);
             distVecM_dep9 = zeros(1,M); distVecW_dep9 = zeros(1,M);
+            
             parfor ii=2:M
                 pts = UU1(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
                 C_uv = ecopula(ptsU,ptsV);
