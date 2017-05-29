@@ -750,7 +750,7 @@ for M=MVec
             distVecM_dep8 = zeros(1,M); distVecW_dep8 = zeros(1,M);
             distVecM_dep9 = zeros(1,M); distVecW_dep9 = zeros(1,M);
             
-            for ii=2:M
+            parfor ii=2:M
                 pts = UU1(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
                 C_uv = ecopula(ptsU,ptsV);
                 M_uv = min(ptsU,ptsV)';
