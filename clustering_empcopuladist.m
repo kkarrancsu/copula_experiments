@@ -760,57 +760,57 @@ for M=MVec
                 
                 pts = UU2(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
                 C_uv = ecopula(ptsU,ptsV);
-                M_uv = min(ptsU,ptsV);
-                W_uv = max(ptsU+ptsV-1,0);
+                M_uv = min(ptsU,ptsV)';
+                W_uv = max(ptsU+ptsV-1,0)';
                 distVecM_dep2(ii) = empCopulaDistance(C_uv,M_uv,'sse');
                 distVecW_dep2(ii) = empCopulaDistance(C_uv,W_uv,'sse');
                 
                 pts = UU3(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
                 C_uv = ecopula(ptsU,ptsV);
-                M_uv = min(ptsU,ptsV);
-                W_uv = max(ptsU+ptsV-1,0);
+                M_uv = min(ptsU,ptsV)';
+                W_uv = max(ptsU+ptsV-1,0)';
                 distVecM_dep3(ii) = empCopulaDistance(C_uv,M_uv,'sse');
                 distVecW_dep3(ii) = empCopulaDistance(C_uv,W_uv,'sse');
                 
                 pts = UU4(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
                 C_uv = ecopula(ptsU,ptsV);
-                M_uv = min(ptsU,ptsV);
-                W_uv = max(ptsU+ptsV-1,0);
+                M_uv = min(ptsU,ptsV)';
+                W_uv = max(ptsU+ptsV-1,0)';
                 distVecM_dep4(ii) = empCopulaDistance(C_uv,M_uv,'sse');
                 distVecW_dep4(ii) = empCopulaDistance(C_uv,W_uv,'sse');
                 
                 pts = UU5(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
                 C_uv = ecopula(ptsU,ptsV);
-                M_uv = min(ptsU,ptsV);
-                W_uv = max(ptsU+ptsV-1,0);
+                M_uv = min(ptsU,ptsV)';
+                W_uv = max(ptsU+ptsV-1,0)';
                 distVecM_dep5(ii) = empCopulaDistance(C_uv,M_uv,'sse');
                 distVecW_dep5(ii) = empCopulaDistance(C_uv,W_uv,'sse');
                 
                 pts = UU6(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
                 C_uv = ecopula(ptsU,ptsV);
-                M_uv = min(ptsU,ptsV);
-                W_uv = max(ptsU+ptsV-1,0);
+                M_uv = min(ptsU,ptsV)';
+                W_uv = max(ptsU+ptsV-1,0)';
                 distVecM_dep6(ii) = empCopulaDistance(C_uv,M_uv,'sse');
                 distVecW_dep6(ii) = empCopulaDistance(C_uv,W_uv,'sse');
                 
                 pts = UU7(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
                 C_uv = ecopula(ptsU,ptsV);
-                M_uv = min(ptsU,ptsV);
-                W_uv = max(ptsU+ptsV-1,0);
+                M_uv = min(ptsU,ptsV)';
+                W_uv = max(ptsU+ptsV-1,0)';
                 distVecM_dep7(ii) = empCopulaDistance(C_uv,M_uv,'sse');
                 distVecW_dep7(ii) = empCopulaDistance(C_uv,W_uv,'sse');
                 
                 pts = UU8(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
                 C_uv = ecopula(ptsU,ptsV);
-                M_uv = min(ptsU,ptsV);
-                W_uv = max(ptsU+ptsV-1,0);
+                M_uv = min(ptsU,ptsV)';
+                W_uv = max(ptsU+ptsV-1,0)';
                 distVecM_dep8(ii) = empCopulaDistance(C_uv,M_uv,'sse');
                 distVecW_dep8(ii) = empCopulaDistance(C_uv,W_uv,'sse');
                 
                 pts = UU9(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
                 C_uv = ecopula(ptsU,ptsV);
-                M_uv = min(ptsU,ptsV);
-                W_uv = max(ptsU+ptsV-1,0);
+                M_uv = min(ptsU,ptsV)';
+                W_uv = max(ptsU+ptsV-1,0)';
                 distVecM_dep9(ii) = empCopulaDistance(C_uv,M_uv,'sse');
                 distVecW_dep9(ii) = empCopulaDistance(C_uv,W_uv,'sse');
             end
