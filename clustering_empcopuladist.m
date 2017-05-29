@@ -670,34 +670,179 @@ xMin = 0;
 xMax = 1;
 num_noise = 30;                    % The number of different noise levels used
 noise = 3;                         % A constant to determine the amount of noise
-K = 25;
 
 MVec = 100:100:1000;
 num_noise_test_min = 0;
 num_noise_test_max = 30;
 noiseVec = num_noise_test_min:num_noise_test_max;
 numMCSim = 100;
+numDepTypes = 9;
 
-M = MVec(5);
-l = 0;
-x = rand(M,1)*(xMax-xMin)+xMin;
-y1 = x + noise*(l/num_noise)*randn(M,1);
+distCellM = cell(length(noiseVec),numDepTypes);
+distCellW = cell(length(noiseVec),numDepTypes);
+for M=MVec
+    lIdx = 1;
+    for l=noiseVec
+        distVecM_dep1_mc = zeros(1,M-1); distVecW_dep1_mc = zeros(1,M-1);
+        distVecM_dep2_mc = zeros(1,M-1); distVecW_dep2_mc = zeros(1,M-1);
+        distVecM_dep3_mc = zeros(1,M-1); distVecW_dep3_mc = zeros(1,M-1);
+        distVecM_dep4_mc = zeros(1,M-1); distVecW_dep4_mc = zeros(1,M-1);
+        distVecM_dep5_mc = zeros(1,M-1); distVecW_dep5_mc = zeros(1,M-1);
+        distVecM_dep6_mc = zeros(1,M-1); distVecW_dep6_mc = zeros(1,M-1);
+        distVecM_dep7_mc = zeros(1,M-1); distVecW_dep7_mc = zeros(1,M-1);
+        distVecM_dep8_mc = zeros(1,M-1); distVecW_dep8_mc = zeros(1,M-1);
+        distVecM_dep9_mc = zeros(1,M-1); distVecW_dep9_mc = zeros(1,M-1);
 
-U1 = pobs([x y1]);
+        for mcSimNum=1:numMCSim
+            x = rand(M,1)*(xMax-xMin)+xMin;
+            y1 = x + noise*(l/num_noise)*randn(M,1);
+            y2 = 4*(x-.5).^2 + noise*(l/num_noise)*randn(M,1);
+            y3 = 128*(x-1/3).^3-48*(x-1/3).^3-12*(x-1/3)+10* noise*(l/num_noise)*randn(M,1);
+            y4 = sin(4*pi*x) + 2*noise*(l/num_noise)*randn(M,1);
+            y5 = sin(16*pi*x) + noise*(l/num_noise)*randn(M,1);
+            y6 = x.^(1/4) + noise*(l/num_noise)*randn(M,1);
+            y7=(2*binornd(1,0.5,M,1)-1) .* (sqrt(1 - (2*x - 1).^2)) + noise/4*l/num_noise*randn(M,1);
+            y8 = (x > 0.5) + noise*5*l/num_noise*randn(M,1);
+            y9 = rand(M,1)*(xMax-xMin)+xMin;
 
-distVec = zeros(M,1);
-for ii=2:M
-    pts = U1(1:ii,:);
-    C_uv = empcopulacdf(pts,K,'deheuvels');
-    
-    xx = rand(ii,1);
-    yy = xx;
-    UU = pobs([xx yy]);
-    M_uv = empcopulacdf(UU, K, 'deheuvels');
-    distVec(ii) = empCopulaDistance(C_uv,M_uv,'sse');
+            [U1,V1] = pobs_sorted(x,y1); UU1 = [U1 V1];
+            [U2,V2] = pobs_sorted(x,y2); UU2 = [U2 V2];
+            [U3,V3] = pobs_sorted(x,y3); UU3 = [U3 V3];
+            [U4,V4] = pobs_sorted(x,y4); UU4 = [U4 V4];
+            [U5,V5] = pobs_sorted(x,y5); UU5 = [U5 V5];
+            [U6,V6] = pobs_sorted(x,y6); UU6 = [U6 V6];
+            [U7,V7] = pobs_sorted(x,y7); UU7 = [U7 V7];
+            [U8,V8] = pobs_sorted(x,y8); UU8 = [U8 V8];
+            [U9,V9] = pobs_sorted(x,y9); UU9 = [U9 V9];
+            
+            distVecM_dep1 = zeros(1,M); distVecW_dep1 = zeros(1,M);
+            distVecM_dep2 = zeros(1,M); distVecW_dep2 = zeros(1,M);
+            distVecM_dep3 = zeros(1,M); distVecW_dep3 = zeros(1,M);
+            distVecM_dep4 = zeros(1,M); distVecW_dep4 = zeros(1,M);
+            distVecM_dep5 = zeros(1,M); distVecW_dep5 = zeros(1,M);
+            distVecM_dep6 = zeros(1,M); distVecW_dep6 = zeros(1,M);
+            distVecM_dep7 = zeros(1,M); distVecW_dep7 = zeros(1,M);
+            distVecM_dep8 = zeros(1,M); distVecW_dep8 = zeros(1,M);
+            distVecM_dep9 = zeros(1,M); distVecW_dep9 = zeros(1,M);
+            parfor ii=2:M
+                pts = UU1(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
+                C_uv = ecopula(ptsU,ptsV);
+                M_uv = min(ptsU,ptsV);
+                W_uv = max(ptsU+ptsV-1,0);
+                distVecM_dep1(ii) = empCopulaDistance(C_uv,M_uv,'sse');
+                distVecW_dep1(ii) = empCopulaDistance(C_uv,W_uv,'sse');
+                
+                pts = UU2(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
+                C_uv = ecopula(ptsU,ptsV);
+                M_uv = min(ptsU,ptsV);
+                W_uv = max(ptsU+ptsV-1,0);
+                distVecM_dep2(ii) = empCopulaDistance(C_uv,M_uv,'sse');
+                distVecW_dep2(ii) = empCopulaDistance(C_uv,W_uv,'sse');
+                
+                pts = UU3(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
+                C_uv = ecopula(ptsU,ptsV);
+                M_uv = min(ptsU,ptsV);
+                W_uv = max(ptsU+ptsV-1,0);
+                distVecM_dep3(ii) = empCopulaDistance(C_uv,M_uv,'sse');
+                distVecW_dep3(ii) = empCopulaDistance(C_uv,W_uv,'sse');
+                
+                pts = UU4(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
+                C_uv = ecopula(ptsU,ptsV);
+                M_uv = min(ptsU,ptsV);
+                W_uv = max(ptsU+ptsV-1,0);
+                distVecM_dep4(ii) = empCopulaDistance(C_uv,M_uv,'sse');
+                distVecW_dep4(ii) = empCopulaDistance(C_uv,W_uv,'sse');
+                
+                pts = UU5(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
+                C_uv = ecopula(ptsU,ptsV);
+                M_uv = min(ptsU,ptsV);
+                W_uv = max(ptsU+ptsV-1,0);
+                distVecM_dep5(ii) = empCopulaDistance(C_uv,M_uv,'sse');
+                distVecW_dep5(ii) = empCopulaDistance(C_uv,W_uv,'sse');
+                
+                pts = UU6(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
+                C_uv = ecopula(ptsU,ptsV);
+                M_uv = min(ptsU,ptsV);
+                W_uv = max(ptsU+ptsV-1,0);
+                distVecM_dep6(ii) = empCopulaDistance(C_uv,M_uv,'sse');
+                distVecW_dep6(ii) = empCopulaDistance(C_uv,W_uv,'sse');
+                
+                pts = UU7(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
+                C_uv = ecopula(ptsU,ptsV);
+                M_uv = min(ptsU,ptsV);
+                W_uv = max(ptsU+ptsV-1,0);
+                distVecM_dep7(ii) = empCopulaDistance(C_uv,M_uv,'sse');
+                distVecW_dep7(ii) = empCopulaDistance(C_uv,W_uv,'sse');
+                
+                pts = UU8(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
+                C_uv = ecopula(ptsU,ptsV);
+                M_uv = min(ptsU,ptsV);
+                W_uv = max(ptsU+ptsV-1,0);
+                distVecM_dep8(ii) = empCopulaDistance(C_uv,M_uv,'sse');
+                distVecW_dep8(ii) = empCopulaDistance(C_uv,W_uv,'sse');
+                
+                pts = UU9(1:ii,:); ptsU = pts(:,1); ptsV = pts(:,2);
+                C_uv = ecopula(ptsU,ptsV);
+                M_uv = min(ptsU,ptsV);
+                W_uv = max(ptsU+ptsV-1,0);
+                distVecM_dep9(ii) = empCopulaDistance(C_uv,M_uv,'sse');
+                distVecW_dep9(ii) = empCopulaDistance(C_uv,W_uv,'sse');
+            end
+            distVecM_dep1 = distVecM_dep1(2:end); distVecW_dep1 = distVecW_dep1(2:end);
+            distVecM_dep2 = distVecM_dep2(2:end); distVecW_dep2 = distVecW_dep2(2:end);
+            distVecM_dep3 = distVecM_dep3(2:end); distVecW_dep3 = distVecW_dep3(2:end);
+            distVecM_dep4 = distVecM_dep4(2:end); distVecW_dep4 = distVecW_dep4(2:end);
+            distVecM_dep5 = distVecM_dep5(2:end); distVecW_dep5 = distVecW_dep5(2:end);
+            distVecM_dep6 = distVecM_dep6(2:end); distVecW_dep6 = distVecW_dep6(2:end);
+            distVecM_dep7 = distVecM_dep7(2:end); distVecW_dep7 = distVecW_dep7(2:end);
+            distVecM_dep8 = distVecM_dep8(2:end); distVecW_dep8 = distVecW_dep8(2:end);
+            distVecM_dep9 = distVecM_dep9(2:end); distVecW_dep9 = distVecW_dep9(2:end);
+            
+            distVecM_dep1_mc = distVecM_dep1_mc + distVecM_dep1; distVecW_dep1_mc = distVecW_dep1_mc + distVecW_dep1;
+            distVecM_dep2_mc = distVecM_dep2_mc + distVecM_dep2; distVecW_dep2_mc = distVecW_dep2_mc + distVecW_dep2;
+            distVecM_dep3_mc = distVecM_dep3_mc + distVecM_dep3; distVecW_dep3_mc = distVecW_dep3_mc + distVecW_dep3;
+            distVecM_dep4_mc = distVecM_dep4_mc + distVecM_dep4; distVecW_dep4_mc = distVecW_dep4_mc + distVecW_dep4;
+            distVecM_dep5_mc = distVecM_dep5_mc + distVecM_dep5; distVecW_dep5_mc = distVecW_dep5_mc + distVecW_dep5;
+            distVecM_dep6_mc = distVecM_dep6_mc + distVecM_dep6; distVecW_dep6_mc = distVecW_dep6_mc + distVecW_dep6;
+            distVecM_dep7_mc = distVecM_dep7_mc + distVecM_dep7; distVecW_dep7_mc = distVecW_dep7_mc + distVecW_dep7;
+            distVecM_dep8_mc = distVecM_dep8_mc + distVecM_dep8; distVecW_dep8_mc = distVecW_dep8_mc + distVecW_dep8;
+            distVecM_dep9_mc = distVecM_dep9_mc + distVecM_dep9; distVecW_dep9_mc = distVecW_dep9_mc + distVecW_dep9;
+            
+        end
+        
+        distVecM_dep1_mc = distVecM_dep1_mc/numMCSim; distVecW_dep1_mc = distVecW_dep1_mc/numMCSim;
+        distVecM_dep2_mc = distVecM_dep2_mc/numMCSim; distVecW_dep2_mc = distVecW_dep2_mc/numMCSim;
+        distVecM_dep3_mc = distVecM_dep3_mc/numMCSim; distVecW_dep3_mc = distVecW_dep3_mc/numMCSim;
+        distVecM_dep4_mc = distVecM_dep4_mc/numMCSim; distVecW_dep4_mc = distVecW_dep4_mc/numMCSim;
+        distVecM_dep5_mc = distVecM_dep5_mc/numMCSim; distVecW_dep5_mc = distVecW_dep5_mc/numMCSim;
+        distVecM_dep6_mc = distVecM_dep6_mc/numMCSim; distVecW_dep6_mc = distVecW_dep6_mc/numMCSim;
+        distVecM_dep7_mc = distVecM_dep7_mc/numMCSim; distVecW_dep7_mc = distVecW_dep7_mc/numMCSim;
+        distVecM_dep8_mc = distVecM_dep8_mc/numMCSim; distVecW_dep8_mc = distVecW_dep8_mc/numMCSim;
+        distVecM_dep9_mc = distVecM_dep9_mc/numMCSim; distVecW_dep9_mc = distVecW_dep9_mc/numMCSim;
+        
+        distCellM{lIdx,1} = distVecM_dep1_mc; distCellW{lIdx,1} = distVecW_dep1_mc;
+        distCellM{lIdx,2} = distVecM_dep2_mc; distCellW{lIdx,2} = distVecW_dep2_mc;
+        distCellM{lIdx,3} = distVecM_dep3_mc; distCellW{lIdx,3} = distVecW_dep3_mc;
+        distCellM{lIdx,4} = distVecM_dep4_mc; distCellW{lIdx,4} = distVecW_dep4_mc;
+        distCellM{lIdx,5} = distVecM_dep5_mc; distCellW{lIdx,5} = distVecW_dep5_mc;
+        distCellM{lIdx,6} = distVecM_dep6_mc; distCellW{lIdx,6} = distVecW_dep6_mc;
+        distCellM{lIdx,7} = distVecM_dep7_mc; distCellW{lIdx,7} = distVecW_dep7_mc;
+        distCellM{lIdx,8} = distVecM_dep8_mc; distCellW{lIdx,8} = distVecW_dep8_mc;
+        distCellM{lIdx,9} = distVecM_dep9_mc; distCellW{lIdx,9} = distVecW_dep9_mc;
+        
+        lIdx = lIdx + 1;
+    end
+    % save the data for post-analysis
+    if(ispc)
+        save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\pointAddition_M_%d.mat', M));
+    elseif(ismac)
+        save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/pointAddition_M_%d.mat', M));
+    else
+        save(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/pointAddition_M_%d.mat', M));
+    end
 end
-distVec = distVec(2:end);   % first entry means nothing
-plot(distVec)
+
+%% plot the results for the point-additionp
 
 %% Test how the empirical copula varies over different regions of co-monotonicity and counter-monotonicity
 
