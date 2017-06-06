@@ -12,9 +12,9 @@ v = pobs(y)*(M+1)/M;
 scanincr = 1;
 signature = containers.Map('KeyType','double','ValueType','any');
 while(scanincr>=minscanincr)
-    [zscVec,numPtsVec] = scanForDep(u,v,scanincr,mode);
+    [metricVec,numPtsVec] = scanForDep(u,v,scanincr,mode);
     data = struct;
-    data.zscVec = zscVec;
+    data.metricVec = metricVec;
     data.numPtsVec = numPtsVec;
     signature(scanincr) = data;
     scanincr = scanincr/2;
@@ -22,13 +22,13 @@ end
 
 end
 
-function [zscVec, numPtsVec] = scanForDep(ax1pts, ax2pts, scanincr,mode)
+function [metricVec, numPtsVec] = scanForDep(ax1pts, ax2pts, scanincr,mode)
 %scanForDep - scans for dependencies across the first axis (if you would
 %like to scan across the second axis, simply swap the input arguments to 
 %this function).
 
 ax1min = 0; ax1max = scanincr; ax2min = 0; ax2max = 1;
-zscVec = [];
+metricVec = [];
 numPtsVec = [];
 while ax1max<=1
     % find all the points which are contained within this cover rectangle
@@ -37,8 +37,7 @@ while ax1max<=1
     if(numPts>=2)   % make sure we have enough points to compute the metric
         % compute the concordance
         metricRectangle = abs(corr(matchPts(:,1),matchPts(:,2),'type','kendall'));
-        zsc  = metricRectangle./sqrt( (2*(2*numPts+5))./(9*numPts.*(numPts-1)) );
-        zscVec = [zscVec zsc];
+        metricVec = [metricVec metricRectangle];
         numPtsVec = [numPtsVec numPts];
     end
     ax1max = ax1max + scanincr;
@@ -47,14 +46,14 @@ while ax1max<=1
         ax1min = ax1min + scanincr;
     end
     
-    if(ax1max>1)
+    % if we didn't exactly match the bounds
+    if((ax1max-scanincr)>1)
         matchPts = getPointsWithinBounds(ax1pts, ax2pts, ax1min, 1, ax2min, ax2max);
         numPts = size(matchPts,1);
         if(numPts>=2)   % make sure we have enough points to compute the metric
             % compute the concordance
             metricRectangle = abs(taukl( matchPts(:,1),matchPts(:,2) ));
-            zsc  = metricRectangle./sqrt( (2*(2*numPts+5))./(9*numPts.*(numPts-1)) );
-            zscVec = [zscVec zsc];
+            metricVec = [metricVec metricRectangle];
             numPtsVec = [numPtsVec numPts];
         end
     end
