@@ -4,7 +4,7 @@
 clear;
 clc;
 
-numMCSims = 1000;
+numMCSims = 500;
 MVec = 50:50:500;
 xMin = 0;
 xMax = 1;
@@ -22,7 +22,7 @@ for mIdx=1:length(MVec)
     M = MVec(mIdx);
     for noiseIdx=1:length(noiseVec)
         l = noiseVec(noiseIdx);
-        dispstat(sprintf('Computing for M=%d noise=%d', M, typ),'keepthis', 'timestamp');
+        dispstat(sprintf('Computing for M=%d noise=%d', M, l),'keepthis', 'timestamp');
         % simulate data under the null w/ correct marginals
         parfor ii=1:numMCSims
             x = rand(M,1)*(xMax-xMin)+xMin;
@@ -113,14 +113,12 @@ end
 clear;
 clc;
 
-numMCSims = 500;
-MVec = [50, 100, 500, 5000];
+numMCSims = 250;
+MVec = [50, 100, 500];
 xMin = 0;
 xMax = 1;
 num_noise = 30;                    % The number of different noise levels used
 noise = 3; 
-num_noise_test_min = 0;
-num_noise_test_max = 30;
 % noiseVec = num_noise_test_min:num_noise_test_max;
 noiseVec = [0,10,20];
 minscanincr = 0.015;  % ends up that .015625 is the last one that gets run
@@ -182,6 +180,7 @@ end
 %% analyze the signature
 clear;
 clc;
+close all;
 dbstop if error;
  
  % store the results
@@ -194,10 +193,10 @@ else
 end
 
 % which sample sizes to plot
-MVecToPlot = [50, 100, 500, 5000];
+MVecToPlot = [50, 100, 500];
 noiseLevelsToPlot = [0,10,20];
 % scanincrsToPlot = [0.5, 0.25, 0.125, .0625, .03125];
-scanincrsToPlot = [0.5, .25, 0.125];
+scanincrsToPlot = [0.5, .25, 0.125, .0625, .03125];
 subplotCfg = [length(MVecToPlot), length(noiseLevelsToPlot)];
 numPlots = prod(subplotCfg);
 lineMarkers = {'+-.','o-.','*-.','d-.','x-.','s.-'};
@@ -209,6 +208,8 @@ for ii=1:numDeps
 end
 
 plotIdx = 1;
+% numToAvg = numMCSims;
+numToAvg = 1;
 for MIdx=1:length(MVecToPlot)
     % find which index this goes into the resultsMat
     M = MVecToPlot(MIdx);
@@ -221,19 +222,19 @@ for MIdx=1:length(MVecToPlot)
         lIdx = find(noiseLevel==noiseVec);
         % get the data
         [avgMetric_linear, avgNumPts_linear] = ...
-            getSignatureAvg(resultsMat_linear,mIdx,lIdx,numMCSims,scanincrsToPlot);
+            getSignatureAvg(resultsMat_linear,mIdx,lIdx,numToAvg,scanincrsToPlot);
         [avgMetric_parabola, avgNumPts_parabola] = ...
-            getSignatureAvg(resultsMat_parabola,mIdx,lIdx,numMCSims,scanincrsToPlot);
+            getSignatureAvg(resultsMat_parabola,mIdx,lIdx,numToAvg,scanincrsToPlot);
         [avgMetric_cubic, avgNumPts_cubic] = ...
-            getSignatureAvg(resultsMat_cubic,mIdx,lIdx,numMCSims,scanincrsToPlot);
+            getSignatureAvg(resultsMat_cubic,mIdx,lIdx,numToAvg,scanincrsToPlot);
         [avgMetric_sinu, avgNumPts_sinu] = ...
-            getSignatureAvg(resultsMat_sinu,mIdx,lIdx,numMCSims,scanincrsToPlot);
+            getSignatureAvg(resultsMat_sinu,mIdx,lIdx,numToAvg,scanincrsToPlot);
         [avgMetric_hfsinu, avgNumPts_hfsinu] = ...
-            getSignatureAvg(resultsMat_hfsinu,mIdx,lIdx,numMCSims,scanincrsToPlot);
+            getSignatureAvg(resultsMat_hfsinu,mIdx,lIdx,numToAvg,scanincrsToPlot);
         [avgMetric_fr, avgNumPts_fr] = ...
-            getSignatureAvg(resultsMat_fr,mIdx,lIdx,numMCSims,scanincrsToPlot);
+            getSignatureAvg(resultsMat_fr,mIdx,lIdx,numToAvg,scanincrsToPlot);
         [avgMetric_step, avgNumPts_step] = ...
-            getSignatureAvg(resultsMat_step,mIdx,lIdx,numMCSims,scanincrsToPlot);
+            getSignatureAvg(resultsMat_step,mIdx,lIdx,numToAvg,scanincrsToPlot);
         
         set(0,'CurrentFigure',figureVec(1));
         B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
@@ -361,3 +362,228 @@ for MIdx=1:length(MVecToPlot)
     set(0,'CurrentFigure',figureVec(6)); figtitle('Fourth-Root');
     set(0,'CurrentFigure',figureVec(7)); figtitle('Step-Function');
 end
+
+%% compare the old CIM to the new CIM
+clear; clc;
+
+M = 500; xMin = 0; xMax = 1; num_noise = 30; noise = 3; l = 0;
+x = rand(M,1)*(xMax-xMin)+xMin;
+y1 = x + noise*(l/num_noise)*randn(M,1);
+y2 = 4*(x-.5).^2 + noise*(l/num_noise)*randn(M,1);
+y3 = 128*(x-1/3).^3-48*(x-1/3).^3-12*(x-1/3)+10* noise*(l/num_noise)*randn(M,1);
+y4 = sin(4*pi*x) + 2*noise*(l/num_noise)*randn(M,1);
+y5 = sin(16*pi*x) + noise*(l/num_noise)*randn(M,1);
+y6 = x.^(1/4) + noise*(l/num_noise)*randn(M,1);
+y8 = (x > 0.5) + noise*5*l/num_noise*randn(M,1);
+y9 =  rand(M,1)*(xMax-xMin)+xMin;
+
+y_sig = y4;
+
+cim(x,y_sig)
+cim_v2(x,y_sig)
+
+%% Generate statistical power curves for old CIM vs new CIM
+% same methodology as Simon & Tibshirani:
+% http://statweb.stanford.edu/~tibs/reshef/script.R
+
+clear;
+clc;
+
+% WARNING: ENSURE THAT minepy/matlab/ is in the matlab path for MIC to
+% work!
+
+rng(1234);
+dbstop if error;
+
+nsim_null = 500;   % The number of null datasets we use to estimate our rejection reject regions for an alternative with level 0.05
+nsim_alt  = 500;   % Number of alternative datasets we use to estimate our power
+
+num_noise = 30;                    % The number of different noise levels used
+noise = 3;                         % A constant to determine the amount of noise
+
+M = 500;                % number of samples
+numDepTests = 4;        % the number of different dependency tests we will conduct
+
+% Vectors holding the null "correlations" (for pearson, dcor and mic respectively) 
+% for each of the nsim null datasets at a given noise level
+cimNull = zeros(1,nsim_null);
+cimv2Null = zeros(1,nsim_null);
+
+cimAlt  = zeros(1,nsim_alt);
+cimv2Alt = zeros(1,nsim_alt);
+
+% Arrays holding the estimated power for each of the "correlation" types, 
+% for each data type (linear, parabolic, etc...) with each noise level
+cimPower = zeros(numDepTests, num_noise);
+cimv2Power = zeros(numDepTests, num_noise);
+
+% Simon & Tibshirani use xMin=0, xMax=1 for performing their analysis ...
+xMin = 0;
+xMax = 1;
+
+dispstat('','init'); % One time only initialization
+dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
+num_noise_test_min = 1;
+num_noise_test_max = 30;
+for l=num_noise_test_min:num_noise_test_max
+    for typ=1:numDepTests
+        dispstat(sprintf('Computing for noise level=%d Dependency Test=%d',l, typ),'keepthis', 'timestamp');
+        % simulate data under the null w/ correct marginals
+%         parfor ii=1:nsim_null
+        for ii=1:nsim_null
+            x = rand(M,1)*(xMax-xMin)+xMin;
+            switch(typ)
+                case 1
+                    % linear
+                    y = x + noise*(l/num_noise)*randn(M,1); 
+                case 2
+                    % parabolic
+                    y = 4*(x-.5).^2 + noise*(l/num_noise)*randn(M,1);
+                case 3
+                    % cubic
+                    y = 128*(x-1/3).^3-48*(x-1/3).^3-12*(x-1/3)+10* noise*(l/num_noise)*randn(M,1);
+                case 4
+                    % low-freq sin
+                    y = sin(4*pi*x) + 2*noise*(l/num_noise)*randn(M,1);
+                otherwise
+                    error('unknown dep type!');
+            end
+            % resimulate x so we have null scenario
+            x = rand(M,1)*(xMax-xMin)+xMin;
+            
+            % calculate the metrics
+            cimNull(ii) = cim(x, y);
+            cimv2Null(ii) = cim_v2(x, y);
+        end
+        
+        % compute the rejection cutoffs
+        cim_cut = quantile(cimNull, 0.95);
+        cimv2_cut = quantile(cimv2Null, 0.95);
+        
+        % resimulate the data under the alternative hypothesis
+%         parfor ii=1:nsim_alt
+        for ii=1:nsim_alt
+            x = rand(M,1)*(xMax-xMin)+xMin;
+            switch(typ)
+                case 1
+                    % linear
+                    y = x + noise*(l/num_noise)*randn(M,1); 
+                case 2
+                    % parabolic
+                    y = 4*(x-.5).^2 + noise*(l/num_noise)*randn(M,1);
+                case 3
+                    % cubic
+                    y = 128*(x-1/3).^3-48*(x-1/3).^3-12*(x-1/3) + 10*noise*(l/num_noise)*randn(M,1);
+                case 4
+                    % low-freq sin
+                    y = sin(4*pi*x) + 2*noise*(l/num_noise)*randn(M,1);
+                otherwise
+                    error('unknown dep type!');
+            end
+            
+            % calculate the metrics
+            cimAlt(ii) = cim(x, y);
+            cimv2Alt(ii) = cim_v2(x, y);
+        end
+        
+        % compute the power
+        cimPower(typ, l)   = sum(cimAlt > cim_cut)/nsim_alt;
+        cimv2Power(typ, l)  = sum(cimv2Alt > cimv2_cut)/nsim_alt;
+    end
+end
+
+% save the data
+if(ispc)
+    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cimv2_power_M_%d.mat', M));
+elseif(ismac)
+    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cimv2_power_M_%d.mat', M));
+else
+    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cimv2_power_M_%d.mat', M));
+end
+
+% inlet plot configuration
+M_inlet = 200;
+if(M==500)
+    inset_bufX = 0.0005; inset_bufY = 0.002;
+else
+    inset_bufX = 0.15; inset_bufY = 0.26;
+end
+
+inset_width = 0.1; inset_height = 0.08;
+
+noiseVec = (num_noise_test_min:num_noise_test_max)/10;
+figure;
+h1 = subplot(2,2,1);
+hh1 = plot(noiseVec, cimPower(1,num_noise_test_min:num_noise_test_max), 'o-.', ...
+     noiseVec, cimv2Power(1,num_noise_test_min:num_noise_test_max), '+-.'); 
+axis([min(noiseVec) max(noiseVec) 0 1]);
+xlabel({'Noise Level','(a)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
+% title('(a)', 'FontSize', 20);
+h1.FontSize = 20; 
+loc_inset = [h1.Position(1)+inset_bufX h1.Position(2)+inset_bufY inset_width inset_height];
+ax1 = axes('Position',loc_inset);
+tmp1 = linspace(0,1,M_inlet);
+tmp2 = tmp1;
+plot(tmp1,tmp2, 'k', 'LineWidth', 2);
+ax1.Box = 'on'; ax1.XTick = []; ax1.YTick = [];
+ax1.XLim = [min(tmp1) max(tmp1)];
+ax1.YLim = [min(tmp2) max(tmp2)];
+hh1(1).LineWidth = 2.5; 
+hh1(2).LineWidth = 2.5; 
+
+h2 = subplot(2,2,2);
+hh2 = plot(noiseVec, cimPower(2,num_noise_test_min:num_noise_test_max), 'o-.', ...
+     noiseVec, cimv2Power(2,num_noise_test_min:num_noise_test_max), '+-.'); 
+axis([min(noiseVec) max(noiseVec) 0 1]);
+xlabel({'Noise Level', '(b)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
+% title('(b)', 'FontSize', 20);
+h2.FontSize = 20; 
+loc_inset = [h2.Position(1)+inset_bufX h2.Position(2)+inset_bufY inset_width inset_height];
+ax2 = axes('Position',loc_inset);
+tmp1 = linspace(0,1,M_inlet);
+tmp2 = 4*(tmp1-.5).^2;
+plot(tmp1,tmp2, 'k', 'LineWidth', 2);
+ax2.Box = 'on'; ax2.XTick = []; ax2.YTick = [];
+ax2.XLim = [min(tmp1) max(tmp1)];
+ax2.YLim = [min(tmp2) max(tmp2)];
+hh2(1).LineWidth = 2.5; 
+hh2(2).LineWidth = 2.5; 
+
+h3 = subplot(2,2,3); 
+hh3 = plot(noiseVec, cimPower(3,num_noise_test_min:num_noise_test_max), 'o-.', ...
+     noiseVec, cimv2Power(3,num_noise_test_min:num_noise_test_max), '+-.');   
+axis([min(noiseVec) max(noiseVec) 0 1]);
+xlabel({'Noise Level', '(c)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
+% title('(c)', 'FontSize', 20);
+h3.FontSize = 20; 
+loc_inset = [h3.Position(1)+inset_bufX h3.Position(2)+inset_bufY inset_width inset_height];
+ax3 = axes('Position',loc_inset);
+tmp1 = linspace(0,1,M_inlet);
+tmp2 = 128*(tmp1-1/3).^3-48*(tmp1-1/3).^3-12*(tmp1-1/3);
+plot(tmp1,tmp2, 'k', 'LineWidth', 2);
+ax3.Box = 'on'; ax3.XTick = []; ax3.YTick = [];
+ax3.XLim = [min(tmp1) max(tmp1)];
+ax3.YLim = [min(tmp2) max(tmp2)];
+hh3(1).LineWidth = 2.5; 
+hh3(2).LineWidth = 2.5; 
+
+h4 = subplot(2,2,4); 
+hh4 = plot(noiseVec, cimPower(4,num_noise_test_min:num_noise_test_max), 'o-.', ...
+     noiseVec, cimv2Power(4,num_noise_test_min:num_noise_test_max), '+-.'); 
+axis([min(noiseVec) max(noiseVec) 0 1]);
+xlabel({'Noise Level', 'd'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
+% title('(d)', 'FontSize', 20);
+h4.FontSize = 20; 
+loc_inset = [h4.Position(1)+inset_bufX h4.Position(2)+inset_bufY inset_width inset_height];
+ax4 = axes('Position',loc_inset);
+tmp1 = linspace(0,1,M_inlet);
+tmp2 = sin(4*pi*tmp1);
+plot(tmp1,tmp2, 'k', 'LineWidth', 2);
+ax4.Box = 'on'; ax4.XTick = []; ax4.YTick = [];
+ax4.XLim = [min(tmp1) max(tmp1)];
+ax4.YLim = [min(tmp2) max(tmp2)];
+hh4(1).LineWidth = 2.5; 
+hh4(2).LineWidth = 2.5; 
+
+h4.FontSize = 20; 
+legend('CIM', 'CIMv2');
