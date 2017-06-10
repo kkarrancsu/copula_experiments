@@ -442,14 +442,14 @@ for M=MVec
             
             t1 = t1 + abs(corr(x,y1,'type','kendall'));
             c1 = c1 + abs(corr(x,y1,'type','kendall'));
-            c11 = c11 + cim_v3(x,y1);
+            c11 = c11 + cim(x,y1);
             
             t2 = t2 + abs(corr(x,y2,'type','kendall'));
             r1 = inBoundedPts(U2(:,1),U2(:,2),0,0.5,0,1); 
             r2 = inBoundedPts(U2(:,1),U2(:,2),0.5,1,0,1);
             c2 = c2 + ( abs(corr(r1(:,1),r1(:,2),'type','kendall'))*0.5 + ...
                         abs(corr(r2(:,1),r2(:,2),'type','kendall'))*0.5 );
-            c22 = c22 + cim_v3(x,y2);
+            c22 = c22 + cim(x,y2);
             
             t3 = t3 + abs(corr(x,y3,'type','kendall'));
             r1 = inBoundedPts(U3(:,1),U3(:,2),0,0.1138,0,1); 
@@ -458,7 +458,7 @@ for M=MVec
             c3 = c3 + ( abs(corr(r1(:,1),r1(:,2),'type','kendall'))*0.1138 + ...
                         abs(corr(r2(:,1),r2(:,2),'type','kendall'))*0.4368 + ...
                         abs(corr(r3(:,1),r3(:,2),'type','kendall'))*0.4232);
-            c33 = c33 + cim_v3(x,y3);
+            c33 = c33 + cim(x,y3);
                     
             t4 = t4 + abs(corr(x,y4,'type','kendall'));
             r1 = inBoundedPts(U4(:,1),U4(:,2),0,0.1138,0,1); 
@@ -471,7 +471,7 @@ for M=MVec
                         abs(corr(r3(:,1),r3(:,2),'type','kendall'))*0.2795 + ...
                         abs(corr(r4(:,1),r4(:,2),'type','kendall'))*0.2275 + ...
                         abs(corr(r5(:,1),r5(:,2),'type','kendall'))*0.1517);
-            c44 = c44 + cim_v3(x,y4);
+            c44 = c44 + cim(x,y4);
             
             t5 = t5 + abs(corr(x,y5,'type','kendall'));
             zz1 = 0; zz2 = 0.02900;   r1 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w1 = zz2-zz1;
@@ -508,11 +508,11 @@ for M=MVec
                         abs(corr(r15(:,1),r15(:,2),'type','kendall'))*w15 + ...
                         abs(corr(r16(:,1),r16(:,2),'type','kendall'))*w16 + ...
                         abs(corr(r17(:,1),r17(:,2),'type','kendall'))*w17);
-            c55 = c55 + cim_v3(x,y5);
+            c55 = c55 + cim(x,y5);
             
             t6 = t6 + abs(corr(x,y6,'type','kendall'));
             c6 = c6 + abs(corr(x,y6,'type','kendall'));
-            c66 = c66 + cim_v3(x,y6);
+            c66 = c66 + cim(x,y6);
             
             t7 = t7 + abs(corr(x,y7,'type','kendall'));
             r1 = inBoundedPts(U7(:,1),U7(:,2),0,0.5,0,0.5); 
@@ -523,11 +523,11 @@ for M=MVec
                         abs(corr(r2(:,1),r2(:,2),'type','kendall'))*0.25 + ...
                         abs(corr(r3(:,1),r3(:,2),'type','kendall'))*0.25 + ...
                         abs(corr(r4(:,1),r4(:,2),'type','kendall'))*0.25);
-            c77 = c77 + cim_v3(x,y7);
+            c77 = c77 + cim(x,y7);
             
             t8 = t8 + abs(corr(x,y8,'type','kendall'));
             c8 = c8 + abs(corr(x,y8,'type','kendall'));
-            c88 = c88 + cim_v3(x,y8);
+            c88 = c88 + cim(x,y8);
         end
         linearDep(1,l+1) = t1/numMCSim; linearDep(2,l+1) = c1/numMCSim; linearDep(3,l+1) = c11/numMCSim;
         quadraticDep(1,l+1) = t2/numMCSim; quadraticDep(2,l+1) = c2/numMCSim; quadraticDep(3,l+1) = c22/numMCSim;
@@ -1271,14 +1271,14 @@ for M=MVec
             
             t1 = t1 + abs(corr(x,y1,'type','kendall'));
             c1 = c1 + abs(corr(x,y1,'type','kendall'));
-            c11 = c11 + cim(x,y1);
+            c11 = c11 + cim_v3(x,y1);
             
             t2 = t2 + abs(corr(x,y2,'type','kendall'));
             r1 = inBoundedPts(U2(:,1),U2(:,2),0,0.5,0,1); 
             r2 = inBoundedPts(U2(:,1),U2(:,2),0.5,1,0,1);
             c2 = c2 + ( abs(corr(r1(:,1),r1(:,2),'type','kendall'))*0.5 + ...
                         abs(corr(r2(:,1),r2(:,2),'type','kendall'))*0.5 );
-            c22 = c22 + cim(x,y2);
+            c22 = c22 + cim_v3(x,y2);
             
             t3 = t3 + abs(corr(x,y3,'type','kendall'));
             r1 = inBoundedPts(U3(:,1),U3(:,2),0,0.1138,0,1); 
@@ -1287,7 +1287,7 @@ for M=MVec
             c3 = c3 + ( abs(corr(r1(:,1),r1(:,2),'type','kendall'))*0.1138 + ...
                         abs(corr(r2(:,1),r2(:,2),'type','kendall'))*0.4368 + ...
                         abs(corr(r3(:,1),r3(:,2),'type','kendall'))*0.4232);
-            c33 = c33 + cim(x,y3);
+            c33 = c33 + cim_v3(x,y3);
                     
             t4 = t4 + abs(corr(x,y4,'type','kendall'));
             r1 = inBoundedPts(U4(:,1),U4(:,2),0,0.1138,0,1); 
@@ -1300,7 +1300,7 @@ for M=MVec
                         abs(corr(r3(:,1),r3(:,2),'type','kendall'))*0.2795 + ...
                         abs(corr(r4(:,1),r4(:,2),'type','kendall'))*0.2275 + ...
                         abs(corr(r5(:,1),r5(:,2),'type','kendall'))*0.1517);
-            c44 = c44 + cim(x,y4);
+            c44 = c44 + cim_v3(x,y4);
             
             t5 = t5 + abs(corr(x,y5,'type','kendall'));
             zz1 = 0; zz2 = 0.02900;   r1 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w1 = zz2-zz1;
@@ -1337,11 +1337,11 @@ for M=MVec
                         abs(corr(r15(:,1),r15(:,2),'type','kendall'))*w15 + ...
                         abs(corr(r16(:,1),r16(:,2),'type','kendall'))*w16 + ...
                         abs(corr(r17(:,1),r17(:,2),'type','kendall'))*w17);
-            c55 = c55 + cim(x,y5);
+            c55 = c55 + cim_v3(x,y5);
             
             t6 = t6 + abs(corr(x,y6,'type','kendall'));
             c6 = c6 + abs(corr(x,y6,'type','kendall'));
-            c66 = c66 + cim(x,y6);
+            c66 = c66 + cim_v3(x,y6);
             
             t7 = t7 + abs(corr(x,y7,'type','kendall'));
             r1 = inBoundedPts(U7(:,1),U7(:,2),0,0.5,0,0.5); 
@@ -1352,11 +1352,11 @@ for M=MVec
                         abs(corr(r2(:,1),r2(:,2),'type','kendall'))*0.25 + ...
                         abs(corr(r3(:,1),r3(:,2),'type','kendall'))*0.25 + ...
                         abs(corr(r4(:,1),r4(:,2),'type','kendall'))*0.25);
-            c77 = c77 + cim(x,y7);
+            c77 = c77 + cim_v3(x,y7);
             
             t8 = t8 + abs(corr(x,y8,'type','kendall'));
             c8 = c8 + abs(corr(x,y8,'type','kendall'));
-            c88 = c88 + cim(x,y8);
+            c88 = c88 + cim_v3(x,y8);
         end
         linearDep(1,l+1) = t1/numMCSim; linearDep(2,l+1) = c1/numMCSim; linearDep(3,l+1) = c11/numMCSim;
         quadraticDep(1,l+1) = t2/numMCSim; quadraticDep(2,l+1) = c2/numMCSim; quadraticDep(3,l+1) = c22/numMCSim;
