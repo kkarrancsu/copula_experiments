@@ -390,7 +390,7 @@ MVec = [10000];
 num_noise_test_min = 0;
 num_noise_test_max = 30;
 noiseVec = num_noise_test_min:num_noise_test_max;
-numMCSim = 50;
+numMCSim = 200;
         
 dispstat('','init'); % One time only initialization
 dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
@@ -1219,7 +1219,7 @@ MVec = [100:100:1000 2500 5000 10000];
 num_noise_test_min = 0;
 num_noise_test_max = 30;
 noiseVec = num_noise_test_min:num_noise_test_max;
-numMCSim = 50;
+numMCSim = 200;
         
 dispstat('','init'); % One time only initialization
 dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
