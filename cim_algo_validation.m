@@ -395,27 +395,27 @@ clc;
 rng(1234);
 dbstop if error;
 
-nsim_null = 500;   % The number of null datasets we use to estimate our rejection reject regions for an alternative with level 0.05
-nsim_alt  = 500;   % Number of alternative datasets we use to estimate our power
+nsim_null = 200;   % The number of null datasets we use to estimate our rejection reject regions for an alternative with level 0.05
+nsim_alt  = 200;   % Number of alternative datasets we use to estimate our power
 
 num_noise = 30;                    % The number of different noise levels used
 noise = 3;                         % A constant to determine the amount of noise
 
 M = 500;                % number of samples
-numDepTests = 4;        % the number of different dependency tests we will conduct
+numDepTests = 8;        % the number of different dependency tests we will conduct
 
 % Vectors holding the null "correlations" (for pearson, dcor and mic respectively) 
 % for each of the nsim null datasets at a given noise level
 cimNull = zeros(1,nsim_null);
-cimv2Null = zeros(1,nsim_null);
+cimv3Null = zeros(1,nsim_null);
 
 cimAlt  = zeros(1,nsim_alt);
-cimv2Alt = zeros(1,nsim_alt);
+cimv3Alt = zeros(1,nsim_alt);
 
 % Arrays holding the estimated power for each of the "correlation" types, 
 % for each data type (linear, parabolic, etc...) with each noise level
 cimPower = zeros(numDepTests, num_noise);
-cimv2Power = zeros(numDepTests, num_noise);
+cimv3Power = zeros(numDepTests, num_noise);
 
 % Simon & Tibshirani use xMin=0, xMax=1 for performing their analysis ...
 xMin = 0;
@@ -429,8 +429,8 @@ for l=num_noise_test_min:num_noise_test_max
     for typ=1:numDepTests
         dispstat(sprintf('Computing for noise level=%d Dependency Test=%d',l, typ),'keepthis', 'timestamp');
         % simulate data under the null w/ correct marginals
-%         parfor ii=1:nsim_null
-        for ii=1:nsim_null
+        parfor ii=1:nsim_null
+%         for ii=1:nsim_null
             x = rand(M,1)*(xMax-xMin)+xMin;
             switch(typ)
                 case 1
@@ -445,6 +445,18 @@ for l=num_noise_test_min:num_noise_test_max
                 case 4
                     % low-freq sin
                     y = sin(4*pi*x) + 2*noise*(l/num_noise)*randn(M,1);
+                case 5
+                    % high-freq sin
+                    y = sin(16*pi*x) + noise*(l/num_noise)*randn(M,1);
+                case 6
+                    % fourth root
+                    y = x.^(1/4) + noise*(l/num_noise)*randn(M,1);
+                case 7
+                    % circle
+                    y=(2*binornd(1,0.5,M,1)-1) .* (sqrt(1 - (2*x - 1).^2)) + noise/4*l/num_noise*randn(M,1);
+                case 8
+                    % step function
+                    y = (x > 0.5) + noise*5*l/num_noise*randn(M,1);
                 otherwise
                     error('unknown dep type!');
             end
@@ -453,16 +465,16 @@ for l=num_noise_test_min:num_noise_test_max
             
             % calculate the metrics
             cimNull(ii) = cim(x, y);
-            cimv2Null(ii) = cim_v2(x, y);
+            cimv3Null(ii) = cim_v3(x, y);
         end
         
         % compute the rejection cutoffs
         cim_cut = quantile(cimNull, 0.95);
-        cimv2_cut = quantile(cimv2Null, 0.95);
+        cimv3_cut = quantile(cimv3Null, 0.95);
         
         % resimulate the data under the alternative hypothesis
-%         parfor ii=1:nsim_alt
-        for ii=1:nsim_alt
+        parfor ii=1:nsim_alt
+%         for ii=1:nsim_alt
             x = rand(M,1)*(xMax-xMin)+xMin;
             switch(typ)
                 case 1
@@ -477,28 +489,40 @@ for l=num_noise_test_min:num_noise_test_max
                 case 4
                     % low-freq sin
                     y = sin(4*pi*x) + 2*noise*(l/num_noise)*randn(M,1);
+                case 5
+                    % high-freq sin
+                    y = sin(16*pi*x) + noise*(l/num_noise)*randn(M,1);
+                case 6
+                    % fourth root
+                    y = x.^(1/4) + noise*(l/num_noise)*randn(M,1);
+                case 7
+                    % circle
+                    y=(2*binornd(1,0.5,M,1)-1) .* (sqrt(1 - (2*x - 1).^2)) + noise/4*l/num_noise*randn(M,1);
+                case 8
+                    % step function
+                    y = (x > 0.5) + noise*5*l/num_noise*randn(M,1);
                 otherwise
                     error('unknown dep type!');
             end
             
             % calculate the metrics
             cimAlt(ii) = cim(x, y);
-            cimv2Alt(ii) = cim_v2(x, y);
+            cimv3Alt(ii) = cim_v3(x, y);
         end
         
         % compute the power
         cimPower(typ, l)   = sum(cimAlt > cim_cut)/nsim_alt;
-        cimv2Power(typ, l)  = sum(cimv2Alt > cimv2_cut)/nsim_alt;
+        cimv3Power(typ, l)  = sum(cimv3Alt > cimv3_cut)/nsim_alt;
     end
 end
 
 % save the data
 if(ispc)
-    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cimv2_power_M_%d.mat', M));
+    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cimv3_power_M_%d.mat', M));
 elseif(ismac)
-    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cimv2_power_M_%d.mat', M));
+    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cimv3_power_M_%d.mat', M));
 else
-    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cimv2_power_M_%d.mat', M));
+    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cimv3_power_M_%d.mat', M));
 end
 
 % inlet plot configuration
@@ -515,7 +539,7 @@ noiseVec = (num_noise_test_min:num_noise_test_max)/10;
 figure;
 h1 = subplot(2,2,1);
 hh1 = plot(noiseVec, cimPower(1,num_noise_test_min:num_noise_test_max), 'o-.', ...
-     noiseVec, cimv2Power(1,num_noise_test_min:num_noise_test_max), '+-.'); 
+     noiseVec, cimv3Power(1,num_noise_test_min:num_noise_test_max), '+-.'); 
 axis([min(noiseVec) max(noiseVec) 0 1]);
 xlabel({'Noise Level','(a)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(a)', 'FontSize', 20);
@@ -533,7 +557,7 @@ hh1(2).LineWidth = 2.5;
 
 h2 = subplot(2,2,2);
 hh2 = plot(noiseVec, cimPower(2,num_noise_test_min:num_noise_test_max), 'o-.', ...
-     noiseVec, cimv2Power(2,num_noise_test_min:num_noise_test_max), '+-.'); 
+     noiseVec, cimv3Power(2,num_noise_test_min:num_noise_test_max), '+-.'); 
 axis([min(noiseVec) max(noiseVec) 0 1]);
 xlabel({'Noise Level', '(b)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(b)', 'FontSize', 20);
@@ -551,7 +575,7 @@ hh2(2).LineWidth = 2.5;
 
 h3 = subplot(2,2,3); 
 hh3 = plot(noiseVec, cimPower(3,num_noise_test_min:num_noise_test_max), 'o-.', ...
-     noiseVec, cimv2Power(3,num_noise_test_min:num_noise_test_max), '+-.');   
+     noiseVec, cimv3Power(3,num_noise_test_min:num_noise_test_max), '+-.');   
 axis([min(noiseVec) max(noiseVec) 0 1]);
 xlabel({'Noise Level', '(c)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(c)', 'FontSize', 20);
@@ -569,7 +593,7 @@ hh3(2).LineWidth = 2.5;
 
 h4 = subplot(2,2,4); 
 hh4 = plot(noiseVec, cimPower(4,num_noise_test_min:num_noise_test_max), 'o-.', ...
-     noiseVec, cimv2Power(4,num_noise_test_min:num_noise_test_max), '+-.'); 
+     noiseVec, cimv3Power(4,num_noise_test_min:num_noise_test_max), '+-.'); 
 axis([min(noiseVec) max(noiseVec) 0 1]);
 xlabel({'Noise Level', 'd'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(d)', 'FontSize', 20);
@@ -585,5 +609,77 @@ ax4.YLim = [min(tmp2) max(tmp2)];
 hh4(1).LineWidth = 2.5; 
 hh4(2).LineWidth = 2.5; 
 
-h4.FontSize = 20; 
-legend('CIM', 'CIMv2');
+figure;
+h5 = subplot(2,2,1); 
+hh5 = plot(noiseVec, cimPower(5,num_noise_test_min:num_noise_test_max), 'o-.', ...
+     noiseVec, cimv3Power(5,num_noise_test_min:num_noise_test_max), '+-.'); 
+axis([min(noiseVec) max(noiseVec) 0 1]);
+xlabel({'Noise Level', '(e)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
+% title('(e)', 'FontSize', 20);
+h5.FontSize = 20; 
+loc_inset = [h5.Position(1)+inset_bufX h5.Position(2)+inset_bufY inset_width inset_height];
+ax5 = axes('Position',loc_inset);
+tmp1 = linspace(0,1,M_inlet);
+tmp2 = sin(16*pi*tmp1);
+plot(tmp1,tmp2, 'k', 'LineWidth', 2);
+ax5.Box = 'on'; ax5.XTick = []; ax5.YTick = [];
+ax5.XLim = [min(tmp1) max(tmp1)];
+ax5.YLim = [min(tmp2) max(tmp2)];
+hh5(1).LineWidth = 2.5; 
+hh5(2).LineWidth = 2.5; 
+
+h6 = subplot(2,2,2); 
+hh6 = plot(noiseVec, cimPower(6,num_noise_test_min:num_noise_test_max), 'o-.', ...
+     noiseVec, cimv3Power(6,num_noise_test_min:num_noise_test_max), '+-.'); 
+axis([min(noiseVec) max(noiseVec) 0 1]);
+xlabel({'Noise Level', '(f)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
+% title('(f)', 'FontSize', 20);
+h6.FontSize = 20; 
+loc_inset = [h6.Position(1)+inset_bufX h6.Position(2)+inset_bufY inset_width inset_height];
+ax6 = axes('Position',loc_inset);
+tmp1 = linspace(0,1,M_inlet);
+tmp2 = tmp1.^(1/4);
+plot(tmp1,tmp2, 'k', 'LineWidth', 2);
+ax6.Box = 'on'; ax6.XTick = []; ax6.YTick = [];
+ax6.XLim = [min(tmp1) max(tmp1)];
+ax6.YLim = [min(tmp2) max(tmp2)];
+hh6(1).LineWidth = 2.5; 
+hh6(2).LineWidth = 2.5;
+
+h7 = subplot(2,2,3); 
+hh7 = plot(noiseVec, cimPower(7,num_noise_test_min:num_noise_test_max), 'o-.', ...
+     noiseVec, cimv3Power(7,num_noise_test_min:num_noise_test_max), '+-.'); 
+axis([min(noiseVec) max(noiseVec) 0 1]);
+xlabel({'Noise Level', '(g)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
+% title('(g)', 'FontSize', 20);
+h7.FontSize = 20; 
+loc_inset = [h7.Position(1)+inset_bufX h7.Position(2)+inset_bufY inset_width inset_height];
+ax7 = axes('Position',loc_inset);
+tmp1 = linspace(0,1,M_inlet/2);
+tmp2 = (sqrt(1 - (2*tmp1 - 1).^2));
+tmp3 = -(sqrt(1 - (2*tmp1 - 1).^2));
+plot(tmp1,tmp2, 'k', 'LineWidth', 2); hold on;
+plot(tmp1,tmp3, 'k', 'LineWidth', 2); 
+ax7.Box = 'on'; ax7.XTick = []; ax7.YTick = [];
+ax7.XLim = [min(tmp1) max(tmp1)];
+ax7.YLim = [min(tmp3) max(tmp2)];
+hh7(1).LineWidth = 2.5; 
+hh7(2).LineWidth = 2.5; 
+
+h8 = subplot(2,2,4); 
+hh8 = plot(noiseVec, cimPower(8,num_noise_test_min:num_noise_test_max), 'o-.', ...
+     noiseVec, cimv3Power(8,num_noise_test_min:num_noise_test_max), '+-.'); 
+axis([min(noiseVec) max(noiseVec) 0 1]);
+h8.FontSize = 20; 
+legend('CIM', 'CIMv3');
+xlabel({'Noise Level', '(h)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
+% title('(h)', 'FontSize', 20);
+loc_inset = [h8.Position(1)+inset_bufX h8.Position(2)+inset_bufY inset_width inset_height];
+ax8 = axes('Position',loc_inset);
+tmp1 = linspace(0,1,M_inlet);
+tmp2 = (tmp1 > 0.5);
+plot(tmp1,tmp2, 'k', 'LineWidth', 2);
+ax8.Box = 'on'; ax8.XTick = []; ax8.YTick = [];
+ax8.XLim = [min(tmp1) max(tmp1)];
+hh8(1).LineWidth = 2.5; 
+hh8(2).LineWidth = 2.5;

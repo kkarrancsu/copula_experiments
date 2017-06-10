@@ -386,11 +386,11 @@ xMax = 1;
 num_noise = 30;                    % The number of different noise levels used
 noise = 3;                         % A constant to determine the amount of noise
 
-MVec = 100:100:1000;
+MVec = [10000];
 num_noise_test_min = 0;
 num_noise_test_max = 30;
 noiseVec = num_noise_test_min:num_noise_test_max;
-numMCSim = 100;
+numMCSim = 50;
         
 dispstat('','init'); % One time only initialization
 dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
@@ -553,7 +553,7 @@ end
 clear;
 clc;
 
-M = 100;
+M = 1000;
 
 if(ispc)
     load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\regionDetection_M_%d.mat', M));
