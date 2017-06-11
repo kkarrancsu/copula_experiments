@@ -2,12 +2,12 @@ function [signature] = probabilistic_region_finder(x, y)
 
 % sort for computational efficiency
 [u,v] = pobs_sorted(x,y,1);     % the 1 is a scale flag
-scanincrVec = [10:10:length(u)];
+scanincrVec = 10:10:length(u);
 signature = containers.Map('KeyType','double','ValueType','any');
 
 for ii=1:length(scanincrVec)
     scanincr = scanincrVec(ii);
-    signature(scanincr) = scanForDep(scanincr);
+    signature(scanincr) = scanForDep(u,v,scanincr);
 end
 
 end
@@ -49,10 +49,20 @@ for ii=1:numLoopIter
     distStats(11,ii) = mu3; distStats(12,ii) = sigma3;
 end
 
+end
+
 function [mu,sigma] = getGroupStatistics(ax1pts,ax2pts,ax1StartIdx,ax1EndIdx)
-    uu = ax1pts(ax1StartIdx:ax1EndIdx); vv = ax2pts(ax1StartIdx:ax1EndIdx);
-    n = ax1EndIdx-ax1StartIdx+1;
-    mu = corr(uu,vv,'type','kendall'); sigma = getVariance(n);
+    if(ax1StartIdx>length(ax1pts))
+        % means we've exceeded the bounds
+        mu = 0; sigma = 1;
+    else
+        if(ax1EndIdx>length(ax1pts))
+            ax1EndIdx = length(ax1pts);
+        end
+        uu = ax1pts(ax1StartIdx:ax1EndIdx); vv = ax2pts(ax1StartIdx:ax1EndIdx);
+        n = ax1EndIdx-ax1StartIdx+1;
+        mu = corr(uu,vv,'type','kendall'); sigma = getVariance(n);
+    end
 end
 
 function [sigma] = getVariance(numPts)
