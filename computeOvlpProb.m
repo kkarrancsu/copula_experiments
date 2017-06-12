@@ -1,29 +1,34 @@
 function [ovlp] = computeOvlpProb(mu1,sigma1,mu2,sigma2)
 
-polyroots = getNormPDFRoots(mu1,mu2,sigma1,sigma2);
-if(isempty(polyroots))
-    ovlp = 0;
-elseif(length(polyroots)==1)
-    ovlp = 1-normcdf(polyroots(1),mu1,sigma1)+normcdf(polyroots(1),mu2,sigma2);
+if(mu1==mu2 && sigma1==sigma2)
+    ovlp = 1;       % the entire probability density function b/c its the 
+                    % same densities
 else
-    if(polyroots(1)>polyroots(2))
-        c2 = polyroots(1);
-        c1 = polyroots(2);
+    polyroots = getNormPDFRoots(mu1,mu2,sigma1,sigma2);
+    if(isempty(polyroots))
+        ovlp = 0;
+    elseif(length(polyroots)==1)
+        ovlp = 1-normcdf(polyroots(1),mu1,sigma1)+normcdf(polyroots(1),mu2,sigma2);
     else
-        c2 = polyroots(2);
-        c1 = polyroots(1);
+        if(polyroots(1)>polyroots(2))
+            c2 = polyroots(1);
+            c1 = polyroots(2);
+        else
+            c2 = polyroots(2);
+            c1 = polyroots(1);
+        end
+        if(sigma2>sigma1)
+            F2mu = mu2; F2sigma = sigma2;  
+            F1mu = mu1; F1sigma = sigma1;
+        else
+            F2mu = mu1; F2sigma = sigma1;
+            F1mu = mu2; F1sigma = sigma2;
+        end
+        ovlp = normcdf(c2,F2mu,F2sigma) - ...
+               normcdf(c1,F2mu,F2sigma) + ...
+               normcdf(c1,F1mu,F1sigma) + ...
+               (1- normcdf(c2,F1mu,F1sigma));
     end
-    if(sigma2>sigma1)
-        F2mu = mu2; F2sigma = sigma2;  
-        F1mu = mu1; F1sigma = sigma1;
-    else
-        F2mu = mu1; F2sigma = sigma1;
-        F1mu = mu2; F1sigma = sigma2;
-    end
-    ovlp = normcdf(c2,F2mu,F2sigma) - ...
-           normcdf(c1,F2mu,F2sigma) + ...
-           normcdf(c1,F1mu,F1sigma) + ...
-           (1- normcdf(c2,F1mu,F1sigma));
 end
 
 end

@@ -34,9 +34,9 @@ distStats = zeros(11,numLoopIter);   % (1,:)  -> theoretical max overlap between
 
 for ii=1:numLoopIter
     % compute distributions for R1,R2, and R3
-    [mu1,sigma1] = getGroupStatistics(ax1pts,ax2pts,ax1StartIdx,ax1EndIdx);
-    [mu2,sigma2] = getGroupStatistics(ax1pts,ax2pts,ax1StartIdx+scanincr,ax1EndIdx+scanincr);
-    [mu3,sigma3] = getGroupStatistics(ax1pts,ax2pts,ax1StartIdx,ax1EndIdx+scanincr);
+    [mu1,sigma1] = getGroupStatistics(ax1pts,ax2pts,ax1StartIdx,ax1EndIdx+scanincr*(ii-1));
+    [mu2,sigma2] = getGroupStatistics(ax1pts,ax2pts,ax1StartIdx+scanincr*ii,ax1EndIdx+scanincr*ii);
+    [mu3,sigma3] = getGroupStatistics(ax1pts,ax2pts,ax1StartIdx,ax1EndIdx+scanincr*ii);
 
     distStats(1,ii) = computeOvlpProb(mu1,sigma1,mu1,sigma2);
     distStats(2,ii) = computeOvlpProb(mu1,sigma1,mu2,sigma2);
@@ -61,12 +61,7 @@ function [mu,sigma] = getGroupStatistics(ax1pts,ax2pts,ax1StartIdx,ax1EndIdx)
         end
         uu = ax1pts(ax1StartIdx:ax1EndIdx); vv = ax2pts(ax1StartIdx:ax1EndIdx);
         n = ax1EndIdx-ax1StartIdx+1;
-        mu = corr(uu,vv,'type','kendall'); sigma = getVariance(n);
+        mu = corr(uu,vv,'type','kendall'); sigma = 1/sqrt(n);   % the sigma is an approximation
+                                                                % TODO: replace w/ the real sigma value
     end
-end
-
-function [sigma] = getVariance(numPts)
-    % TODO: replace with the real variance -- the below is a 
-    % calculation under the null hypothesis that X indep. Y!
-    sigma = sqrt( (2*(2*numPts+5))./(9*numPts.*(numPts-1)) );
 end

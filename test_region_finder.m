@@ -13,20 +13,22 @@ ovlp4 = computeOvlpProb(0,2,1,2);  % should be close to 0.8
 fprintf('ovlp1=%0.02f ovlp2=%0.02f ovlp3=%0.02f ovlp4=%0.02f\n', ...
     ovlp1, ovlp2, ovlp3, ovlp4);
 
-%% check kendall's tau's distribution for functionally dependent but P(conc)=P(disc) relationships
+%% test the probabilistic region finder
 clear;
 clc;
 dbstop if error;
 
-numMCSims = 100;
-MVec = 50:50:500;
+numMCSims = 200;
+% MVec = 50:50:500;
+MVec = [100,250,500];  % only compute what we will plot, for now
 xMin = 0;
 xMax = 1;
 num_noise = 30;                    % The number of different noise levels used
 noise = 3; 
 num_noise_test_min = 0;
 num_noise_test_max = 30;
-noiseVec = num_noise_test_min:num_noise_test_max;
+% noiseVec = num_noise_test_min:num_noise_test_max;
+noiseVec = [0,10,20];   % only compute what we will plot, for now
 
 linearResultsCell = cell(length(MVec),length(noiseVec),numMCSims);
 quadraticResultsCell = cell(length(MVec),length(noiseVec),numMCSims);
@@ -59,4 +61,150 @@ elseif(ismac)
     save('/Users/Kiran/ownCloud/PhD/sim_results/clustering/probabilistic_region_finder.mat');
 else
     save('/home/kiran/ownCloud/PhD/sim_results/clustering/probabilistic_region_finder.mat');
+end
+
+%% Plot results for the probabilistic region finder
+clear;
+clc;
+close all;
+dbstop if error;
+
+if(ispc)
+    load('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\probabilistic_region_finder.mat');
+elseif(ismac)
+    load('/Users/Kiran/ownCloud/PhD/sim_results/clustering/probabilistic_region_finder.mat');
+else
+    load('/home/kiran/ownCloud/PhD/sim_results/clustering/probabilistic_region_finder.mat');
+end
+
+% which sample sizes to plot
+MVecToPlot = [100, 500];
+noiseLevelsToPlot = [0,10];
+scanincrsToPlot = [20];
+subplotCfg = [length(MVecToPlot), length(noiseLevelsToPlot)];
+numPlots = prod(subplotCfg);
+lineMarkers = {'+-.','o-.','*-.','d-.','x-.','s.-'};
+
+numDeps = 2;
+figureVec = zeros(1,numDeps*2);
+for ii=1:numDeps*2
+    figureVec(ii) = figure(ii);
+end
+
+plotIdx = 1;
+numToAvg = numMCSims;
+% numToAvg = 1;
+for MIdx=1:length(MVecToPlot)
+    % find which index this goes into the resultsMat
+    M = MVecToPlot(MIdx);
+    mIdx = find(M==MVec);
+    
+    for noiseLevelIdx=1:length(noiseLevelsToPlot)
+        legendCell1 = {}; legendCell1Idx = 1;
+        legendCell2 = {}; legendCell2Idx = 1;
+        
+        noiseLevel = noiseLevelsToPlot(noiseLevelIdx);
+        lIdx = find(noiseLevel==noiseVec);
+        % get the data        
+        avgResults_linear = ...
+            getSignatureAvgRegionFinder(linearResultsCell,mIdx,lIdx,numToAvg,scanincrsToPlot);
+        avgResults_parabola = ...
+            getSignatureAvgRegionFinder(quadraticResultsCell,mIdx,lIdx,numToAvg,scanincrsToPlot);
+        
+        set(0,'CurrentFigure',figureVec(1));
+        B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
+        subplot(B{:});
+        for ii=1:length(scanincrsToPlot)
+            scanincr = scanincrsToPlot(ii);
+            y = avgResults_linear{ii};
+            y1 = y(7,:); x1 = linspace(scanincr/M,1,length(y1)); y1_err = y(8,:);
+            y2 = y(9,:); x2 = linspace(scanincr/M,1,length(y2)); y2_err = y(10,:);
+            y3 = y(11,:); x3 = linspace(scanincr/M,1,length(y3)); y3_err = y(12,:);
+            errorbar(x1,y1,y1_err,lineMarkers{ii},'LineWidth',3);
+            hold on; grid on;
+            errorbar(x2,y2,y2_err,lineMarkers{ii},'LineWidth',3);
+            errorbar(x3,y3,y3_err,lineMarkers{ii},'LineWidth',3);
+            legendCell1{legendCell1Idx} = sprintf('\\mu(R1) - \\Delta i=%d', scanincrsToPlot(ii));
+            legendCell1Idx = legendCell1Idx + 1;
+            legendCell1{legendCell1Idx} = sprintf('\\mu(R2) - \\Delta i=%d', scanincrsToPlot(ii));
+            legendCell1Idx = legendCell1Idx + 1;
+            legendCell1{legendCell1Idx} = sprintf('\\mu(R3) - \\Delta i=%d', scanincrsToPlot(ii));
+            legendCell1Idx = legendCell1Idx + 1;
+        end
+        title(sprintf('M=%d \\sigma^2=%d',M,noiseLevel));
+        if(MIdx==1 && noiseLevelIdx==1)
+            legend(legendCell1,'Location','SouthWest');
+        end
+        
+        set(0,'CurrentFigure',figureVec(1+numDeps));
+        B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
+        subplot(B{:});
+        for ii=1:length(scanincrsToPlot)
+            scanincr = scanincrsToPlot(ii);
+            y = avgResults_linear{ii};
+            y1 = y(1,:); x1 = linspace(scanincr/M,1,length(y1));
+            y2 = y(3,:); x2 = linspace(scanincr/M,1,length(y2));
+            y3 = y(5,:); x3 = linspace(scanincr/M,1,length(y3));
+            plot(x1,y1,lineMarkers{ii},'LineWidth',3);
+            hold on; grid on;
+            plot(x2,y2,lineMarkers{ii},'LineWidth',3);
+            plot(x3,y3,lineMarkers{ii},'LineWidth',3);
+            legendCell2{legendCell2Idx} = sprintf('\\Delta(R1,R2) - \\Delta i=%d', scanincrsToPlot(ii));
+            legendCell2Idx = legendCell2Idx + 1;
+            legendCell2{legendCell2Idx} = sprintf('\\Delta(R3,R2) - \\Delta i=%d', scanincrsToPlot(ii));
+            legendCell2Idx = legendCell2Idx + 1;
+            legendCell2{legendCell2Idx} = sprintf('\\Delta(R1,R3) - \\Delta i=%d', scanincrsToPlot(ii));
+            legendCell2Idx = legendCell2Idx + 1;
+        end
+        title(sprintf('M=%d \\sigma^2=%d',M,noiseLevel));
+        if(MIdx==1 && noiseLevelIdx==1)
+            legend(legendCell2,'Location','SouthWest');
+        end
+        
+        set(0,'CurrentFigure',figureVec(2));
+        subplot(B{:});
+        % compute and plot the z-score from the metric & numPts
+        for ii=1:length(scanincrsToPlot)
+            scanincr = scanincrsToPlot(ii);
+            y = avgResults_parabola{ii};
+            y1 = y(7,:); x1 = linspace(scanincr/M,1,length(y1)); y1_err = y(8,:);
+            y2 = y(9,:); x2 = linspace(scanincr/M,1,length(y2)); y2_err = y(10,:);
+            y3 = y(11,:); x3 = linspace(scanincr/M,1,length(y3)); y3_err = y(12,:);
+            errorbar(x1,y1,y1_err,lineMarkers{ii},'LineWidth',3);
+            hold on; grid on;
+            errorbar(x2,y2,y2_err,lineMarkers{ii},'LineWidth',3);
+            errorbar(x3,y3,y3_err,lineMarkers{ii},'LineWidth',3);
+            hold on; grid on;
+        end
+        title(sprintf('M=%d \\sigma^2=%d',M,noiseLevel));
+        if(MIdx==1 && noiseLevelIdx==1)
+            legend(legendCell1,'Location','SouthWest');
+        end
+        
+        set(0,'CurrentFigure',figureVec(2+numDeps));
+        subplot(B{:});
+        % compute and plot the z-score from the metric & numPts
+        for ii=1:length(scanincrsToPlot)
+            scanincr = scanincrsToPlot(ii);
+            y = avgResults_parabola{ii};
+            y1 = y(1,:); x1 = linspace(scanincr/M,1,length(y1));
+            y2 = y(3,:); x2 = linspace(scanincr/M,1,length(y2));
+            y3 = y(5,:); x3 = linspace(scanincr/M,1,length(y3));
+            plot(x1,y1,lineMarkers{ii},'LineWidth',3);
+            hold on; grid on;
+            plot(x2,y2,lineMarkers{ii},'LineWidth',3);
+            plot(x3,y3,lineMarkers{ii},'LineWidth',3);
+            hold on; grid on;
+        end
+        title(sprintf('M=%d \\sigma^2=%d',M,noiseLevel));
+        if(MIdx==1 && noiseLevelIdx==1)
+            legend(legendCell2,'Location','SouthWest');
+        end
+        
+        plotIdx = plotIdx + 1;
+    end
+    set(0,'CurrentFigure',figureVec(1)); figtitle('Linear');
+    set(0,'CurrentFigure',figureVec(1+numDeps)); figtitle('Linear');
+    set(0,'CurrentFigure',figureVec(2)); figtitle('Parabolic');
+    set(0,'CurrentFigure',figureVec(2+numDeps)); figtitle('Parabolic');
 end
