@@ -1,5 +1,5 @@
 function [metric, rectangleCellOut] = ...
-    cim_v4(x, y, varargin)
+    cim_v5(x, y, varargin)
 %CIM - Copula Index for Detecting Dependence and Monotonicity between
 %Stochastic Signals.  See associated paper... to be published and preprint
 %located here: 
@@ -176,7 +176,9 @@ while ax1max<=1
     if(numPts>=2)   % make sure we have enough points to compute the metric
         % compute the concordance
         metricRectangle = abs(taukl( matchPts(:,1),matchPts(:,2) ));
-        zsc  = metricRectangle./sqrt( (2*(2*numPts+5))./(9*numPts.*(numPts-1)) );   
+        sigma_sq = (2*(2*numPts+5))./(9*numPts.*(numPts-1))*(1-2/pi);  % notice the scaling factor of (1-2/pi) b/c we converted
+                                                                       % from a full normal distribution to a half normal
+        zsc  = metricRectangle./sqrt( sigma_sq );   
         if(newRectangle)
             newRectangle = 0;
         else

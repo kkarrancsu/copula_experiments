@@ -553,6 +553,20 @@ elseif(ismac)
 else
     save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cimv3_power_M_%d.mat', M));
 end
+%%
+clear;
+clc;
+close all;
+
+M = 500;  % which one do we want to plot?
+
+if(ispc)
+    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cimv3_power_M_%d.mat', M));
+elseif(ismac)
+    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cimv3_power_M_%d.mat', M));
+else
+    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cimv3_power_M_%d.mat', M));
+end
 
 % inlet plot configuration
 M_inlet = 200;
@@ -585,10 +599,12 @@ plot(tmp1,tmp2, 'k', 'LineWidth', 2);
 ax1.Box = 'on'; ax1.XTick = []; ax1.YTick = [];
 ax1.XLim = [min(tmp1) max(tmp1)];
 ax1.YLim = [min(tmp2) max(tmp2)];
-hh1(1).LineWidth = 2.5; 
-hh1(2).LineWidth = 2.5; 
-hh1(3).LineWidth = 2.5; 
-hh1(4).LineWidth = 2.5; 
+hh1(1).LineWidth = 1.5; 
+hh1(2).LineWidth = 1.5; 
+hh1(3).LineWidth = 1.5; 
+hh1(4).LineWidth = 1.5; 
+hh1(5).LineWidth = 1.5; 
+hh1(6).LineWidth = 5; 
 
 h2 = subplot(2,2,2);
 hh2 = plot(noiseVec, cimPower(2,num_noise_test_min:num_noise_test_max), 'o-.', ...
@@ -609,10 +625,12 @@ plot(tmp1,tmp2, 'k', 'LineWidth', 2);
 ax2.Box = 'on'; ax2.XTick = []; ax2.YTick = [];
 ax2.XLim = [min(tmp1) max(tmp1)];
 ax2.YLim = [min(tmp2) max(tmp2)];
-hh2(1).LineWidth = 2.5; 
-hh2(2).LineWidth = 2.5; 
-hh2(3).LineWidth = 2.5; 
-hh2(4).LineWidth = 2.5; 
+hh2(1).LineWidth = 1.5; 
+hh2(2).LineWidth = 1.5; 
+hh2(3).LineWidth = 1.5; 
+hh2(4).LineWidth = 1.5; 
+hh2(5).LineWidth = 1.5; 
+hh2(6).LineWidth = 5.5; 
 
 h3 = subplot(2,2,3); 
 hh3 = plot(noiseVec, cimPower(3,num_noise_test_min:num_noise_test_max), 'o-.', ...
@@ -633,10 +651,12 @@ plot(tmp1,tmp2, 'k', 'LineWidth', 2);
 ax3.Box = 'on'; ax3.XTick = []; ax3.YTick = [];
 ax3.XLim = [min(tmp1) max(tmp1)];
 ax3.YLim = [min(tmp2) max(tmp2)];
-hh3(1).LineWidth = 2.5; 
-hh3(2).LineWidth = 2.5; 
-hh3(3).LineWidth = 2.5; 
-hh3(4).LineWidth = 2.5; 
+hh3(1).LineWidth = 1.5; 
+hh3(2).LineWidth = 1.5; 
+hh3(3).LineWidth = 1.5; 
+hh3(4).LineWidth = 1.5; 
+hh3(5).LineWidth = 1.5; 
+hh3(6).LineWidth = 5; 
 
 h4 = subplot(2,2,4); 
 hh4 = plot(noiseVec, cimPower(4,num_noise_test_min:num_noise_test_max), 'o-.', ...
@@ -657,10 +677,12 @@ plot(tmp1,tmp2, 'k', 'LineWidth', 2);
 ax4.Box = 'on'; ax4.XTick = []; ax4.YTick = [];
 ax4.XLim = [min(tmp1) max(tmp1)];
 ax4.YLim = [min(tmp2) max(tmp2)];
-hh4(1).LineWidth = 2.5; 
-hh4(2).LineWidth = 2.5; 
-hh4(3).LineWidth = 2.5; 
-hh4(4).LineWidth = 2.5; 
+hh4(1).LineWidth = 1.5; 
+hh4(2).LineWidth = 1.5; 
+hh4(3).LineWidth = 1.5; 
+hh4(4).LineWidth = 1.5; 
+hh4(5).LineWidth = 1.5; 
+hh4(6).LineWidth = 5; 
 
 figure;
 h5 = subplot(2,2,1); 
@@ -682,10 +704,12 @@ plot(tmp1,tmp2, 'k', 'LineWidth', 2);
 ax5.Box = 'on'; ax5.XTick = []; ax5.YTick = [];
 ax5.XLim = [min(tmp1) max(tmp1)];
 ax5.YLim = [min(tmp2) max(tmp2)];
-hh5(1).LineWidth = 2.5; 
-hh5(2).LineWidth = 2.5; 
-hh5(5).LineWidth = 2.5; 
-hh5(5).LineWidth = 2.5; 
+hh5(1).LineWidth = 1.5; 
+hh5(2).LineWidth = 1.5; 
+hh5(3).LineWidth = 1.5; 
+hh5(4).LineWidth = 1.5; 
+hh5(5).LineWidth = 1.5; 
+hh5(6).LineWidth = 5; 
 
 h6 = subplot(2,2,2); 
 hh6 = plot(noiseVec, cimPower(6,num_noise_test_min:num_noise_test_max), 'o-.', ...
@@ -706,10 +730,12 @@ plot(tmp1,tmp2, 'k', 'LineWidth', 2);
 ax6.Box = 'on'; ax6.XTick = []; ax6.YTick = [];
 ax6.XLim = [min(tmp1) max(tmp1)];
 ax6.YLim = [min(tmp2) max(tmp2)];
-hh6(1).LineWidth = 2.5; 
-hh6(2).LineWidth = 2.5;
-hh6(3).LineWidth = 2.5; 
-hh6(4).LineWidth = 2.5;
+hh6(1).LineWidth = 1.5; 
+hh6(2).LineWidth = 1.5; 
+hh6(3).LineWidth = 1.5; 
+hh6(4).LineWidth = 1.5; 
+hh6(5).LineWidth = 1.5; 
+hh6(6).LineWidth = 5; 
 
 h7 = subplot(2,2,3); 
 hh7 = plot(noiseVec, cimPower(7,num_noise_test_min:num_noise_test_max), 'o-.', ...
@@ -732,10 +758,12 @@ plot(tmp1,tmp3, 'k', 'LineWidth', 2);
 ax7.Box = 'on'; ax7.XTick = []; ax7.YTick = [];
 ax7.XLim = [min(tmp1) max(tmp1)];
 ax7.YLim = [min(tmp3) max(tmp2)];
-hh7(1).LineWidth = 2.5; 
-hh7(2).LineWidth = 2.5; 
-hh7(3).LineWidth = 2.5; 
-hh7(4).LineWidth = 2.5; 
+hh7(1).LineWidth = 1.5; 
+hh7(2).LineWidth = 1.5; 
+hh7(3).LineWidth = 1.5; 
+hh7(4).LineWidth = 1.5; 
+hh7(5).LineWidth = 1.5; 
+hh7(6).LineWidth = 5; 
 
 h8 = subplot(2,2,4); 
 hh8 = plot(noiseVec, cimPower(8,num_noise_test_min:num_noise_test_max), 'o-.', ...
@@ -746,7 +774,7 @@ hh8 = plot(noiseVec, cimPower(8,num_noise_test_min:num_noise_test_max), 'o-.', .
      noiseVec, cimv4_smallmsi_Power(8,num_noise_test_min:num_noise_test_max), 'p-.');
 axis([min(noiseVec) max(noiseVec) 0 1]);
 h8.FontSize = 20; 
-legend('CIM', 'CIMv3', 'CIM(sMSI)', 'CIMv3(sMSI)');
+legend('CIM', 'CIMv3', 'CIM(sMSI)', 'CIMv3(sMSI)', 'CIMv4', 'CIMv4(sMSI)');
 xlabel({'Noise Level', '(h)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(h)', 'FontSize', 20);
 loc_inset = [h8.Position(1)+inset_bufX h8.Position(2)+inset_bufY inset_width inset_height];
@@ -756,7 +784,9 @@ tmp2 = (tmp1 > 0.5);
 plot(tmp1,tmp2, 'k', 'LineWidth', 2);
 ax8.Box = 'on'; ax8.XTick = []; ax8.YTick = [];
 ax8.XLim = [min(tmp1) max(tmp1)];
-hh8(1).LineWidth = 2.5; 
-hh8(2).LineWidth = 2.5;
-hh8(3).LineWidth = 2.5; 
-hh8(4).LineWidth = 2.5;
+hh8(1).LineWidth = 1.5; 
+hh8(2).LineWidth = 1.5; 
+hh8(3).LineWidth = 1.5; 
+hh8(4).LineWidth = 1.5; 
+hh8(5).LineWidth = 1.5; 
+hh8(6).LineWidth = 5; 

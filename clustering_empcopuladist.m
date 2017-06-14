@@ -1499,118 +1499,6 @@ hh1(3).LineWidth = 1.5;
 
 figtitle(sprintf('M=%d\n', M));
 
-%% simulate the difference between computing monotonic and detecting the region exactly for CIM-v3
-% ONLY FOR HF-SINE
-
-clear;
-clc;
-
-xMin = 0;
-xMax = 1;
-num_noise = 30;                    % The number of different noise levels used
-noise = 3;                         % A constant to determine the amount of noise
-
-minscanincrVal = 0.015625;
-% MVec = [100:100:1000 2500 5000 10000];
-MVec = [5000];
-num_noise_test_min = 0;
-num_noise_test_max = 30;
-noiseVec = num_noise_test_min:num_noise_test_max;
-numMCSim = 100;
-        
-dispstat('','init'); % One time only initialization
-dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
-
-for M=MVec
-    % Test Empirical copula distance as a distance measure under various
-    % amounts of noise
-    hiFreqSinDep  = zeros(3,length(noiseVec));
-                    % 1 - using tau directly
-                    % 2 - segmenting into regions
-                  
-    for l=noiseVec
-        dispstat(sprintf('Computing for noise level=%d >> M=%d',l,M),'keepthis', 'timestamp');
-        t5 = 0; c5 = 0; c55 = 0;
-        parfor mcSimNum=1:numMCSim
-            x = rand(M,1)*(xMax-xMin)+xMin;
-            y5 = sin(16*pi*x) + noise*(l/num_noise)*randn(M,1);
-            U5 = pobs([x y5]);
-            
-            t5 = t5 + abs(corr(x,y5,'type','kendall'));
-            zz1 = 0; zz2 = 0.03196;   r1 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w1 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.09529; r2 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w2 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.1557;  r3 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w3 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.2147;  r4 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w4 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.278;  r5 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w5 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.3416;  r6 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w6 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.4028;  r7 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w7 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.4645;  r8 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w8 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.5257;  r9 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w9 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.5894;  r10 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w10 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.6567;  r11 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w11 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.718;  r12 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w12 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.7779;  r13 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w13 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.8433;  r14 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w14 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.9065;  r15 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w15 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.9692;  r16 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w16 = zz2-zz1;
-            zz1 = zz2; zz2 = 1;       r17 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w17 = zz2-zz1;
-            c5 = c5 + ( abs(corr(r1(:,1),r1(:,2),'type','kendall'))*w1 + ...
-                        abs(corr(r2(:,1),r2(:,2),'type','kendall'))*w2 + ...
-                        abs(corr(r3(:,1),r3(:,2),'type','kendall'))*w3 + ...
-                        abs(corr(r4(:,1),r4(:,2),'type','kendall'))*w4 + ...
-                        abs(corr(r5(:,1),r5(:,2),'type','kendall'))*w5 + ...
-                        abs(corr(r6(:,1),r6(:,2),'type','kendall'))*w6 + ...
-                        abs(corr(r7(:,1),r7(:,2),'type','kendall'))*w7 + ...
-                        abs(corr(r8(:,1),r8(:,2),'type','kendall'))*w8 + ...
-                        abs(corr(r9(:,1),r9(:,2),'type','kendall'))*w9 + ...
-                        abs(corr(r10(:,1),r10(:,2),'type','kendall'))*w10 + ...
-                        abs(corr(r11(:,1),r11(:,2),'type','kendall'))*w11 + ...
-                        abs(corr(r12(:,1),r12(:,2),'type','kendall'))*w12 + ...
-                        abs(corr(r13(:,1),r13(:,2),'type','kendall'))*w13 + ...
-                        abs(corr(r14(:,1),r14(:,2),'type','kendall'))*w14 + ...
-                        abs(corr(r15(:,1),r15(:,2),'type','kendall'))*w15 + ...
-                        abs(corr(r16(:,1),r16(:,2),'type','kendall'))*w16 + ...
-                        abs(corr(r17(:,1),r17(:,2),'type','kendall'))*w17);
-            c55 = c55 + cim_v3(x,y5,minscanincrVal);
-        end
-        hiFreqSinDep(1,l+1) = t5/numMCSim; hiFreqSinDep(2,l+1) = c5/numMCSim; hiFreqSinDep(3,l+1) = c55/numMCSim;
-    end
-
-    % save the data
-    if(ispc)
-        save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\regionDetection_HFSINE_cimv3_M_%d.mat', M));
-    elseif(ismac)
-        save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/regionDetection_HFSINE_cimv3_M_%d.mat', M));
-    else
-        save(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/regionDetection_HFSINE_cimv3_M_%d.mat', M));
-    end
-end
-
-%% Plot the results for the HF-SINE
-clear;
-clc;
-
-M = 5000;
-
-if(ispc)
-    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\regionDetection_HFSINE_cimv3_M_%d.mat', M));
-elseif(ismac)
-    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/regionDetection_HFSINE_cimv3_M_%d.mat', M));
-else
-    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/regionDetection_HFSINE_cimv3_M_%d.mat', M));
-end
-
-hh1 = plot(noiseVec,hiFreqSinDep(1,:),'o-.', ...
-     noiseVec,hiFreqSinDep(2,:),'+-.', ...
-     noiseVec,hiFreqSinDep(3,:),'d-.');
-grid on;
-xlabel('noise');
-legend('\tau','CIM Theoretical','CIMv3 Actual');
-title('HF-Sin Dependency');
-hh1(1).LineWidth = 1.5; 
-hh1(2).LineWidth = 1.5; 
-hh1(3).LineWidth = 1.5; 
-
 %% simulate the difference between computing monotonic and detecting the region exactly for CIM-v4
 clear;
 clc;
@@ -1796,7 +1684,7 @@ end
 clear;
 clc;
 
-M = 1000;
+M = 600;
 
 if(ispc)
     load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\regionDetection_cimv4_MSISmall_M_%d.mat', M));
