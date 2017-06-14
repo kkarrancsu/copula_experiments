@@ -1975,7 +1975,7 @@ end
 clear;
 clc;
 
-M = 1000;
+M = 800;
 
 if(ispc)
     load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\regionDetection_cimv4_M_%d.mat', M));

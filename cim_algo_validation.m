@@ -389,9 +389,6 @@ cim_v2(x,y_sig)
 clear;
 clc;
 
-% WARNING: ENSURE THAT minepy/matlab/ is in the matlab path for MIC to
-% work!
-
 rng(1234);
 dbstop if error;
 
@@ -410,25 +407,25 @@ minscanincrVal = 0.015625;
 cimNull = zeros(1,nsim_null);
 cimv3Null = zeros(1,nsim_null);
 cimv4Null = zeros(1,nsim_null);
-cim_smallmsi_Null = zeros(1,nsim_null);
-cimv3_smallmsi_Null = zeros(1,nsim_null);
-cimv4_smallmsi_Null = zeros(1,nsim_null);
+cimv5Null = zeros(1,nsim_null);
+cimv6Null = zeros(1,nsim_null);
+cimv7Null = zeros(1,nsim_null);
 
 cimAlt  = zeros(1,nsim_alt);
 cimv3Alt = zeros(1,nsim_alt);
 cimv4Alt = zeros(1,nsim_alt);
-cim_smallmsi_Alt = zeros(1,nsim_alt);
-cimv3_smallmsi_Alt = zeros(1,nsim_alt);
-cimv4_smallmsi_Alt = zeros(1,nsim_alt);
+cimv5Alt = zeros(1,nsim_alt);
+cimv6Alt = zeros(1,nsim_alt);
+cimv7Alt = zeros(1,nsim_alt);
 
 % Arrays holding the estimated power for each of the "correlation" types, 
 % for each data type (linear, parabolic, etc...) with each noise level
 cimPower = zeros(numDepTests, num_noise);
 cimv3Power = zeros(numDepTests, num_noise);
 cimv4Power = zeros(numDepTests, num_noise);
-cim_smallmsi_Power = zeros(numDepTests,num_noise);
-cimv3_smallmsi_Power = zeros(numDepTests,num_noise);
-cimv4_smallmsi_Power = zeros(numDepTests,num_noise);
+cimv5Power = zeros(numDepTests,num_noise);
+cimv6Power = zeros(numDepTests,num_noise);
+cimv7Power = zeros(numDepTests,num_noise);
 
 % Simon & Tibshirani use xMin=0, xMax=1 for performing their analysis ...
 xMin = 0;
@@ -443,7 +440,6 @@ for l=num_noise_test_min:num_noise_test_max
         dispstat(sprintf('Computing for noise level=%d Dependency Test=%d',l, typ),'keepthis', 'timestamp');
         % simulate data under the null w/ correct marginals
         parfor ii=1:nsim_null
-%         for ii=1:nsim_null
             x = rand(M,1)*(xMax-xMin)+xMin;
             switch(typ)
                 case 1
@@ -477,25 +473,24 @@ for l=num_noise_test_min:num_noise_test_max
             x = rand(M,1)*(xMax-xMin)+xMin;
             
             % calculate the metrics
-            cimNull(ii) = cim(x, y);
-            cimv3Null(ii) = cim_v3(x, y);
-            cimv4Null(ii) = cim_v4(x,y);
-            cim_smallmsi_Null(ii) = cim(x,y,minscanincrVal);
-            cimv3_smallmsi_Null(ii) = cim_v3(x,y,minscanincrVal);
-            cimv4_smallmsi_Null(ii) = cim_v4(x,y,minscanincrVal);
+            cimNull(ii)   = cim(x,y,minscanincrVal);
+            cimv3Null(ii) = cim_v3(x,y,minscanincrVal);
+            cimv4Null(ii) = cim_v4(x,y,minscanincrVal);
+            cimv5Null(ii) = cim_v5(x,y,minscanincrVal);
+            cimv6Null(ii) = cim_v6(x,y,minscanincrVal);
+            cimv7Null(ii) = cim_v7(x,y,minscanincrVal);
         end
         
         % compute the rejection cutoffs
         cim_cut = quantile(cimNull, 0.95);
         cimv3_cut = quantile(cimv3Null, 0.95);
         cimv4_cut = quantile(cimv4Null, 0.95);
-        cim_smallmsi_cut = quantile(cim_smallmsi_Null, 0.95);
-        cimv3_smallmsi_cut = quantile(cimv3_smallmsi_Null, 0.95);
-        cimv4_smallmsi_cut = quantile(cimv4_smallmsi_Null, 0.95);
+        cimv5_cut = quantile(cimv5Null, 0.95);
+        cimv6_cut = quantile(cimv6Null, 0.95);
+        cimv7_cut = quantile(cimv7Null, 0.95);
         
         % resimulate the data under the alternative hypothesis
         parfor ii=1:nsim_alt
-%         for ii=1:nsim_alt
             x = rand(M,1)*(xMax-xMin)+xMin;
             switch(typ)
                 case 1
@@ -527,31 +522,31 @@ for l=num_noise_test_min:num_noise_test_max
             end
             
             % calculate the metrics
-            cimAlt(ii) = cim(x, y);
-            cimv3Alt(ii) = cim_v3(x, y);
-            cimv4Alt(ii) = cim_v4(x,y);
-            cim_smallmsi_Alt(ii) = cim(x,y,minscanincrVal);
-            cimv3_smallmsi_Alt(ii) = cim_v3(x,y,minscanincrVal);
-            cimv4_smallmsi_Alt(ii) = cim_v4(x,y,minscanincrVal);
+            cimAlt(ii)   = cim(x,y,minscanincrVal);
+            cimv3Alt(ii) = cim_v3(x,y,minscanincrVal);
+            cimv4Alt(ii) = cim_v4(x,y,minscanincrVal);
+            cimv5Alt(ii) = cim_v5(x,y,minscanincrVal);
+            cimv6Alt(ii) = cim_v6(x,y,minscanincrVal);
+            cimv7Alt(ii) = cim_v7(x,y,minscanincrVal);
         end
         
         % compute the power
         cimPower(typ, l)   = sum(cimAlt > cim_cut)/nsim_alt;
         cimv3Power(typ, l)  = sum(cimv3Alt > cimv3_cut)/nsim_alt;
         cimv4Power(typ, l) = sum(cimv4Alt > cimv4_cut)/nsim_alt;
-        cim_smallmsi_Power(typ, l)  = sum(cim_smallmsi_Alt > cim_smallmsi_cut)/nsim_alt;
-        cimv3_smallmsi_Power(typ, l)  = sum(cimv3_smallmsi_Alt > cimv3_smallmsi_cut)/nsim_alt;
-        cimv4_smallmsi_Power(typ, l)  = sum(cimv4_smallmsi_Alt > cimv4_smallmsi_cut)/nsim_alt;
+        cimv5Power(typ, l)  = sum(cimv5Alt > cimv5_cut)/nsim_alt;
+        cimv6Power(typ, l)  = sum(cimv6Alt > cimv6_cut)/nsim_alt;
+        cimv7Power(typ, l)  = sum(cimv7Alt > cimv7_cut)/nsim_alt;
     end
 end
 
 % save the data
 if(ispc)
-    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cimv3_power_M_%d.mat', M));
+    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_vstar_power_M_%d.mat', M));
 elseif(ismac)
-    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cimv3_power_M_%d.mat', M));
+    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_vstar_power_M_%d.mat', M));
 else
-    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cimv3_power_M_%d.mat', M));
+    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_vstar_power_M_%d.mat', M));
 end
 %%
 clear;
@@ -561,11 +556,11 @@ close all;
 M = 500;  % which one do we want to plot?
 
 if(ispc)
-    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cimv3_power_M_%d.mat', M));
+    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_vstar_power_M_%d.mat', M));
 elseif(ismac)
-    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cimv3_power_M_%d.mat', M));
+    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_vstar_power_M_%d.mat', M));
 else
-    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cimv3_power_M_%d.mat', M));
+    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_vstar_power_M_%d.mat', M));
 end
 
 % inlet plot configuration
@@ -583,10 +578,10 @@ figure;
 h1 = subplot(2,2,1);
 hh1 = plot(noiseVec, cimPower(1,num_noise_test_min:num_noise_test_max), 'o-.', ...
      noiseVec, cimv3Power(1,num_noise_test_min:num_noise_test_max), '+-.', ...
-     noiseVec, cim_smallmsi_Power(1,num_noise_test_min:num_noise_test_max), 'd-.', ...
-     noiseVec, cimv3_smallmsi_Power(1,num_noise_test_min:num_noise_test_max), 'v-.', ...
+     noiseVec, cimv5Power(1,num_noise_test_min:num_noise_test_max), 'd-.', ...
+     noiseVec, cimv6Power(1,num_noise_test_min:num_noise_test_max), 'v-.', ...
      noiseVec, cimv4Power(1,num_noise_test_min:num_noise_test_max), 's-.', ...
-     noiseVec, cimv4_smallmsi_Power(1,num_noise_test_min:num_noise_test_max), 'p-.'); 
+     noiseVec, cimv7Power(1,num_noise_test_min:num_noise_test_max), 'p-.'); 
 axis([min(noiseVec) max(noiseVec) 0 1]);
 xlabel({'Noise Level','(a)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(a)', 'FontSize', 20);
@@ -604,15 +599,15 @@ hh1(2).LineWidth = 1.5;
 hh1(3).LineWidth = 1.5; 
 hh1(4).LineWidth = 1.5; 
 hh1(5).LineWidth = 1.5; 
-hh1(6).LineWidth = 5; 
+hh1(6).LineWidth = 1.5; 
 
 h2 = subplot(2,2,2);
 hh2 = plot(noiseVec, cimPower(2,num_noise_test_min:num_noise_test_max), 'o-.', ...
      noiseVec, cimv3Power(2,num_noise_test_min:num_noise_test_max), '+-.', ...
-     noiseVec, cim_smallmsi_Power(2,num_noise_test_min:num_noise_test_max), 'd-.', ...
-     noiseVec, cimv3_smallmsi_Power(2,num_noise_test_min:num_noise_test_max), 'v-.', ...
+     noiseVec, cimv5Power(2,num_noise_test_min:num_noise_test_max), 'd-.', ...
+     noiseVec, cimv6Power(2,num_noise_test_min:num_noise_test_max), 'v-.', ...
      noiseVec, cimv4Power(2,num_noise_test_min:num_noise_test_max), 's-.', ...
-     noiseVec, cimv4_smallmsi_Power(2,num_noise_test_min:num_noise_test_max), 'p-.');
+     noiseVec, cimv7Power(2,num_noise_test_min:num_noise_test_max), 'p-.');
 axis([min(noiseVec) max(noiseVec) 0 1]);
 xlabel({'Noise Level', '(b)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(b)', 'FontSize', 20);
@@ -630,15 +625,15 @@ hh2(2).LineWidth = 1.5;
 hh2(3).LineWidth = 1.5; 
 hh2(4).LineWidth = 1.5; 
 hh2(5).LineWidth = 1.5; 
-hh2(6).LineWidth = 5.5; 
+hh2(6).LineWidth = 1.5; 
 
 h3 = subplot(2,2,3); 
 hh3 = plot(noiseVec, cimPower(3,num_noise_test_min:num_noise_test_max), 'o-.', ...
      noiseVec, cimv3Power(3,num_noise_test_min:num_noise_test_max), '+-.', ...
-     noiseVec, cim_smallmsi_Power(3,num_noise_test_min:num_noise_test_max), 'd-.', ...
-     noiseVec, cimv3_smallmsi_Power(3,num_noise_test_min:num_noise_test_max), 'v-.', ...
+     noiseVec, cimv5Power(3,num_noise_test_min:num_noise_test_max), 'd-.', ...
+     noiseVec, cimv6Power(3,num_noise_test_min:num_noise_test_max), 'v-.', ...
      noiseVec, cimv4Power(3,num_noise_test_min:num_noise_test_max), 's-.', ...
-     noiseVec, cimv4_smallmsi_Power(3,num_noise_test_min:num_noise_test_max), 'p-.');
+     noiseVec, cimv7Power(3,num_noise_test_min:num_noise_test_max), 'p-.');
 axis([min(noiseVec) max(noiseVec) 0 1]);
 xlabel({'Noise Level', '(c)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(c)', 'FontSize', 20);
@@ -656,15 +651,15 @@ hh3(2).LineWidth = 1.5;
 hh3(3).LineWidth = 1.5; 
 hh3(4).LineWidth = 1.5; 
 hh3(5).LineWidth = 1.5; 
-hh3(6).LineWidth = 5; 
+hh3(6).LineWidth = 1.5; 
 
 h4 = subplot(2,2,4); 
 hh4 = plot(noiseVec, cimPower(4,num_noise_test_min:num_noise_test_max), 'o-.', ...
      noiseVec, cimv3Power(4,num_noise_test_min:num_noise_test_max), '+-.', ...
-     noiseVec, cim_smallmsi_Power(4,num_noise_test_min:num_noise_test_max), 'd-.', ...
-     noiseVec, cimv3_smallmsi_Power(4,num_noise_test_min:num_noise_test_max), 'v-.', ...
+     noiseVec, cimv5Power(4,num_noise_test_min:num_noise_test_max), 'd-.', ...
+     noiseVec, cimv6Power(4,num_noise_test_min:num_noise_test_max), 'v-.', ...
      noiseVec, cimv4Power(4,num_noise_test_min:num_noise_test_max), 's-.', ...
-     noiseVec, cimv4_smallmsi_Power(4,num_noise_test_min:num_noise_test_max), 'p-.');
+     noiseVec, cimv7Power(4,num_noise_test_min:num_noise_test_max), 'p-.');
 axis([min(noiseVec) max(noiseVec) 0 1]);
 xlabel({'Noise Level', 'd'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(d)', 'FontSize', 20);
@@ -682,16 +677,16 @@ hh4(2).LineWidth = 1.5;
 hh4(3).LineWidth = 1.5; 
 hh4(4).LineWidth = 1.5; 
 hh4(5).LineWidth = 1.5; 
-hh4(6).LineWidth = 5; 
+hh4(6).LineWidth = 1.5; 
 
 figure;
 h5 = subplot(2,2,1); 
 hh5 = plot(noiseVec, cimPower(5,num_noise_test_min:num_noise_test_max), 'o-.', ...
      noiseVec, cimv3Power(5,num_noise_test_min:num_noise_test_max), '+-.', ...
-     noiseVec, cim_smallmsi_Power(5,num_noise_test_min:num_noise_test_max), 'd-.', ...
-     noiseVec, cimv3_smallmsi_Power(5,num_noise_test_min:num_noise_test_max), 'v-.', ...
+     noiseVec, cimv5Power(5,num_noise_test_min:num_noise_test_max), 'd-.', ...
+     noiseVec, cimv6Power(5,num_noise_test_min:num_noise_test_max), 'v-.', ...
      noiseVec, cimv4Power(5,num_noise_test_min:num_noise_test_max), 's-.', ...
-     noiseVec, cimv4_smallmsi_Power(5,num_noise_test_min:num_noise_test_max), 'p-.');
+     noiseVec, cimv7Power(5,num_noise_test_min:num_noise_test_max), 'p-.');
 axis([min(noiseVec) max(noiseVec) 0 1]);
 xlabel({'Noise Level', '(e)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(e)', 'FontSize', 20);
@@ -709,15 +704,15 @@ hh5(2).LineWidth = 1.5;
 hh5(3).LineWidth = 1.5; 
 hh5(4).LineWidth = 1.5; 
 hh5(5).LineWidth = 1.5; 
-hh5(6).LineWidth = 5; 
+hh5(6).LineWidth = 1.5; 
 
 h6 = subplot(2,2,2); 
 hh6 = plot(noiseVec, cimPower(6,num_noise_test_min:num_noise_test_max), 'o-.', ...
      noiseVec, cimv3Power(6,num_noise_test_min:num_noise_test_max), '+-.', ...
-     noiseVec, cim_smallmsi_Power(6,num_noise_test_min:num_noise_test_max), 'd-.', ...
-     noiseVec, cimv3_smallmsi_Power(6,num_noise_test_min:num_noise_test_max), 'v-.', ...
+     noiseVec, cimv5Power(6,num_noise_test_min:num_noise_test_max), 'd-.', ...
+     noiseVec, cimv6Power(6,num_noise_test_min:num_noise_test_max), 'v-.', ...
      noiseVec, cimv4Power(6,num_noise_test_min:num_noise_test_max), 's-.', ...
-     noiseVec, cimv4_smallmsi_Power(6,num_noise_test_min:num_noise_test_max), 'p-.');
+     noiseVec, cimv7Power(6,num_noise_test_min:num_noise_test_max), 'p-.');
 axis([min(noiseVec) max(noiseVec) 0 1]);
 xlabel({'Noise Level', '(f)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(f)', 'FontSize', 20);
@@ -735,15 +730,15 @@ hh6(2).LineWidth = 1.5;
 hh6(3).LineWidth = 1.5; 
 hh6(4).LineWidth = 1.5; 
 hh6(5).LineWidth = 1.5; 
-hh6(6).LineWidth = 5; 
+hh6(6).LineWidth = 1.5; 
 
 h7 = subplot(2,2,3); 
 hh7 = plot(noiseVec, cimPower(7,num_noise_test_min:num_noise_test_max), 'o-.', ...
      noiseVec, cimv3Power(7,num_noise_test_min:num_noise_test_max), '+-.', ...
-     noiseVec, cim_smallmsi_Power(7,num_noise_test_min:num_noise_test_max), 'd-.', ...
-     noiseVec, cimv3_smallmsi_Power(7,num_noise_test_min:num_noise_test_max), 'v-.', ...
+     noiseVec, cimv5Power(7,num_noise_test_min:num_noise_test_max), 'd-.', ...
+     noiseVec, cimv6Power(7,num_noise_test_min:num_noise_test_max), 'v-.', ...
      noiseVec, cimv4Power(7,num_noise_test_min:num_noise_test_max), 's-.', ...
-     noiseVec, cimv4_smallmsi_Power(7,num_noise_test_min:num_noise_test_max), 'p-.');
+     noiseVec, cimv7Power(7,num_noise_test_min:num_noise_test_max), 'p-.');
 axis([min(noiseVec) max(noiseVec) 0 1]);
 xlabel({'Noise Level', '(g)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(g)', 'FontSize', 20);
@@ -763,18 +758,18 @@ hh7(2).LineWidth = 1.5;
 hh7(3).LineWidth = 1.5; 
 hh7(4).LineWidth = 1.5; 
 hh7(5).LineWidth = 1.5; 
-hh7(6).LineWidth = 5; 
+hh7(6).LineWidth = 1.5; 
 
 h8 = subplot(2,2,4); 
 hh8 = plot(noiseVec, cimPower(8,num_noise_test_min:num_noise_test_max), 'o-.', ...
      noiseVec, cimv3Power(8,num_noise_test_min:num_noise_test_max), '+-.', ...
-     noiseVec, cim_smallmsi_Power(8,num_noise_test_min:num_noise_test_max), 'd-.', ...
-     noiseVec, cimv3_smallmsi_Power(8,num_noise_test_min:num_noise_test_max), 'v-.', ...
+     noiseVec, cimv5Power(8,num_noise_test_min:num_noise_test_max), 'd-.', ...
+     noiseVec, cimv6Power(8,num_noise_test_min:num_noise_test_max), 'v-.', ...
      noiseVec, cimv4Power(8,num_noise_test_min:num_noise_test_max), 's-.', ...
-     noiseVec, cimv4_smallmsi_Power(8,num_noise_test_min:num_noise_test_max), 'p-.');
+     noiseVec, cimv7Power(8,num_noise_test_min:num_noise_test_max), 'p-.');
 axis([min(noiseVec) max(noiseVec) 0 1]);
 h8.FontSize = 20; 
-legend('CIM', 'CIMv3', 'CIM(sMSI)', 'CIMv3(sMSI)', 'CIMv4', 'CIMv4(sMSI)');
+legend('CIM', 'CIMv3', 'CIMv4', 'CIMv5', 'CIMv6', 'CIMv7');
 xlabel({'Noise Level', '(h)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
 % title('(h)', 'FontSize', 20);
 loc_inset = [h8.Position(1)+inset_bufX h8.Position(2)+inset_bufY inset_width inset_height];
@@ -789,4 +784,4 @@ hh8(2).LineWidth = 1.5;
 hh8(3).LineWidth = 1.5; 
 hh8(4).LineWidth = 1.5; 
 hh8(5).LineWidth = 1.5; 
-hh8(6).LineWidth = 5; 
+hh8(6).LineWidth = 1.5; 

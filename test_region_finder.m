@@ -208,3 +208,103 @@ for MIdx=1:length(MVecToPlot)
     set(0,'CurrentFigure',figureVec(2)); figtitle('Parabolic');
     set(0,'CurrentFigure',figureVec(2+numDeps)); figtitle('Parabolic');
 end
+
+%% Test different region detection mechanisms by creating different data in the
+% copula space
+
+clear;
+clc;
+close all;
+
+numMCSims = 500;
+MVec = [50 100 200:100:1000];
+noiseVec = 1:30;
+% simulate different change rates
+cornerPts = 0.1:0.1:0.9;
+scanincrs = [1 0.5 0.25 0.125 0.0625 0.03125 0.015625];
+
+rd1Cell_up = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
+rd3Cell_up = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
+rd4Cell_up = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
+rd5Cell_up = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
+rd6Cell_up = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
+rd7Cell_up = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
+
+rd1Cell_down = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
+rd3Cell_down = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
+rd4Cell_down = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
+rd5Cell_down = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
+rd6Cell_down = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
+rd7Cell_down = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
+
+dispstat('','init'); % One time only initialization
+dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
+for mIdx=1:length(MVec)
+    M = MVec(mIdx);
+    for noiseIdx=1:length(noiseVec)
+        l = noiseVec(noiseIdx);
+        dispstat(sprintf('Computing for M=%d noise=%d', M, l),'keepthis', 'timestamp');
+        for cornerPtIdx=1:length(cornerPts)
+            cornerPt = cornerPts(cornerPtIdx);
+            for scanincrIdx=1:length(scanincrs)
+                scanincr = scanincrs(scanincrIdx);
+                % simulate data under the null w/ correct marginals
+                parfor ii=1:numMCSims
+                    maxU = min(1,2*cornerPt);
+                    u = linspace(0,maxU,M)';
+                    vv1 = linspace(1,0,M/2); vv2 = linspace(0,1,M/2);
+                    v1 = [vv1 vv2]'; v2 = [vv2 vv1]';  % test both directions, down --> up and down --> up
+                    
+                    bp1_1 = rd1(u,v1,scanincr,120,0.05);    bp1_2 = rd1(u,v2,scanincr,120,0.05);
+                    bp3_1 = rd3(u,v1,scanincr,120);         bp3_2 = rd3(u,v2,scanincr,120);
+                    bp4_1 = rd4(u,v1,scanincr);             bp4_2 = rd4(u,v2,scanincr);
+                    bp5_1 = rd5(u,v1,scanincr);             bp5_2 = rd5(u,v2,scanincr);
+                    bp6_1 = rd6(u,v1,scanincr);             bp6_2 = rd6(u,v2,scanincr);
+                    bp7_1 = rd7(u,v1,scanincr);             bp7_2 = rd7(u,v2,scanincr);
+                    
+                    rd1Cell_up{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp1_1;
+                    rd1Cell_down{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp1_2;
+                    
+                    rd3Cell_up{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp3_1;
+                    rd3Cell_down{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp3_2;
+                    
+                    rd4Cell_up{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp4_1;
+                    rd4Cell_down{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp4_2;
+                    
+                    rd5Cell_up{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp5_1;
+                    rd5Cell_down{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp5_2;
+                    
+                    rd6Cell_up{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp6_1;
+                    rd6Cell_down{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp6_2;
+                    
+                    rd7Cell_up{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp7_1;
+                    rd7Cell_down{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp7_2;
+                end
+            end
+        end
+    end
+end
+
+% store the results
+if(ispc)
+    save('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\region_detection_tests.mat');
+elseif(ismac)
+    save('/Users/Kiran/ownCloud/PhD/sim_results/clustering/region_detection_tests.mat');
+else
+    save('/home/kiran/ownCloud/PhD/sim_results/clustering/region_detection_tests.mat');
+end
+
+%% Plot & Interpret the results
+
+clear;
+clc;
+close all;
+
+% load the results
+if(ispc)
+    load('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\region_detection_tests.mat');
+elseif(ismac)
+    load('/Users/Kiran/ownCloud/PhD/sim_results/clustering/region_detection_tests.mat');
+else
+    load('/home/kiran/ownCloud/PhD/sim_results/clustering/region_detection_tests.mat');
+end
