@@ -473,7 +473,7 @@ for l=num_noise_test_min:num_noise_test_max
             x = rand(M,1)*(xMax-xMin)+xMin;
             
             % calculate the metrics
-            cimNull(ii)   = cim(x,y,minscanincrVal);
+            cimNull(ii)   = cim(x,y);
             cimv3Null(ii) = cim_v3(x,y,minscanincrVal);
             cimv4Null(ii) = cim_v4(x,y,minscanincrVal);
             cimv5Null(ii) = cim_v5(x,y,minscanincrVal);
@@ -522,7 +522,7 @@ for l=num_noise_test_min:num_noise_test_max
             end
             
             % calculate the metrics
-            cimAlt(ii)   = cim(x,y,minscanincrVal);
+            cimAlt(ii)   = cim(x,y);
             cimv3Alt(ii) = cim_v3(x,y,minscanincrVal);
             cimv4Alt(ii) = cim_v4(x,y,minscanincrVal);
             cimv5Alt(ii) = cim_v5(x,y,minscanincrVal);
