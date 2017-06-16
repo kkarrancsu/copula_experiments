@@ -1,4 +1,4 @@
-function [] = cim_algo_sensitivity(cimfunc, MVec, scanincrsToTest)
+function [sensitivityResults] = cim_algo_sensitivity(cimfunc, M, scanincrsToTest)
 
 xMin = 0;
 xMax = 1;
@@ -10,7 +10,10 @@ num_noise_test_max = 30;
 noiseVec = num_noise_test_min:num_noise_test_max;
 numMCSim = 500;
 
-for M=MVec
+sensitivityResults = cell(1,length(scanincrsToTest));
+
+for scanincrIdx=1:length(scanincrsToTest)
+    minscanincrVal = scanincrsToTest(scanincrIdx);
     % Test Empirical copula distance as a distance measure under various
     % amounts of noise
     linearDep     = zeros(3,length(noiseVec));
@@ -24,7 +27,6 @@ for M=MVec
     indep         = zeros(3,length(noiseVec));
                     % 1 - using tau directly
                     % 2 - segmenting into regions
-                  
     for l=noiseVec
         dispstat(sprintf('Computing for noise level=%d >> M=%d',l,M),'keepthis', 'timestamp');
         t1 = 0; c1 = 0; c11 = 0;
@@ -57,18 +59,18 @@ for M=MVec
             U7 = pobs([x y7]);
             U8 = pobs([x y8]);
             U9 = pobs([x y9]);
-            
+
             t1 = t1 + abs(corr(x,y1,'type','kendall'));
             c1 = c1 + abs(corr(x,y1,'type','kendall'));
             c11 = c11 + cimfunc(x,y1,minscanincrVal);
-            
+
             t2 = t2 + abs(corr(x,y2,'type','kendall'));
             r1 = inBoundedPts(U2(:,1),U2(:,2),0,0.5,0,1); 
             r2 = inBoundedPts(U2(:,1),U2(:,2),0.5,1,0,1);
             c2 = c2 + ( abs(corr(r1(:,1),r1(:,2),'type','kendall'))*0.5 + ...
                         abs(corr(r2(:,1),r2(:,2),'type','kendall'))*0.5 );
             c22 = c22 + cimfunc(x,y2,minscanincrVal);
-            
+
             t3 = t3 + abs(corr(x,y3,'type','kendall'));
             r1 = inBoundedPts(U3(:,1),U3(:,2),0,0.1138,0,1); 
             r2 = inBoundedPts(U3(:,1),U3(:,2),0.1138,0.5768,0,1);
@@ -77,7 +79,7 @@ for M=MVec
                         abs(corr(r2(:,1),r2(:,2),'type','kendall'))*0.4368 + ...
                         abs(corr(r3(:,1),r3(:,2),'type','kendall'))*0.4232);
             c33 = c33 + cimfunc(x,y3,minscanincrVal);
-                    
+
             t4 = t4 + abs(corr(x,y4,'type','kendall'));
             r1 = inBoundedPts(U4(:,1),U4(:,2),0,0.1138,0,1); 
             r2 = inBoundedPts(U4(:,1),U4(:,2),0.1138,0.3413,0,1);
@@ -90,7 +92,7 @@ for M=MVec
                         abs(corr(r4(:,1),r4(:,2),'type','kendall'))*0.2275 + ...
                         abs(corr(r5(:,1),r5(:,2),'type','kendall'))*0.1517);
             c44 = c44 + cimfunc(x,y4,minscanincrVal);
-            
+
             t5 = t5 + abs(corr(x,y5,'type','kendall'));
             zz1 = 0; zz2 = 0.02900;   r1 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w1 = zz2-zz1;
             zz1 = zz2; zz2 = 0.09158; r2 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w2 = zz2-zz1;
@@ -127,11 +129,11 @@ for M=MVec
                         abs(corr(r16(:,1),r16(:,2),'type','kendall'))*w16 + ...
                         abs(corr(r17(:,1),r17(:,2),'type','kendall'))*w17);
             c55 = c55 + cimfunc(x,y5,minscanincrVal);
-            
+
             t6 = t6 + abs(corr(x,y6,'type','kendall'));
             c6 = c6 + abs(corr(x,y6,'type','kendall'));
             c66 = c66 + cimfunc(x,y6,minscanincrVal);
-            
+
             t7 = t7 + abs(corr(x,y7,'type','kendall'));
             r1 = inBoundedPts(U7(:,1),U7(:,2),0,0.5,0,0.5); 
             r2 = inBoundedPts(U7(:,1),U7(:,2),0.5,1,0,0.5);
@@ -142,11 +144,11 @@ for M=MVec
                         abs(corr(r3(:,1),r3(:,2),'type','kendall'))*0.25 + ...
                         abs(corr(r4(:,1),r4(:,2),'type','kendall'))*0.25);
             c77 = c77 + cimfunc(x,y7,minscanincrVal);
-            
+
             t8 = t8 + abs(corr(x,y8,'type','kendall'));
             c8 = c8 + abs(corr(x,y8,'type','kendall'));
             c88 = c88 + cimfunc(x,y8,minscanincrVal);
-            
+
             t9 = t9 + abs(corr(x,y9,'type','kendall'));
             c9 = c9 + abs(corr(x,y9,'type','kendall'));
             c99 = c99 + cimfunc(x,y9,minscanincrVal);
@@ -161,6 +163,12 @@ for M=MVec
         stepDep(1,l+1) = t8/numMCSim; stepDep(2,l+1) = c8/numMCSim; stepDep(3,l+1) = c88/numMCSim;
         indep(1,l+1) = t9/numMCSim; indep(2,l+1) = c9/numMCSim; indep(3,l+1) = c99/numMCSim;
     end
+    x = struct;
+    x.linearDep = linearDep; x.quadraticDep = quadraticDep; x.cubicDep = cubicDep;
+    x.sinusoidalDep = sinusoidalDep; x.hiFreqSinDep = hiFreqSinDep;
+    x.fourthRootDep = fourthRootDep; x.circleDep = circleDep;
+    x.stepDep = stepDep; x.indep = indep;
+    sensitivityResults{scanincrIdx} = x;
 end
 
 end
