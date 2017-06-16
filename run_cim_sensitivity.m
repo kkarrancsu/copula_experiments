@@ -72,6 +72,9 @@ else
     load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/%s_powerSensitivity_M_%d.mat', fnameStr, M));
 end
 
+% TODO: use the plotPower function to plot the power for different scanning
+% intervals to show sensitivity
+
 %% Run the algorithm sensitivity analysis
 
 clear;
