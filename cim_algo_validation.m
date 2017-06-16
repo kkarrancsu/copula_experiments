@@ -78,10 +78,10 @@ for plotIdx=1:numPlots
     for noiseLevel=noiseLevelsToPlot
         lIdx = find(noiseLevel==noiseVec);
         % get the data
-        tauData = resultsMat(mIdx,lIdx,:);
+        tauData = squeeze(resultsMat(mIdx,lIdx,:));
         
-        subplotVec = [p plotIdx];
-        subplot(subplotVec);
+        B = [p plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
+        subplot(B{:});
         [f,xi] = ksdensity(tauData);
         plot(xi,f,'-');
         hold on;
@@ -94,15 +94,15 @@ for plotIdx=1:numPlots
         end
         
         % add to the legendCell
-        legendCell{legendCellIdx} = sprintf('\sigma^2=%d',noiseLevel);
+        legendCell{legendCellIdx} = sprintf('\\sigma^2=%d',noiseLevel);
         legendCellIdx = legendCellIdx + 1;
     end
     % overlay teh theoretical normal distribution of what we expect to
     % see
     y2 = normpdf(xi,0,(2*(2*M+5))/(9*M*(M-1)));
     plot(xi,y2,'-.');
-    legendCell{legendCellIdx+1} = 'theoretical';
-
+    legendCell{legendCellIdx} = 'theoretical';
+    
     title(sprintf('M=%d',M));
     grid on; xlabel('\tau');
     legend(legendCell);
