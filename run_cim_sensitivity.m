@@ -45,8 +45,8 @@ clear;
 clc;
 close all;
 
-M = 500;
-cimVersion = 6;
+M = 200;
+cimVersion = 4;
 
 % load the correct data
 switch cimVersion
@@ -74,6 +74,12 @@ end
 
 % TODO: use the plotPower function to plot the power for different scanning
 % intervals to show sensitivity
+labels = {'0.25', '0.125', '0.0625', '0.03125', '0.015625'};
+plotStyle = 1;
+num_noise_test_min = 1;
+num_noise_test_max = 30;
+noiseVec = num_noise_test_min:num_noise_test_max;
+plotPower(powerCurve, M, labels, noiseVec, num_noise_test_min, num_noise_test_max, plotStyle)
 
 %% Run the algorithm sensitivity analysis
 
@@ -81,7 +87,7 @@ clear;
 clc;
 close all;
 
-cimVersion = 6;
+cimVersion = 4;
 scanincrsToTest = [0.25, 0.125, .0625, .03125, .015625];
 switch cimVersion
     case 1
@@ -121,9 +127,10 @@ end
 clear;
 clc;
 close all;
+dbstop if error;
 
-M = 500;
-cimVersion = 6;
+M = 200;
+cimVersion = 4;
 
 % load the correct data
 switch cimVersion
@@ -149,3 +156,9 @@ else
     load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/%s_algoSensitivity_M_%d.mat', fnameStr, M));
 end
 
+num_noise_test_min = 0;
+num_noise_test_max = 30;
+noiseVec = num_noise_test_min:num_noise_test_max;
+
+
+plotAlgoSensitivity(algoSensitivityData, scanincrsToTest, noiseVec)

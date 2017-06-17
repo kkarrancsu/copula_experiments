@@ -6,7 +6,7 @@ if(style==1)
     plotStyle = {'o-.', '+-.', 'd-.', 'v-.', 's-.', 'p-.'};
     % inlet plot configuration
     M_inlet = 200;
-    if(M==500)
+    if(M<=500)
         inset_bufX = 0.0005; inset_bufY = 0.002;
     else
         inset_bufX = 0.15; inset_bufY = 0.26;

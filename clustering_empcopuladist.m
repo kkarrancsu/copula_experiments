@@ -1132,7 +1132,7 @@ end
 clear;
 clc;
 
-M = 2500;
+M = 200;
 cim_version = 4;
 
 switch cim_version
