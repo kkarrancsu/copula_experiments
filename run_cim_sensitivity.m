@@ -81,6 +81,16 @@ num_noise_test_max = 30;
 noiseVec = num_noise_test_min:num_noise_test_max;
 plotPower(powerCurve, M, labels, noiseVec, num_noise_test_min, num_noise_test_max, plotStyle)
 
+%% Plot the power-sensitivity in a different way
+clear;
+clc;
+close all;
+dbstop if error;
+
+cimVersion = 4;
+MVecToPlot = 100:100:400;
+plotPowerSensitivity_withinM(cimVersion,MVecToPlot);
+
 %% Run the algorithm sensitivity analysis
 
 clear;
@@ -129,7 +139,7 @@ clc;
 close all;
 dbstop if error;
 
-M = 200;
+M = 400;
 cimVersion = 4;
 
 % load the correct data
@@ -161,4 +171,16 @@ num_noise_test_max = 30;
 noiseVec = num_noise_test_min:num_noise_test_max;
 
 
-plotAlgoSensitivity(algoSensitivityData, scanincrsToTest, noiseVec)
+plotAlgoSensitivity(algoSensitivityData, scanincrsToTest, noiseVec, M)
+
+%% Plot the Algorithm sensitivity analysis including M
+clear;
+clc;
+close all;
+dbstop if error;
+
+cimVersion = 4;
+MVecToPlot = 100:100:400;
+% MVecToPlot = 100;
+% plotAlgoSensitivity_acrossM(cimVersion,MVecToPlot);
+plotAlgoSensitivity_withinM(cimVersion,MVecToPlot);

@@ -1,15 +1,15 @@
-function [] = plotAlgoSensitivity(sensitivityData, scanincrs, noiseVec)
+function [] = plotAlgoSensitivity(sensitivityData, scanincrs, noiseVec, M)
 
 plotStyle = {'o-.', '+-.', 'd-.', 'v-.', 's-.', 'p-.'};
 
-cimVecIdx = 3;
+CIMVECIDX = 3;
 
 subplot(3,3,1);
 legendCell = cell(1,length(scanincrs));
 hhCell = cell(1,length(scanincrs));
 for ii=1:length(scanincrs)
     rawData = sensitivityData{ii};
-    hh1 = plot(noiseVec,rawData.linearDep(cimVecIdx,:),plotStyle{ii});
+    hh1 = plot(noiseVec,rawData.linearDep(CIMVECIDX,:),plotStyle{ii});
     hhCell{ii} = hh1;
     legendCell{ii} = num2str(scanincrs(ii));
     hold on;
@@ -26,7 +26,7 @@ subplot(3,3,2);
 hhCell = cell(1,length(scanincrs));
 for ii=1:length(scanincrs)
     rawData = sensitivityData{ii};
-    hh1 = plot(noiseVec,rawData.quadraticDep(cimVecIdx,:),plotStyle{ii});
+    hh1 = plot(noiseVec,rawData.quadraticDep(CIMVECIDX,:),plotStyle{ii});
     hhCell{ii} = hh1;
     hold on;
 end
@@ -41,7 +41,7 @@ subplot(3,3,3);
 hhCell = cell(1,length(scanincrs));
 for ii=1:length(scanincrs)
     rawData = sensitivityData{ii};
-    hh1 = plot(noiseVec,rawData.cubicDep(cimVecIdx,:),plotStyle{ii});
+    hh1 = plot(noiseVec,rawData.cubicDep(CIMVECIDX,:),plotStyle{ii});
     hhCell{ii} = hh1;
     hold on;
 end
@@ -56,7 +56,7 @@ subplot(3,3,4);
 hhCell = cell(1,length(scanincrs));
 for ii=1:length(scanincrs)
     rawData = sensitivityData{ii};
-    hh1 = plot(noiseVec,rawData.sinusoidalDep(cimVecIdx,:),plotStyle{ii});
+    hh1 = plot(noiseVec,rawData.sinusoidalDep(CIMVECIDX,:),plotStyle{ii});
     hhCell{ii} = hh1;
     hold on;
 end
@@ -71,7 +71,7 @@ subplot(3,3,5);
 hhCell = cell(1,length(scanincrs));
 for ii=1:length(scanincrs)
     rawData = sensitivityData{ii};
-    hh1 = plot(noiseVec,rawData.hiFreqSinDep(cimVecIdx,:),plotStyle{ii});
+    hh1 = plot(noiseVec,rawData.hiFreqSinDep(CIMVECIDX,:),plotStyle{ii});
     hhCell{ii} = hh1;
     hold on;
 end
@@ -86,7 +86,7 @@ subplot(3,3,6);
 hhCell = cell(1,length(scanincrs));
 for ii=1:length(scanincrs)
     rawData = sensitivityData{ii};
-    hh1 = plot(noiseVec,rawData.fourthRootDep(cimVecIdx,:),plotStyle{ii});
+    hh1 = plot(noiseVec,rawData.fourthRootDep(CIMVECIDX,:),plotStyle{ii});
     hhCell{ii} = hh1;
     hold on;
 end
@@ -101,7 +101,7 @@ subplot(3,3,7);
 hhCell = cell(1,length(scanincrs));
 for ii=1:length(scanincrs)
     rawData = sensitivityData{ii};
-    hh1 = plot(noiseVec,rawData.circleDep(cimVecIdx,:),plotStyle{ii});
+    hh1 = plot(noiseVec,rawData.circleDep(CIMVECIDX,:),plotStyle{ii});
     hhCell{ii} = hh1;
     hold on;
 end
@@ -116,7 +116,7 @@ subplot(3,3,8);
 hhCell = cell(1,length(scanincrs));
 for ii=1:length(scanincrs)
     rawData = sensitivityData{ii};
-    hh1 = plot(noiseVec,rawData.stepDep(cimVecIdx,:),plotStyle{ii});
+    hh1 = plot(noiseVec,rawData.stepDep(CIMVECIDX,:),plotStyle{ii});
     hhCell{ii} = hh1;
     hold on;
 end
@@ -131,7 +131,7 @@ subplot(3,3,9);
 hhCell = cell(1,length(scanincrs));
 for ii=1:length(scanincrs)
     rawData = sensitivityData{ii};
-    hh1 = plot(noiseVec,rawData.indep(cimVecIdx,:),plotStyle{ii});
+    hh1 = plot(noiseVec,rawData.indep(CIMVECIDX,:),plotStyle{ii});
     hhCell{ii} = hh1;
     hold on;
 end
@@ -141,5 +141,7 @@ title('Independence');
 for ii=1:length(hhCell)
     hhCell{ii}.LineWidth = 1.5;
 end
+
+figtitle(sprintf('M=%d',M));
 
 end
