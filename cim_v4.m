@@ -65,7 +65,7 @@ axisCfgs = [1 2];
 ax2minmaxCfgs = { {[0,1]}, {[0,0.5],[0.5,1]} };
 
 % perform a scan pattern while varying U with V full-range, then swap the U-V axes
-metrics = []; maxIIvec = [];
+metrics = []; maxIIcell = {};
 rectangleAggr = {};  rectangleAggrIdx = 1;
 for axisCfg=axisCfgs
     for ax2minmaxCfgsIdx=1:length(ax2minmaxCfgs)
@@ -105,39 +105,81 @@ for axisCfg=axisCfgs
             rectangleCellAggr{ax2mmCfgIdx} = rectanglesCell;
         end
         % compute the metric for this.  putting stuff outside the 2nd
-        % for-loop allows us to combine th results for {[0,1]} and
+        % for-loop allows us to combine the results for {[0,1]} and
         % {[0,0.5][0.5,1]} easily.  metricVecAggr should have the
         % results for when ax2 is {[0,1]} and compute a metric, then it
         % should have the results for {[0,0.5],[0.5,1]} and compute a
         % metric for it.  at the end of processing, we compute a
         % maximum.
-        [m,maxII] = computeMetricFromAggregates(metricVecAggr, numPtsVecAggr);
-        metrics = [metrics m]; maxIIvec = [maxIIvec maxII];
+        [m,maxIIVec] = computeMetricFromAggregates(metricVecAggr, numPtsVecAggr);
+        metrics = [metrics m]; maxIIcell{rectangleAggrIdx} = maxIIVec;
         rectangleAggr{rectangleAggrIdx} = rectangleCellAggr;
         rectangleAggrIdx = rectangleAggrIdx + 1;
     end
 end
 
 [metric, metricMaxIdx] = max(metrics);
-rectangleCellOut = rectangleAggr{metricMaxIdx};
-
+if(nargout>1)
+    idx1 = metricMaxIdx;
+    tmp = maxIIcell{idx1};
+    if(length(tmp)==1)
+        idx2 = 1; idx3 = tmp(1);
+        rectangleCellOut = rectangleAggr{idx1}{idx2}{idx3};
+    else
+        % WARNING -- need to change this along w/ the scan-patterns
+        idx2_1a = 1; idx2_1b = tmp(1);
+        idx2_2a = 2; idx2_2b = tmp(2);
+        % disambiguate this to determine the number of regions!
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % % % % TODO: whatever is contiguous and has the same sign should be
+% % % % % combined!! each of the idx1,idx2, and idx3 when indexed into 
+% % % % % rectangleAggr looks like follows:
+% % % % % rectangleAggr{idx1}{idx2_1a}{idx2_1b}
+% % % % % 
+% % % % % ans =
+% % % % % 
+% % % % %          0
+% % % % %     1.0000
+% % % % %          0
+% % % % %     0.5000
+% % % % % 
+% % % % % rectangleAggr{idx1}{idx2_2a}{idx2_2b}
+% % % % % 
+% % % % % ans =
+% % % % % 
+% % % % %          0
+% % % % %     1.0000
+% % % % %     0.5000
+% % % % %     1.0000
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        % first detect contiguous regions
+        
+        % for each contiguous region, compute the sign of taukl, if the
+        % signs are the same, we merge the rectangles, otherwise we keep
+        % them separate
+        
+    end
+end
 
 end
 
-function [metric, maxII] = computeMetricFromAggregates(metricVecAggr, numPtsVecAggr)
+function [metric, maxIIVec] = computeMetricFromAggregates(metricVecAggr, numPtsVecAggr)
 
 metrics = zeros(2,length(metricVecAggr));
-maxII = 1;
-for ii=1:length(metricVecAggr)
-    groupMetrics = metricVecAggr{ii};
-    groupVecLens = numPtsVecAggr{ii};
+maxIIVec = [];
+
+for jj=1:length(metricVecAggr)
+    groupMetrics = metricVecAggr{jj};
+    groupVecLens = numPtsVecAggr{jj};
     
     weightedMetric = -999;
     numPts = -999;
-    for jj=1:length(groupMetrics)
+    for ii=1:length(groupMetrics)
         % compute the metric for each group
-        gMetric = groupMetrics{jj};
-        gVecLen = groupVecLens{jj};
+        gMetric = groupMetrics{ii};
+        gVecLen = groupVecLens{ii};
         
         % compute the weighted metric
         weightedMetricCompute = sum( gMetric.*gVecLen/(sum(gVecLen)) );
@@ -147,11 +189,11 @@ for ii=1:length(metricVecAggr)
         if(weightedMetricCompute>weightedMetric)
             weightedMetric = weightedMetricCompute;
             numPts = numPtsCompute;
-            maxII = jj;
+            maxIIVec = [maxIIVec ii];
         end
     end
-    metrics(1,ii) = weightedMetric;
-    metrics(2,ii) = numPts;
+    metrics(1,jj) = weightedMetric;
+    metrics(2,jj) = numPts;
 end
 
 % combine group metrics
