@@ -18,8 +18,9 @@ for ii=1:length(noiseIdxs)
     rawDataAccum = [];
     for jj=1:numSimsToCompute
         rawData = rdCell{MIdx, noiseIdx, cornerPtIdx, scanincrIdx, jj};
-        numRegionsMat(jj,ii) = length(rawData);
-        rawDataAccum = [rawDataAccum rawData];
+        numRegionsComputed = length(rawData);
+        numRegionsMat(jj,ii) = numRegionsComputed;
+        rawDataAccum = [rawDataAccum rawData(1:numRegionsComputed-1)];
     end
     regionValuesCell{ii} = rawDataAccum;
 end

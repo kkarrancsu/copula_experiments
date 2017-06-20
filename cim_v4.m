@@ -45,7 +45,7 @@ function [metric, rectangleCellOut] = ...
 %**************************************************************************
 
 % default values
-minscanincr = 0.05;
+minscanincr = 0.015625;
 
 % overwrite defaults with user-inputted values
 nVarargin = length(varargin);
@@ -57,8 +57,9 @@ end
 
 % convert X and Y to pseudo-observations, and scale to be between 0-1
 M = length(x);
-u = pobs(x)*(M+1)/M;
-v = pobs(y)*(M+1)/M;
+% u = pobs(x)*(M+1)/M;
+% v = pobs(y)*(M+1)/M;
+[u,v] = pobs_sorted(x,y,1);
 
 axisCfgs = [1 2];
 ax2minmaxCfgs = { {[0,1]}, {[0,0.5],[0.5,1]} };

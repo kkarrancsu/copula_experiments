@@ -237,6 +237,9 @@ rd5Cell_down = cell(length(MVec),length(noiseVec),length(cornerPts),length(scani
 rd6Cell_down = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
 rd7Cell_down = cell(length(MVec),length(noiseVec),length(cornerPts),length(scanincrs),numMCSims);
 
+num_noise = 30;                    % The number of different noise levels used
+noise = 3;                         % A constant to determine the amount of noise
+
 dispstat('','init'); % One time only initialization
 dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
 for mIdx=1:length(MVec)
@@ -250,17 +253,19 @@ for mIdx=1:length(MVec)
                 scanincr = scanincrs(scanincrIdx);
                 % simulate data under the null w/ correct marginals
                 parfor ii=1:numMCSims
-                    maxU = min(1,2*cornerPt);
-                    u = linspace(0,maxU,M)';
-                    vv1 = linspace(1,0,M/2); vv2 = linspace(0,1,M/2);
-                    v1 = [vv1 vv2]'; v2 = [vv2 vv1]';  % test both directions, down --> up and down --> up
+                    x = rand(M,1);
+                    y1 = 4*(x-cornerPt).^2 + noise*(l/num_noise)*randn(M,1)
+                    y2 = -4*(x-cornerPt).^2 + noise*(l/num_noise)*randn(M,1)
                     
-                    bp1_1 = rd1(u,v1,scanincr,120,0.05);    bp1_2 = rd1(u,v2,scanincr,120,0.05);
-                    bp3_1 = rd3(u,v1,scanincr,120);         bp3_2 = rd3(u,v2,scanincr,120);
-                    bp4_1 = rd4(u,v1,scanincr);             bp4_2 = rd4(u,v2,scanincr);
-                    bp5_1 = rd5(u,v1,scanincr);             bp5_2 = rd5(u,v2,scanincr);
-                    bp6_1 = rd6(u,v1,scanincr);             bp6_2 = rd6(u,v2,scanincr);
-                    bp7_1 = rd7(u,v1,scanincr);             bp7_2 = rd7(u,v2,scanincr);
+                    scaleFlag = 1;
+                    [u1,v1] = pobs_sorted(x,y1,scaleFlag); [u2,v2] = pobs_sorted(x,y2,scaleFlag);
+                    
+                    bp1_1 = rd1(u1,v1,scanincr,120,0.05);    bp1_2 = rd1(u2,v2,scanincr,120,0.05);
+                    bp3_1 = rd3(u1,v1,scanincr,120);         bp3_2 = rd3(u2,v2,scanincr,120);
+                    bp4_1 = rd4(u1,v1,scanincr);             bp4_2 = rd4(u2,v2,scanincr);
+                    bp5_1 = rd5(u1,v1,scanincr);             bp5_2 = rd5(u2,v2,scanincr);
+                    bp6_1 = rd6(u1,v1,scanincr);             bp6_2 = rd6(u2,v2,scanincr);
+                    bp7_1 = rd7(u1,v1,scanincr);             bp7_2 = rd7(u2,v2,scanincr);
                     
                     rd1Cell_up{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp1_1;
                     rd1Cell_down{mIdx,noiseIdx,cornerPtIdx,scanincrIdx,ii} = bp1_2;
@@ -295,10 +300,10 @@ else
 end
 
 %% Plot & Interpret the results
-
 clear;
 clc;
 close all;
+dbstop if error;
 
 % load the results
 if(ispc)
@@ -309,49 +314,55 @@ else
     load('/home/kiran/ownCloud/PhD/sim_results/clustering/region_detection_tests.mat');
 end
 
+%%
+clc;
+
 col=@(x)reshape(x,numel(x),1);
 boxplot2=@(C,varargin)boxplot(cell2mat(cellfun(col,col(C),'uni',0)),cell2mat(arrayfun(@(I)I*ones(numel(C{I}),1),col(1:numel(C)),'uni',0)),varargin{:});
 
 MValsOfInterest = [50 100 500];
-noiseValsOfInterest = 1:20;
+noiseValsOfInterest = 1:30;
 cornerPtOfInterest = 0.5;
-scanincrOfInterest = 0.125;
+% scanincrOfInterest = 0.125;
+scanincrOfInterest = 0.03125;
 numSimsToCompute = numMCSims;
 
-numFigs = 6;
+% numFigs = 6;
+numFigs = 1;
 figureVec = zeros(1,numFigs);
 for ii=1:numFigs
     figureVec(ii) = figure(ii);
 end
-subplotCfg = [length(MVecToPlot) 2];
+subplotCfg = [length(MValsOfInterest) 2];
 
 plotIdx = 1;
 for MIdx=1:length(MValsOfInterest)
     MValOfInterest = MValsOfInterest(MIdx);
     
-    [rd1_numRegionsMat,rd1_regionValuesCell] = getRDCellStats(rd1Cell_up, MVec, noiseVec, cornerPts, scanicrs, ...
+%     [rd1_numRegionsMat,rd1_regionValuesCell] = getRDCellStats(rd1Cell_up, MVec, noiseVec, cornerPts, scanincrs, ...
+%         MValOfInterest, noiseValsOfInterest, cornerPtOfInterest, scanincrOfInterest, numSimsToCompute);
+%     set(0,'CurrentFigure',figureVec(1));
+%     B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
+%     subplot(B{:});
+%     boxplot(rd1_numRegionsMat); title(sprintf('M = %d', MValOfInterest)); ylabel('# regions'); xlabel('Noise');
+%     B = [subplotCfg plotIdx+1]; B = mat2cell(B,1,ones(1,numel(B)));
+%     subplot(B{:});
+%     boxplot2(rd1_regionValuesCell); title(sprintf('M = %d', MValOfInterest)); ylabel('cornerPt.'); xlabel('Noise');
+%     
+%     [rd3_numRegionsMat,rd3_regionValuesCell] = getRDCellStats(rd3Cell_up, MVec, noiseVec, cornerPts, scanincrs, ...
+%         MValOfInterest, noiseValsOfInterest, cornerPtOfInterest, scanincrOfInterest, numSimsToCompute);
+%     set(0,'CurrentFigure',figureVec(2));
+%     B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
+%     subplot(B{:});
+%     boxplot(rd3_numRegionsMat); title(sprintf('M = %d', MValOfInterest)); ylabel('# regions'); xlabel('Noise');
+%     B = [subplotCfg plotIdx+1]; B = mat2cell(B,1,ones(1,numel(B)));
+%     subplot(B{:});
+%     boxplot2(rd3_regionValuesCell); title(sprintf('M = %d', MValOfInterest)); ylabel('cornerPt.'); xlabel('Noise');
+    
+    [rd4_numRegionsMat,rd4_regionValuesCell] = getRDCellStats(rd4Cell_up, MVec, noiseVec, cornerPts, scanincrs, ...
         MValOfInterest, noiseValsOfInterest, cornerPtOfInterest, scanincrOfInterest, numSimsToCompute);
+%     set(0,'CurrentFigure',figureVec(3));
     set(0,'CurrentFigure',figureVec(1));
-    B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
-    subplot(B{:});
-    boxplot(rd1_numRegionsMat); title(sprintf('M = %d', MValOfInterest)); ylabel('# regions'); xlabel('Noise');
-    B = [subplotCfg plotIdx+1]; B = mat2cell(B,1,ones(1,numel(B)));
-    subplot(B{:});
-    boxplot2(rd1_regionValuesCell); title(sprintf('M = %d', MValOfInterest)); ylabel('cornerPt.'); xlabel('Noise');
-    
-    [rd3_numRegionsMat,rd3_regionValuesCell] = getRDCellStats(rd3Cell_up, MVec, noiseVec, cornerPts, scanicrs, ...
-        MValOfInterest, noiseValsOfInterest, cornerPtOfInterest, scanincrOfInterest, numSimsToCompute);
-    set(0,'CurrentFigure',figureVec(2));
-    B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
-    subplot(B{:});
-    boxplot(rd3_numRegionsMat); title(sprintf('M = %d', MValOfInterest)); ylabel('# regions'); xlabel('Noise');
-    B = [subplotCfg plotIdx+1]; B = mat2cell(B,1,ones(1,numel(B)));
-    subplot(B{:});
-    boxplot2(rd3_regionValuesCell); title(sprintf('M = %d', MValOfInterest)); ylabel('cornerPt.'); xlabel('Noise');
-    
-    [rd4_numRegionsMat,rd4_regionValuesCell] = getRDCellStats(rd4Cell_up, MVec, noiseVec, cornerPts, scanicrs, ...
-        MValOfInterest, noiseValsOfInterest, cornerPtOfInterest, scanincrOfInterest, numSimsToCompute);
-    set(0,'CurrentFigure',figureVec(3));
     B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
     subplot(B{:});
     boxplot(rd4_numRegionsMat); title(sprintf('M = %d', MValOfInterest)); ylabel('# regions'); xlabel('Noise');
@@ -359,41 +370,42 @@ for MIdx=1:length(MValsOfInterest)
     subplot(B{:});
     boxplot2(rd4_regionValuesCell); title(sprintf('M = %d', MValOfInterest)); ylabel('cornerPt.'); xlabel('Noise');
     
-    [rd5_numRegionsMat,rd5_regionValuesCell] = getRDCellStats(rd5Cell_up, MVec, noiseVec, cornerPts, scanicrs, ...
-        MValOfInterest, noiseValsOfInterest, cornerPtOfInterest, scanincrOfInterest, numSimsToCompute);
-    set(0,'CurrentFigure',figureVec(4));
-    B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
-    subplot(B{:});
-    boxplot(rd5_numRegionsMat); title(sprintf('M = %d', MValOfInterest)); ylabel('# regions'); xlabel('Noise');
-    B = [subplotCfg plotIdx+1]; B = mat2cell(B,1,ones(1,numel(B)));
-    subplot(B{:});
-    boxplot2(rd5_regionValuesCell); title(sprintf('M = %d', MValOfInterest)); ylabel('cornerPt.'); xlabel('Noise');
-    
-    [rd6_numRegionsMat,rd6_regionValuesCell] = getRDCellStats(rd6Cell_up, MVec, noiseVec, cornerPts, scanicrs, ...
-        MValOfInterest, noiseValsOfInterest, cornerPtOfInterest, scanincrOfInterest, numSimsToCompute);
-    set(0,'CurrentFigure',figureVec(5));
-    B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
-    subplot(B{:});
-    boxplot(rd6_numRegionsMat); title(sprintf('M = %d', MValOfInterest)); ylabel('# regions'); xlabel('Noise');
-    B = [subplotCfg plotIdx+1]; B = mat2cell(B,1,ones(1,numel(B)));
-    subplot(B{:});
-    boxplot2(rd6_regionValuesCell); title(sprintf('M = %d', MValOfInterest)); ylabel('cornerPt.'); xlabel('Noise');
-    
-    [rd7_numRegionsMat,rd7_regionValuesCell] = getRDCellStats(rd7Cell_up, MVec, noiseVec, cornerPts, scanicrs, ...
-        MValOfInterest, noiseValsOfInterest, cornerPtOfInterest, scanincrOfInterest, numSimsToCompute);
-    set(0,'CurrentFigure',figureVec(6));
-    B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
-    subplot(B{:});
-    boxplot(rd7_numRegionsMat); title(sprintf('M = %d', MValOfInterest)); ylabel('# regions'); xlabel('Noise');
-    B = [subplotCfg plotIdx+1]; B = mat2cell(B,1,ones(1,numel(B)));
-    subplot(B{:});
-    boxplot2(rd7_regionValuesCell); title(sprintf('M = %d', MValOfInterest)); ylabel('cornerPt.'); xlabel('Noise');
+%     [rd5_numRegionsMat,rd5_regionValuesCell] = getRDCellStats(rd5Cell_up, MVec, noiseVec, cornerPts, scanincrs, ...
+%         MValOfInterest, noiseValsOfInterest, cornerPtOfInterest, scanincrOfInterest, numSimsToCompute);
+%     set(0,'CurrentFigure',figureVec(4));
+%     B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
+%     subplot(B{:});
+%     boxplot(rd5_numRegionsMat); title(sprintf('M = %d', MValOfInterest)); ylabel('# regions'); xlabel('Noise');
+%     B = [subplotCfg plotIdx+1]; B = mat2cell(B,1,ones(1,numel(B)));
+%     subplot(B{:});
+%     boxplot2(rd5_regionValuesCell); title(sprintf('M = %d', MValOfInterest)); ylabel('cornerPt.'); xlabel('Noise');
+%     
+%     [rd6_numRegionsMat,rd6_regionValuesCell] = getRDCellStats(rd6Cell_up, MVec, noiseVec, cornerPts, scanincrs, ...
+%         MValOfInterest, noiseValsOfInterest, cornerPtOfInterest, scanincrOfInterest, numSimsToCompute);
+%     set(0,'CurrentFigure',figureVec(5));
+%     B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
+%     subplot(B{:});
+%     boxplot(rd6_numRegionsMat); title(sprintf('M = %d', MValOfInterest)); ylabel('# regions'); xlabel('Noise');
+%     B = [subplotCfg plotIdx+1]; B = mat2cell(B,1,ones(1,numel(B)));
+%     subplot(B{:});
+%     boxplot2(rd6_regionValuesCell); title(sprintf('M = %d', MValOfInterest)); ylabel('cornerPt.'); xlabel('Noise');
+%     
+%     [rd7_numRegionsMat,rd7_regionValuesCell] = getRDCellStats(rd7Cell_up, MVec, noiseVec, cornerPts, scanincrs, ...
+%         MValOfInterest, noiseValsOfInterest, cornerPtOfInterest, scanincrOfInterest, numSimsToCompute);
+%     set(0,'CurrentFigure',figureVec(6));
+%     B = [subplotCfg plotIdx]; B = mat2cell(B,1,ones(1,numel(B)));
+%     subplot(B{:});
+%     boxplot(rd7_numRegionsMat); title(sprintf('M = %d', MValOfInterest)); ylabel('# regions'); xlabel('Noise');
+%     B = [subplotCfg plotIdx+1]; B = mat2cell(B,1,ones(1,numel(B)));
+%     subplot(B{:});
+%     boxplot2(rd7_regionValuesCell); title(sprintf('M = %d', MValOfInterest)); ylabel('cornerPt.'); xlabel('Noise');
     
     plotIdx = plotIdx + 2;
 end
-set(0,'CurrentFigure',figureVec(1)); figtitle('RD-1');
-set(0,'CurrentFigure',figureVec(2)); figtitle('RD-3');
-set(0,'CurrentFigure',figureVec(3)); figtitle('RD-4');
-set(0,'CurrentFigure',figureVec(4)); figtitle('RD-5');
-set(0,'CurrentFigure',figureVec(5)); figtitle('RD-6');
-set(0,'CurrentFigure',figureVec(6)); figtitle('RD-7');
+% set(0,'CurrentFigure',figureVec(1)); figtitle('RD-1');
+% set(0,'CurrentFigure',figureVec(2)); figtitle('RD-3');
+% set(0,'CurrentFigure',figureVec(3)); figtitle('RD-4');
+% set(0,'CurrentFigure',figureVec(4)); figtitle('RD-5');
+% set(0,'CurrentFigure',figureVec(5)); figtitle('RD-6');
+% set(0,'CurrentFigure',figureVec(6)); figtitle('RD-7');
+set(0,'CurrentFigure',figureVec(1)); figtitle('RD-4');
