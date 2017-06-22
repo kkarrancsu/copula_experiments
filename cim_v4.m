@@ -131,40 +131,11 @@ if(nargout>1)
         % disambiguate this to determine the number of regions!
         regionMat1 = rectangleAggr{idx1}{1}{idx3_1};
         regionMat2 = rectangleAggr{idx1}{2}{idx3_2};
-        
-        % take into account orientation, because this affects how we merge
-        % the rectangles
-        if(metricMaxIdx==2)
-            orientation = 0;  % means u/v
-        elseif(metricMaxIdx==4)
-            orientation = 1;  % means v/u
-            % swap the indices of the regionMat variables so that we always
-            % view in terms of u/v
-            tmp = regionMat1(1:2,:);
-            regionMat1(1:2,:) = regionMat1(3:4,:);
-            regionMat1(3:4,:) = tmp;
-            
-            tmp = regionMat2(1:2,:);
-            regionMat2(1:2,:) = regionMat2(3:4,:);
-            regionMat2(3:4,:) = tmp;
-        else
-            error('Unknown state!');
-        end
-        regionMat1
-        regionMat2
-        
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% % % % % TODO: whatever is contiguous and has the same sign should be
-% % % % % combined!! each of the idx1,idx2, and idx3 when indexed into 
-% % % % % rectangleAggr looks like follows:
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
-        % first detect contiguous regions
-        
-        % for each contiguous region, compute the sign of taukl, if the
-        % signs are the same, we merge the rectangles, otherwise we keep
-        % them separate
-        
+        % TODO: in the future, think about fancy merging of the regions to
+        % get a more accurate monotonicity count, for now, flatten the
+        % region matrices and return as a first order approximation of the
+        % monotonic regions
+        rectangleCellOut = [regionMat1 regionMat2];
     end
 end
 

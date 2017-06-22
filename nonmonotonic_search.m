@@ -15,7 +15,7 @@ for ii=1:sz(1)
             % over-fitting
             tauklVal = abs(taukl(data(:,ii),data(:,jj)));
             percentageDiff = abs(cimVal-tauklVal)/tauklVal;
-            if(percentageDiff>depThresh)
+            if(percentageDiff>monotonic_thresh)
                 % means we didn't overfit and we now store the regions and
                 % the dependency indices
                 rco = RectanglesCell{ii,jj};
@@ -24,7 +24,7 @@ for ii=1:sz(1)
                 x.feature1 = ii;
                 x.feature2 = jj;
                 x.depVal = cimVal;
-                x.numRegions = 
+                x.numRegions = size(rco,2);
                 resultsCell{resultsCellIdx} = x;
                 resultsCellIdx = resultsCellIdx + 1;
             end
