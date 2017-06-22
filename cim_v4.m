@@ -65,7 +65,7 @@ axisCfgs = [1 2];
 ax2minmaxCfgs = { {[0,1]}, {[0,0.5],[0.5,1]} };
 
 % perform a scan pattern while varying U with V full-range, then swap the U-V axes
-metrics = []; maxIIcell = {};
+metrics = []; maxIICell = {};
 rectangleAggr = {};  rectangleAggrIdx = 1;
 for axisCfg=axisCfgs
     for ax2minmaxCfgsIdx=1:length(ax2minmaxCfgs)
@@ -112,7 +112,7 @@ for axisCfg=axisCfgs
         % metric for it.  at the end of processing, we compute a
         % maximum.
         [m,maxIIVec] = computeMetricFromAggregates(metricVecAggr, numPtsVecAggr);
-        metrics = [metrics m]; maxIIcell{rectangleAggrIdx} = maxIIVec;
+        metrics = [metrics m]; maxIICell{rectangleAggrIdx} = maxIIVec;
         rectangleAggr{rectangleAggrIdx} = rectangleCellAggr;
         rectangleAggrIdx = rectangleAggrIdx + 1;
     end
@@ -121,37 +121,42 @@ end
 [metric, metricMaxIdx] = max(metrics);
 if(nargout>1)
     idx1 = metricMaxIdx;
-    tmp = maxIIcell{idx1};
-    if(length(tmp)==1)
+    tmp = maxIICell{idx1};
+    if(mod(metricMaxIdx,2)~=0)  % means full v-scale scan was best option
         idx2 = 1; idx3 = tmp(1);
         rectangleCellOut = rectangleAggr{idx1}{idx2}{idx3};
     else
         % WARNING -- need to change this along w/ the scan-patterns
-        idx2_1a = 1; idx2_1b = tmp(1);
-        idx2_2a = 2; idx2_2b = tmp(2);
+        idx3_1 = tmp(1); idx3_2 = tmp(2);
         % disambiguate this to determine the number of regions!
+        regionMat1 = rectangleAggr{idx1}{1}{idx3_1};
+        regionMat2 = rectangleAggr{idx1}{2}{idx3_2};
+        
+        % take into account orientation, because this affects how we merge
+        % the rectangles
+        if(metricMaxIdx==2)
+            orientation = 0;  % means u/v
+        elseif(metricMaxIdx==4)
+            orientation = 1;  % means v/u
+            % swap the indices of the regionMat variables so that we always
+            % view in terms of u/v
+            tmp = regionMat1(1:2,:);
+            regionMat1(1:2,:) = regionMat1(3:4,:);
+            regionMat1(3:4,:) = tmp;
+            
+            tmp = regionMat2(1:2,:);
+            regionMat2(1:2,:) = regionMat2(3:4,:);
+            regionMat2(3:4,:) = tmp;
+        else
+            error('Unknown state!');
+        end
+        regionMat1
+        regionMat2
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % % % % TODO: whatever is contiguous and has the same sign should be
 % % % % % combined!! each of the idx1,idx2, and idx3 when indexed into 
 % % % % % rectangleAggr looks like follows:
-% % % % % rectangleAggr{idx1}{idx2_1a}{idx2_1b}
-% % % % % 
-% % % % % ans =
-% % % % % 
-% % % % %          0
-% % % % %     1.0000
-% % % % %          0
-% % % % %     0.5000
-% % % % % 
-% % % % % rectangleAggr{idx1}{idx2_2a}{idx2_2b}
-% % % % % 
-% % % % % ans =
-% % % % % 
-% % % % %          0
-% % % % %     1.0000
-% % % % %     0.5000
-% % % % %     1.0000
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         % first detect contiguous regions
@@ -189,9 +194,10 @@ for jj=1:length(metricVecAggr)
         if(weightedMetricCompute>weightedMetric)
             weightedMetric = weightedMetricCompute;
             numPts = numPtsCompute;
-            maxIIVec = [maxIIVec ii];
+            maxIIVal = ii;
         end
     end
+    maxIIVec = [maxIIVec maxIIVal];
     metrics(1,jj) = weightedMetric;
     metrics(2,jj) = numPts;
 end
