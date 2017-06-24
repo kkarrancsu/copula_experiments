@@ -88,7 +88,7 @@ close all;
 dbstop if error;
 
 cimVersion = 4;
-MVecToPlot = 100:100:700;
+MVecToPlot = 100:100:800;
 plotPowerSensitivity_withinM(cimVersion,MVecToPlot);
 
 %% Run the algorithm sensitivity analysis
