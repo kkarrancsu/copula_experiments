@@ -45,7 +45,7 @@ clear;
 clc;
 close all;
 
-M = 200;
+M = 700;
 cimVersion = 4;
 
 % load the correct data
@@ -88,7 +88,7 @@ close all;
 dbstop if error;
 
 cimVersion = 4;
-MVecToPlot = 100:100:400;
+MVecToPlot = 100:100:700;
 plotPowerSensitivity_withinM(cimVersion,MVecToPlot);
 
 %% Run the algorithm sensitivity analysis
@@ -139,7 +139,7 @@ clc;
 close all;
 dbstop if error;
 
-M = 400;
+M = 800;
 cimVersion = 4;
 
 % load the correct data
@@ -180,7 +180,7 @@ close all;
 dbstop if error;
 
 cimVersion = 4;
-MVecToPlot = 100:100:400;
-% MVecToPlot = 100;
+MVecToPlot = 100:100:800;
 % plotAlgoSensitivity_acrossM(cimVersion,MVecToPlot);
 plotAlgoSensitivity_withinM(cimVersion,MVecToPlot);
+figtitle(sprintf('Algorithm Sensitivity (M=%d - %d)',min(MVecToPlot),max(MVecToPlot)));

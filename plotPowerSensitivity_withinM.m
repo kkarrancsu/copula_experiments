@@ -41,6 +41,10 @@ for MIdx=1:length(MVecToPlot)
         load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/%s_powerSensitivity_M_%d.mat', fnameStr, M));
     end
     
+    num_noise_test_min = 1;
+    num_noise_test_max = 30;
+    noiseVec = num_noise_test_min:num_noise_test_max;
+
     linearDep = zeros(2,length(noiseVec));      % 1 - min
                                                 % 2 - max
     quadraticDep = zeros(2,length(noiseVec));
@@ -50,7 +54,6 @@ for MIdx=1:length(MVecToPlot)
     fourthRootDep = zeros(2,length(noiseVec));
     circleDep = zeros(2,length(noiseVec));
     stepDep = zeros(2,length(noiseVec));
-    indep = zeros(2,length(noiseVec));
     
     % collect all the data for each of the scanincrs we tested and store in
     % a matrix, for each dependency type, we plot the difference between
@@ -58,27 +61,24 @@ for MIdx=1:length(MVecToPlot)
     for ii=1:length(scanincrsToTest)
         scanincrVal = scanincrsToTest(ii);
         % TODO: INDEX PROPERLY
-        rawData = powerCurve{ii};  % algoSensitivityData is loaded from the file above
-        linearData = rawData.linearDep(CIMVECIDX,:);
-        quadraticData = rawData.quadraticDep(CIMVECIDX,:);
-        cubicData = rawData.cubicDep(CIMVECIDX,:);
-        sinusoidalData = rawData.sinusoidalDep(CIMVECIDX,:);
-        hiFreqSinData = rawData.hiFreqSinDep(CIMVECIDX,:);
-        fourthRootData = rawData.fourthRootDep(CIMVECIDX,:);
-        circleData = rawData.circleDep(CIMVECIDX,:);
-        stepData = rawData.stepDep(CIMVECIDX,:);
-        indepData = rawData.indep(CIMVECIDX,:);
+        linearData     = squeeze(powerCurve(ii,1,:));
+        quadraticData  = squeeze(powerCurve(ii,2,:));
+        cubicData      = squeeze(powerCurve(ii,3,:));
+        sinusoidalData = squeeze(powerCurve(ii,4,:));
+        hiFreqSinData  = squeeze(powerCurve(ii,5,:));
+        fourthRootData = squeeze(powerCurve(ii,6,:));
+        circleData     = squeeze(powerCurve(ii,7,:));
+        stepData       = squeeze(powerCurve(ii,8,:));
         
         % seed the data
         if(ii==1)
             for jj=1:2
-                linearDep(jj,:) = linearData;
-                quadraticDep(jj,:) = quadraticData;
-                cubicDep(jj,:) = cubicData;
-                fourthRootDep(jj,:) = fourthRootData;
-                circleDep(jj,:) = circleData;
-                stepDep(jj,:) = stepData;
-                indep(jj,:) = indepData;
+                linearDep(jj,:) = linearData';
+                quadraticDep(jj,:) = quadraticData';
+                cubicDep(jj,:) = cubicData';
+                fourthRootDep(jj,:) = fourthRootData';
+                circleDep(jj,:) = circleData';
+                stepDep(jj,:) = stepData';
             end
         end
         if(scanincrVal<0.1138)
@@ -262,40 +262,36 @@ for ii=1:length(noiseVec)
 end
 
 figure;
-subplot(3,3,1);
+subplot(2,4,1);
 plot(noiseVec,linearDepToPlot(2,:)-linearDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Linear'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,2);
+subplot(2,4,2);
 plot(noiseVec,quadraticDepToPlot(2,:)-quadraticDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Quadratic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,3);
+subplot(2,4,3);
 plot(noiseVec,cubicDepToPlot(2,:)-cubicDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Cubic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,4);
+subplot(2,4,4);
 plot(noiseVec,sinusoidalDepToPlot(2,:)-sinusoidalDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Sinusoidal'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,5);
+subplot(2,4,5);
 plot(noiseVec,hiFreqSinDepToPlot(2,:)-hiFreqSinDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Hi-Freq Sin'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,6);
+subplot(2,4,6);
 plot(noiseVec,fourthRootDepToPlot(2,:)-fourthRootDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Fourth-Root'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,7);
+subplot(2,4,7);
 plot(noiseVec,circleDepToPlot(2,:)-circleDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Circular'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,8);
+subplot(2,4,8);
 plot(noiseVec,stepDepToPlot(2,:)-stepDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Step'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
-
-subplot(3,3,9);
-plot(noiseVec,indepToPlot(2,:)-indepToPlot(1,:));
-grid on; xlabel('Noise'); title('Independence'); ylabel('max[$$\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 end
