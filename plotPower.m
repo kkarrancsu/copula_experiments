@@ -4,6 +4,7 @@ if(style==1)
     numDepTypes = 8;
     % the original Simon/Tibshirani style of power-plots
     plotStyle = {'o-.', '+-.', 'd-.', 'v-.', 's-.', 'p-.'};
+    captionText = {'(a)', '(b)', '(c)', '(d)', '(e)', '(f)', '(g)', '(h)'};
     % inlet plot configuration
     M_inlet = 200;
     if(M<=500)
@@ -27,6 +28,7 @@ if(style==1)
 
     % we break it up into 2 figures, 2x2 subplots on each figure for
     % readability
+    captionTextIdx = 1;
     for figNum=[1,2]
         figure(figNum);
         for subplotNum=1:4
@@ -39,7 +41,9 @@ if(style==1)
                 hold on;
             end
             axis([min(noiseVec) max(noiseVec) 0 1]);
-            xlabel({'Noise Level','(a)'}, 'FontSize', 20); ylabel('Power', 'FontSize', 20); grid on;
+            xlabel({'Noise Level',captionText{captionTextIdx}}, 'FontSize', 20); 
+            captionTextIdx = captionTextIdx + 1;
+            ylabel('Power', 'FontSize', 20); grid on;
             h.FontSize = 20; 
             loc_inset = [h.Position(1)+inset_bufX h.Position(2)+inset_bufY inset_width inset_height];
             ax = axes('Position',loc_inset);
@@ -49,7 +53,8 @@ if(style==1)
             ax.Box = 'on'; ax.XTick = []; ax.YTick = [];
             ax.XLim = [min(inletX) max(inletX)];
             ax.YLim = [min(inletData(depTypeIdx,:)) max(inletData(depTypeIdx,:))];
-            for ii=1:length(labels)
+            hhCell{1}.LineWidth = 5; 
+            for ii=2:length(labels)
                 hhCell{ii}.LineWidth = 1.5; 
             end
         end
