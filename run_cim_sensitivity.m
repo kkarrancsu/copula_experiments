@@ -180,7 +180,7 @@ close all;
 dbstop if error;
 
 cimVersion = 4;
-MVecToPlot = 100:100:800;
+MVecToPlot = 100:100:900;
 % plotAlgoSensitivity_acrossM(cimVersion,MVecToPlot);
 plotAlgoSensitivity_withinM(cimVersion,MVecToPlot);
 figtitle(sprintf('Algorithm Sensitivity (M=%d - %d)',min(MVecToPlot),max(MVecToPlot)));

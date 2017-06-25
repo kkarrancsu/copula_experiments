@@ -592,7 +592,7 @@ else
 end
 
 % select for which M to plot
-M = 400;
+M = 450;
 % find the index we need to extract
 MIdx = find(M_vec==M);
 

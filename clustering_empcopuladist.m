@@ -7,7 +7,7 @@ xMax = 1;
 num_noise = 30;                    % The number of different noise levels used
 noise = 3;                         % A constant to determine the amount of noise
 
-MVec = 100:100:1000;
+MVecResults = 100:100:1000;
 
 options=optimset('Display', 'off');
 
@@ -18,7 +18,7 @@ K = 50;
 weightVec = ones(K,1);
 numMCSim = 100;
 
-for M=MVec
+for M=MVecResults
     % Setup M & W copulas
     x = rand(M,1)*(xMax-xMin)+xMin;
     y1 = x;
@@ -231,11 +231,11 @@ noise = 3;                         % A constant to determine the amount of noise
 numNoisePtsToCompute = 10;
 
 numMCSims = 1000;
-MVec = 100:100:1000;
+MVecResults = 100:100:1000;
 num_noise_test_min = 1;
 num_noise_test_max = 30;
 
-M = MVec(1);
+M = MVecResults(1);
 noiseVec = linspace(num_noise_test_min,num_noise_test_max,numNoisePtsToCompute);
 
 noiseIdx = 1;
@@ -407,7 +407,7 @@ xMax = 1;
 num_noise = 30;                    % The number of different noise levels used
 noise = 3;                         % A constant to determine the amount of noise
 
-MVec = 100:100:1000;
+MVecResults = 100:100:1000;
 num_noise_test_min = 0;
 num_noise_test_max = 30;
 noiseVec = num_noise_test_min:num_noise_test_max;
@@ -419,7 +419,7 @@ dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
 
 distCellM = cell(length(noiseVec),numDepTypes);
 distCellW = cell(length(noiseVec),numDepTypes);
-for M=MVec
+for M=MVecResults
     lIdx = 1;
     for l=noiseVec
         distVecM_dep1_mc = zeros(1,M-1); distVecW_dep1_mc = zeros(1,M-1);
@@ -868,13 +868,13 @@ num_noise = 30;                    % The number of different noise levels used
 noise = 3;                         % A constant to determine the amount of noise
 K = 25;
 
-MVec = 100:100:1000;
+MVecResults = 100:100:1000;
 num_noise_test_min = 0;
 num_noise_test_max = 30;
 noiseVec = num_noise_test_min:num_noise_test_max;
 numMCSim = 100;
 
-M = MVec(5);
+M = MVecResults(5);
 l = 1;
 
 x = rand(M,1)*(xMax-xMin)+xMin;
@@ -931,7 +931,7 @@ xMax = 1;
 num_noise = 30;                    % The number of different noise levels used
 noise = 3;                         % A constant to determine the amount of noise
 
-MVec = [100:100:1000 2500 5000 10000];
+MVecResults = [100:100:1000 2500 5000 10000];
 num_noise_test_min = 0;
 num_noise_test_max = 30;
 noiseVec = num_noise_test_min:num_noise_test_max;
@@ -967,7 +967,7 @@ end
 dispstat('','init'); % One time only initialization
 dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
 
-for M=MVec
+for M=MVecResults
     % Test Empirical copula distance as a distance measure under various
     % amounts of noise
     linearDep     = zeros(3,length(noiseVec));
@@ -1132,9 +1132,7 @@ end
 clear;
 clc;
 
-M = 200;
 cim_version = 4;
-
 switch cim_version
     case 3
         fnameStr = 'cimv3';
@@ -1155,112 +1153,247 @@ switch cim_version
         error('no data exists!');
 end
 
-if(ispc)
-    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\regionDetection_%s_M_%d.mat', fnameStr, M));
-elseif(ismac)
-    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/regionDetection_%s_M_%d.mat', fnameStr, M));
-else
-    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/regionDetection_%s_M_%d.mat', fnameStr, M));
+MVecDataAvailable = [100:100:1000 2500];  % add 5000 and 10000 to this as they come online
+sseTol = 0.01;
+
+numDep = 8;
+depTestVec = ones(1,numDep);
+MVecResults = zeros(1,numDep);
+for MIdx=1:length(MVecDataAvailable)
+    M = MVecDataAvailable(MIdx);
+    if(ispc)
+        load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\regionDetection_%s_M_%d.mat', fnameStr, M));
+    elseif(ismac)
+        load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/regionDetection_%s_M_%d.mat', fnameStr, M));
+    else
+        load(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/regionDetection_%s_M_%d.mat', fnameStr, M));
+    end
+
+    % compute error between theoretical CIM and actual CIM for each of the
+    % dependencies, if the total error is within the sseTol value, then we
+    % store that as the M Value for which the error is acceptable.
+    
+    if(depTestVec(1))
+        linearDep(2,1) = 1;
+        linearDepErr = sum( (linearDep(2,:)-linearDep(3,:)).^2 );
+        if(linearDepErr<sseTol)
+            MVecResults(1) = M;
+            depTestVec(1) = 0;
+            linearDepToPlot = linearDep;
+        end
+    end
+    
+    if(depTestVec(2))
+        quadraticDep(2,1) = 1;
+        quadraticDepErr = sum( (quadraticDep(2,:)-quadraticDep(3,:)).^2 );
+        if(quadraticDepErr<sseTol)
+            MVecResults(2) = M;
+            depTestVec(2) = 0;
+            quadraticDepToPlot = quadraticDep;
+        end
+    end
+    
+    if(depTestVec(3))
+        cubicDep(2,1) = 1;
+        cubicDepErr = sum( (cubicDep(2,:)-cubicDep(3,:)).^2 );
+        if(cubicDepErr<sseTol)
+            MVecResults(3) = M;
+            depTestVec(3) = 0;
+            cubicDepToPlot = cubicDep;
+        end
+    end
+    
+    if(depTestVec(4))
+        sinusoidalDep(2,1) = 1;
+        sinusoidalDepErr = sum( (sinusoidalDep(2,:)-sinusoidalDep(3,:)).^2 );
+        if(sinusoidalDepErr<sseTol)
+            MVecResults(4) = M;
+            depTestVec(4) = 0;
+            sinusoidalDepToPlot = sinusoidalDep;
+        end
+    end
+    
+    if(depTestVec(5))
+        % b/c of an error in our simulations, we update as follows instead
+        % of resimulating.  all this is saying is that the theoretical
+        % value of CIM for the hi-freq-sin function dependency (idx=2), w/ noise
+        % value =0 (idx=1) is 1;
+        hiFreqSinDep(2,1) = 1;
+        hiFreqSinDepErr = sum( (hiFreqSinDep(2,:)-hiFreqSinDep(3,:)).^2 );
+        if(hiFreqSinDepErr<sseTol)
+            MVecResults(5) = M;
+            depTestVec(5) = 0;
+            hiFreqSinDepToPlot = hiFreqSinDep;
+        end
+    end
+    
+    if(depTestVec(6))
+        fourthRootDep(2,1) = 1;
+        fourthRootDepErr = sum( (fourthRootDep(2,:)-fourthRootDep(3,:)).^2 );
+        if(fourthRootDepErr<sseTol)
+            MVecResults(6) = M;
+            depTestVec(6) = 0;
+            fourthRootDepToPlot = fourthRootDep;
+        end
+    end
+    
+    if(depTestVec(7))
+        circleDep(2,1) = 1;
+        circleDepErr = sum( (circleDep(2,:)-circleDep(3,:)).^2 );
+        if(circleDepErr<sseTol)
+            MVecResults(7) = M;
+            depTestVec(7) = 0;
+            circleDepToPlot = circleDep;
+        end
+    end
+    
+    if(depTestVec(8))
+        % b/c of an error in our simulations, we update as follows instead
+        % of resimulating.  all this is saying is that the theoretical
+        % value of CIM for the step function dependency (idx=2), w/ noise
+        % value =0 (idx=1) is 1;
+        stepDep(2,1) = 1;
+        stepDepErr = sum( (stepDep(2,:)-stepDep(3,:)).^2 );
+        if(stepDepErr<sseTol)
+            MVecResults(8) = M;
+            depTestVec(8) = 0;
+            stepDepToPlot = stepDep;
+        end
+    end
 end
 
-subplot(3,3,1);
-hh1 = plot(noiseVec,linearDep(1,:),'o-.', ...
-     noiseVec,linearDep(2,:),'+-.', ...
-     noiseVec,linearDep(3,:),'d-.');
+% use max M for any remainders that didn't meet the SSE
+for depTestValIdx=1:length(depTestVec)
+    if(depTestVec(depTestValIdx)==1)
+        M = max(MVecDataAvailable);
+        if(ispc)
+            load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\regionDetection_%s_M_%d.mat', fnameStr, M));
+        elseif(ismac)
+            load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/regionDetection_%s_M_%d.mat', fnameStr, M));
+        else
+            load(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/regionDetection_%s_M_%d.mat', fnameStr, M));
+        end
+        MVecResults(depTestValIdx) = M;
+        switch depTestValIdx
+            case 1
+                linearDepToPlot = linearDep;
+            case 2
+                quadraticDepToPlot = quadraticDep;
+            case 3
+                cubicDepToPlot = cubicDep;
+            case 4
+                sinusoidalDepToPlot = sinusoidalDep;
+            case 5
+                hiFreqSinDepToPlot = hiFreqSinDep;
+            case 6
+                fourthRootDepToPlot = fourthRootDep;
+            case 7
+                circleDepToPlot = circleDep;
+            case 8
+                stepDepToPlot = stepDep;
+            otherwise
+                error('UNK!');
+        end
+    end
+end
+
+
+subplot(2,4,1);
+hh1 = plot(noiseVec,linearDepToPlot(1,:),'o-.', ...
+     noiseVec,linearDepToPlot(2,:),'+-.', ...
+     noiseVec,linearDepToPlot(3,:),'d-.');
 grid on;
 xlabel('noise');
 legend('\tau','CIM Theoretical',legendStr);
-title('Linear Dependency');
+title({'Linear Dependency', sprintf('min(M)=%d',MVecResults(1))});
 hh1(1).LineWidth = 1.5; 
 hh1(2).LineWidth = 1.5; 
 hh1(3).LineWidth = 1.5; 
 
-subplot(3,3,2);
-hh1 = plot(noiseVec,quadraticDep(1,:),'o-.', ...
-     noiseVec,quadraticDep(2,:),'+-.', ...
-     noiseVec,quadraticDep(3,:),'d-.');
+subplot(2,4,2);
+hh1 = plot(noiseVec,quadraticDepToPlot(1,:),'o-.', ...
+     noiseVec,quadraticDepToPlot(2,:),'+-.', ...
+     noiseVec,quadraticDepToPlot(3,:),'d-.');
 grid on;
 xlabel('noise');
-title('Quadratic Dependency');
+title({'Quadratic Dependency', sprintf('min(M)=%d',MVecResults(2))});
 hh1(1).LineWidth = 1.5; 
 hh1(2).LineWidth = 1.5; 
 hh1(3).LineWidth = 1.5; 
 
-subplot(3,3,3);
-hh1 = plot(noiseVec,cubicDep(1,:),'o-.', ...
-     noiseVec,cubicDep(2,:),'+-.', ...
-     noiseVec,cubicDep(3,:),'d-.');
+subplot(2,4,3);
+hh1 = plot(noiseVec,cubicDepToPlot(1,:),'o-.', ...
+     noiseVec,cubicDepToPlot(2,:),'+-.', ...
+     noiseVec,cubicDepToPlot(3,:),'d-.');
 grid on;
 xlabel('noise');
-title('Cubic Dependency');
+title({'Cubic Dependency', sprintf('min(M)=%d',MVecResults(3))});
 hh1(1).LineWidth = 1.5; 
 hh1(2).LineWidth = 1.5; 
 hh1(3).LineWidth = 1.5; 
 
-subplot(3,3,4);
-hh1 = plot(noiseVec,sinusoidalDep(1,:),'o-.', ...
-     noiseVec,sinusoidalDep(2,:),'+-.', ...
-     noiseVec,sinusoidalDep(3,:),'d-.');
+subplot(2,4,4);
+hh1 = plot(noiseVec,sinusoidalDepToPlot(1,:),'o-.', ...
+     noiseVec,sinusoidalDepToPlot(2,:),'+-.', ...
+     noiseVec,sinusoidalDepToPlot(3,:),'d-.');
 grid on;
 xlabel('noise');
-title('LF-Sin Dependency');
+title({'LF-Sin Dependency', sprintf('min(M)=%d',MVecResults(4))});
 hh1(1).LineWidth = 1.5; 
 hh1(2).LineWidth = 1.5; 
 hh1(3).LineWidth = 1.5; 
 
-subplot(3,3,5);
-hh1 = plot(noiseVec,hiFreqSinDep(1,:),'o-.', ...
-     noiseVec,hiFreqSinDep(2,:),'+-.', ...
-     noiseVec,hiFreqSinDep(3,:),'d-.');
+subplot(2,4,5);
+hh1 = plot(noiseVec,hiFreqSinDepToPlot(1,:),'o-.', ...
+     noiseVec,hiFreqSinDepToPlot(2,:),'+-.', ...
+     noiseVec,hiFreqSinDepToPlot(3,:),'d-.');
 grid on;
 xlabel('noise');
-title('HF-Sin Dependency');
+title({'HF-Sin Dependency', sprintf('min(M)=%d',MVecResults(5))});
 hh1(1).LineWidth = 1.5; 
 hh1(2).LineWidth = 1.5; 
 hh1(3).LineWidth = 1.5; 
 
-subplot(3,3,6);
-hh1 = plot(noiseVec,fourthRootDep(1,:),'o-.', ...
-     noiseVec,fourthRootDep(2,:),'+-.', ...
-     noiseVec,fourthRootDep(3,:),'d-.');
+subplot(2,4,6);
+hh1 = plot(noiseVec,fourthRootDepToPlot(1,:),'o-.', ...
+     noiseVec,fourthRootDepToPlot(2,:),'+-.', ...
+     noiseVec,fourthRootDepToPlot(3,:),'d-.');
 grid on;
 xlabel('noise');
-title('Fourth-Root Dependency');
+title({'Fourth-Root Dependency', sprintf('min(M)=%d',MVecResults(6))});
 hh1(1).LineWidth = 1.5; 
 hh1(2).LineWidth = 1.5; 
 hh1(3).LineWidth = 1.5; 
 
-subplot(3,3,7);
-hh1 = plot(noiseVec,circleDep(1,:),'o-.', ...
-     noiseVec,circleDep(2,:),'+-.', ...
-     noiseVec,circleDep(3,:),'d-.');
+subplot(2,4,7);
+hh1 = plot(noiseVec,circleDepToPlot(1,:),'o-.', ...
+     noiseVec,circleDepToPlot(2,:),'+-.', ...
+     noiseVec,circleDepToPlot(3,:),'d-.');
 grid on;
 xlabel('noise');
-title('Circular Dependency');
+title({'Circular Dependency', sprintf('min(M)=%d',MVecResults(7))});
 hh1(1).LineWidth = 1.5; 
 hh1(2).LineWidth = 1.5; 
 hh1(3).LineWidth = 1.5; 
 
-subplot(3,3,8);
-hh1 = plot(noiseVec,stepDep(1,:),'o-.', ...
-     noiseVec,stepDep(2,:),'+-.', ...
-     noiseVec,stepDep(3,:),'d-.');
+subplot(2,4,8);
+hh1 = plot(noiseVec,stepDepToPlot(1,:),'o-.', ...
+     noiseVec,stepDepToPlot(2,:),'+-.', ...
+     noiseVec,stepDepToPlot(3,:),'d-.');
 grid on;
 xlabel('noise');
-title('Step-Function Dependency');
+title({'Step-Function Dependency', sprintf('min(M)=%d',MVecResults(8))});
 hh1(1).LineWidth = 1.5; 
 hh1(2).LineWidth = 1.5; 
 hh1(3).LineWidth = 1.5; 
 
-subplot(3,3,9);
-hh1 = plot(noiseVec,indep(1,:),'o-.', ...
-     noiseVec,indep(2,:),'+-.', ...
-     noiseVec,indep(3,:),'d-.');
-grid on;
-xlabel('noise');
-title('Independence');
-hh1(1).LineWidth = 1.5; 
-hh1(2).LineWidth = 1.5; 
-hh1(3).LineWidth = 1.5; 
-
-figtitle(sprintf('M=%d\n', M));
+% subplot(3,3,9);
+% hh1 = plot(noiseVec,indep(1,:),'o-.', ...
+%      noiseVec,indep(2,:),'+-.', ...
+%      noiseVec,indep(3,:),'d-.');
+% grid on;
+% xlabel('noise');
+% title('Independence');
+% hh1(1).LineWidth = 1.5; 
+% hh1(2).LineWidth = 1.5; 
+% hh1(3).LineWidth = 1.5; 
