@@ -577,34 +577,4 @@ labels = {'CIM', 'CIMv3', 'CIMv4', 'CIMv5', 'CIMv6', 'CIMv7'};
 plotStyle = 1;
 plotPower(powerMat, M, labels, noiseVec, num_noise_test_min, num_noise_test_max, plotStyle)
 
-%%
-clear;
-clc;
-close all;
-dbstop if error;
 
-if(ispc)
-    load('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\power_all_cimv4.mat');
-elseif(ismac)
-    load('/Users/Kiran/ownCloud/PhD/sim_results/independence/power_all_cimv4.mat');
-else
-    load('/home/kiran/ownCloud/PhD/sim_results/independence/power_all_cimv4.mat');
-end
-
-% select for which M to plot
-M = 450;
-% find the index we need to extract
-MIdx = find(M_vec==M);
-
-powerMat = zeros(6,8,length(num_noise_test_min:num_noise_test_max));
-powerMat(1,:,:) = rsdmPower(:,:,MIdx);
-powerMat(2,:,:) = cosPower(:,:,MIdx);
-powerMat(3,:,:) = rdcPower(:,:,MIdx);
-powerMat(4,:,:) = ticePower(:,:,MIdx);
-powerMat(5,:,:) = dcorrPower(:,:,MIdx);
-powerMat(6,:,:) = ccorrPower(:,:,MIdx);
-noiseVec = (num_noise_test_min:num_noise_test_max)/10;
-
-labels = {'CIM', 'CoS', 'RDC', 'TICe', 'dCor', 'cCor'};
-plotStyle = 1;
-plotPower(powerMat, M, labels, noiseVec, num_noise_test_min, num_noise_test_max, plotStyle)

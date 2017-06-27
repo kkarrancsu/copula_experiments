@@ -317,40 +317,40 @@ end
 % grid on; xlabel('Noise'); title('Independence');
 
 figure;
-subplot(3,3,1);
+subplot(2,4,1);
 plot(noiseVec,linearDepToPlot(2,:)-linearDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Linear'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,2);
+subplot(2,4,2);
 plot(noiseVec,quadraticDepToPlot(2,:)-quadraticDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Quadratic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,3);
+subplot(2,4,3);
 plot(noiseVec,cubicDepToPlot(2,:)-cubicDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Cubic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,4);
+subplot(2,4,4);
 plot(noiseVec,sinusoidalDepToPlot(2,:)-sinusoidalDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Sinusoidal'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,5);
+subplot(2,4,5);
 plot(noiseVec,hiFreqSinDepToPlot(2,:)-hiFreqSinDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Hi-Freq Sin'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,6);
+subplot(2,4,6);
 plot(noiseVec,fourthRootDepToPlot(2,:)-fourthRootDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Fourth-Root'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,7);
+subplot(2,4,7);
 plot(noiseVec,circleDepToPlot(2,:)-circleDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Circular'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,8);
+subplot(2,4,8);
 plot(noiseVec,stepDepToPlot(2,:)-stepDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Step'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
-subplot(3,3,9);
-plot(noiseVec,indepToPlot(2,:)-indepToPlot(1,:));
-grid on; xlabel('Noise'); title('Independence'); ylabel('max[$$\Delta \widehat{CIM}]$$','interpreter','Latex');
+% subplot(3,3,9);
+% plot(noiseVec,indepToPlot(2,:)-indepToPlot(1,:));
+% grid on; xlabel('Noise'); title('Independence'); ylabel('max[$$\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 end
