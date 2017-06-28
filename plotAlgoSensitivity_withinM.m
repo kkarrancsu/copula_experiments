@@ -23,8 +23,11 @@ noiseVec = num_noise_test_min:num_noise_test_max;
 linearDepCell = cell(1,length(MVecToPlot));
 quadraticDepCell = cell(1,length(MVecToPlot));
 cubicDepCell = cell(1,length(MVecToPlot));
+cubicDepNoCorrectionCell = cell(1,length(MVecToPlot));
 sinusoidalDepCell = cell(1,length(MVecToPlot));
+sinusoidalDepNoCorrectionCell = cell(1,length(MVecToPlot));
 hiFreqSinDepCell = cell(1,length(MVecToPlot));
+hiFreqSinDepNoCorrectionCell = cell(1,length(MVecToPlot));
 fourthRootDepCell = cell(1,length(MVecToPlot));
 circleDepCell = cell(1,length(MVecToPlot));
 stepDepCell = cell(1,length(MVecToPlot));
@@ -53,6 +56,10 @@ for MIdx=1:length(MVecToPlot)
     stepDep = zeros(2,length(noiseVec));
     indep = zeros(2,length(noiseVec));
     
+    cubicDep_noCorrection = zeros(2,length(noiseVec));
+    sinusoidalDep_noCorrection = zeros(2,length(noiseVec));
+    hiFreqSinDep_noCorrection = zeros(2,length(noiseVec));
+    
     % collect all the data for each of the scanincrs we tested and store in
     % a matrix, for each dependency type, we plot the difference between
     % the minimum and the maximum
@@ -69,16 +76,29 @@ for MIdx=1:length(MVecToPlot)
         stepData = rawData.stepDep(CIMVECIDX,:);
         indepData = rawData.indep(CIMVECIDX,:);
         
+        cubicDataNoCorrection = rawData.cubicDep(CIMVECIDX,:);
+        sinusoidalDataNoCorrection = rawData.sinusoidalDep(CIMVECIDX,:);
+        hiFreqSinDataNoCorrection = rawData.hiFreqSinDep(CIMVECIDX,:);
+        
         % seed the data
         if(ii==1)
             for jj=1:2
                 linearDep(jj,:) = linearData;
                 quadraticDep(jj,:) = quadraticData;
-                cubicDep(jj,:) = cubicData;
                 fourthRootDep(jj,:) = fourthRootData;
                 circleDep(jj,:) = circleData;
+                cubicDep(jj,:) = cubicData;
                 stepDep(jj,:) = stepData;
                 indep(jj,:) = indepData;
+                
+                cubicDep_noCorrection(jj,:) = cubicDataNoCorrection;
+                sinusoidalDep_noCorrection(jj,:) = sinusoidalDataNoCorrection;
+                hiFreqSinDep_noCorrection(jj,:) = hiFreqSinDataNoCorrection;
+            end
+        end
+        if(scanincrVal<0.25)
+            for jj=1:2
+                cubicDep(jj,:) = cubicData;
             end
         end
         if(scanincrVal<0.1138)
@@ -110,11 +130,19 @@ for MIdx=1:length(MVecToPlot)
             end
 
             % process cubic
-            if(cubicData(jj)<cubicDep(1,jj))
-                cubicDep(1,jj) = cubicData(jj);
+            if(scanincrVal<0.25)
+                if(cubicData(jj)<cubicDep(1,jj))
+                    cubicDep(1,jj) = cubicData(jj);
+                end
+                if(cubicData(jj)>cubicDep(2,jj))
+                    cubicDep(2,jj) = cubicData(jj);
+                end
             end
-            if(cubicData(jj)>cubicDep(2,jj))
-                cubicDep(2,jj) = cubicData(jj);
+            if(cubicDataNoCorrection(jj)<cubicDep_noCorrection(1,jj))
+                cubicDep_noCorrection(1,jj) = cubicDataNoCorrection(jj);
+            end
+            if(cubicDataNoCorrection(jj)>cubicDep_noCorrection(2,jj))
+                cubicDep_noCorrection(2,jj) = cubicDataNoCorrection(jj);
             end
 
             % process sinusoidal
@@ -126,6 +154,12 @@ for MIdx=1:length(MVecToPlot)
                     sinusoidalDep(2,jj) = sinusoidalData(jj);
                 end
             end
+            if(sinusoidalDataNoCorrection(jj)<sinusoidalDep_noCorrection(1,jj))
+                sinusoidalDep_noCorrection(1,jj) = sinusoidalDataNoCorrection(jj);
+            end
+            if(sinusoidalDataNoCorrection(jj)>sinusoidalDep_noCorrection(2,jj))
+                sinusoidalDep_noCorrection(2,jj) = sinusoidalDataNoCorrection(jj);
+            end
 
             % process hi-freq sine
             if(scanincrVal<0.029)
@@ -135,6 +169,12 @@ for MIdx=1:length(MVecToPlot)
                 if(hiFreqSinData(jj)>hiFreqSinDep(2,jj))
                     hiFreqSinDep(2,jj) = hiFreqSinData(jj);
                 end
+            end
+            if(hiFreqSinDataNoCorrection(jj)<hiFreqSinDep_noCorrection(1,jj))
+                hiFreqSinDep_noCorrection(1,jj) = hiFreqSinDataNoCorrection(jj);
+            end
+            if(hiFreqSinDataNoCorrection(jj)>hiFreqSinDep_noCorrection(2,jj))
+                hiFreqSinDep_noCorrection(2,jj) = hiFreqSinDataNoCorrection(jj);
             end
 
             % process fourth-root
@@ -175,8 +215,11 @@ for MIdx=1:length(MVecToPlot)
     linearDepCell{MIdx}     = linearDep;
     quadraticDepCell{MIdx}  = quadraticDep;
     cubicDepCell{MIdx}      = cubicDep;
+    cubicDepNoCorrectionCell{MIdx}      = cubicDep_noCorrection;
     sinusoidalDepCell{MIdx} = sinusoidalDep;
+    sinusoidalDepNoCorrectionCell{MIdx} = sinusoidalDep_noCorrection;
     hiFreqSinDepCell{MIdx}  = hiFreqSinDep;
+    hiFreqSinDepNoCorrectionCell{MIdx}  = hiFreqSinDep_noCorrection;
     fourthRootDepCell{MIdx} = fourthRootDep;
     circleDepCell{MIdx}     = circleDep;
     stepDepCell{MIdx}       = stepDep;
@@ -186,8 +229,11 @@ end
 linearDepToPlot = zeros(2,length(noiseVec));
 quadraticDepToPlot = zeros(2,length(noiseVec));
 cubicDepToPlot = zeros(2,length(noiseVec));
+cubicDepNoCorrectionToPlot = zeros(2,length(noiseVec));
 sinusoidalDepToPlot = zeros(2,length(noiseVec));
+sinusoidalDepNoCorrectionToPlot = zeros(2,length(noiseVec));
 hiFreqSinDepToPlot = zeros(2,length(noiseVec));
+hiFreqSinDepNoCorrectionToPlot = zeros(2,length(noiseVec));
 fourthRootDepToPlot = zeros(2,length(noiseVec));
 circleDepToPlot = zeros(2,length(noiseVec));
 stepDepToPlot = zeros(2,length(noiseVec));
@@ -200,10 +246,16 @@ for ii=1:length(noiseVec)
     quadraticDepToPlot(2,ii) = quadraticDepCell{1}(2,ii);
     cubicDepToPlot(1,ii) = cubicDepCell{1}(1,ii);
     cubicDepToPlot(2,ii) = cubicDepCell{1}(2,ii);
+    cubicDepNoCorrectionToPlot(1,ii) = cubicDepNoCorrectionCell{1}(1,ii);
+    cubicDepNoCorrectionToPlot(2,ii) = cubicDepNoCorrectionCell{1}(2,ii);
     sinusoidalDepToPlot(1,ii) = sinusoidalDepCell{1}(1,ii);
     sinusoidalDepToPlot(2,ii) = sinusoidalDepCell{1}(2,ii);
+    sinusoidalDepNoCorrectionToPlot(1,ii) = sinusoidalDepNoCorrectionCell{1}(1,ii);
+    sinusoidalDepNoCorrectionToPlot(2,ii) = sinusoidalDepNoCorrectionCell{1}(2,ii);
     hiFreqSinDepToPlot(1,ii) = hiFreqSinDepCell{1}(1,ii);
     hiFreqSinDepToPlot(2,ii) = hiFreqSinDepCell{1}(2,ii);
+    hiFreqSinDepNoCorrectionToPlot(1,ii) = hiFreqSinDepNoCorrectionCell{1}(1,ii);
+    hiFreqSinDepNoCorrectionToPlot(2,ii) = hiFreqSinDepNoCorrectionCell{1}(2,ii);
     fourthRootDepToPlot(1,ii) = fourthRootDepCell{1}(1,ii);
     fourthRootDepToPlot(2,ii) = fourthRootDepCell{1}(2,ii);
     circleDepToPlot(1,ii) = circleDepCell{1}(1,ii);
@@ -235,6 +287,13 @@ for ii=1:length(noiseVec)
             cubicDepToPlot(2,ii) = cubicDepCell{jj}(2,ii);
         end
         
+        rangeCur  = cubicDepNoCorrectionToPlot(2,ii)-cubicDepNoCorrectionToPlot(1,ii);
+        rangePrev = cubicDepNoCorrectionCell{jj-1}(2,ii)-cubicDepNoCorrectionCell{jj-1}(1,ii);
+        if(rangeCur>rangePrev)
+            cubicDepNoCorrectionToPlot(1,ii) = cubicDepNoCorrectionCell{jj}(1,ii);
+            cubicDepNoCorrectionToPlot(2,ii) = cubicDepNoCorrectionCell{jj}(2,ii);
+        end
+        
         rangeCur  = sinusoidalDepToPlot(2,ii)-sinusoidalDepToPlot(1,ii);
         rangePrev = sinusoidalDepCell{jj-1}(2,ii)-sinusoidalDepCell{jj-1}(1,ii);
         if(rangeCur>rangePrev)
@@ -242,11 +301,25 @@ for ii=1:length(noiseVec)
             sinusoidalDepToPlot(2,ii) = sinusoidalDepCell{jj}(2,ii);
         end
         
+        rangeCur  = sinusoidalDepNoCorrectionToPlot(2,ii)-sinusoidalDepNoCorrectionToPlot(1,ii);
+        rangePrev = sinusoidalDepNoCorrectionCell{jj-1}(2,ii)-sinusoidalDepNoCorrectionCell{jj-1}(1,ii);
+        if(rangeCur>rangePrev)
+            sinusoidalDepNoCorrectionToPlot(1,ii) = sinusoidalDepNoCorrectionCell{jj}(1,ii);
+            sinusoidalDepNoCorrectionToPlot(2,ii) = sinusoidalDepNoCorrectionCell{jj}(2,ii);
+        end
+        
         rangeCur  = hiFreqSinDepToPlot(2,ii)-hiFreqSinDepToPlot(1,ii);
         rangePrev = hiFreqSinDepCell{jj-1}(2,ii)-hiFreqSinDepCell{jj-1}(1,ii);
         if(rangeCur>rangePrev)
             hiFreqSinDepToPlot(1,ii) = hiFreqSinDepCell{jj}(1,ii);
             hiFreqSinDepToPlot(2,ii) = hiFreqSinDepCell{jj}(2,ii);
+        end
+        
+        rangeCur  = hiFreqSinDepNoCorrectionToPlot(2,ii)-hiFreqSinDepNoCorrectionToPlot(1,ii);
+        rangePrev = hiFreqSinDepNoCorrectionCell{jj-1}(2,ii)-hiFreqSinDepNoCorrectionCell{jj-1}(1,ii);
+        if(rangeCur>rangePrev)
+            hiFreqSinDepNoCorrectionToPlot(1,ii) = hiFreqSinDepNoCorrectionCell{jj}(1,ii);
+            hiFreqSinDepNoCorrectionToPlot(2,ii) = hiFreqSinDepNoCorrectionCell{jj}(2,ii);
         end
         
         rangeCur  = fourthRootDepToPlot(2,ii)-fourthRootDepToPlot(1,ii);
@@ -279,43 +352,6 @@ for ii=1:length(noiseVec)
     end
 end
 
-% figure;
-% subplot(3,3,1);
-% jbfill(noiseVec,linearDepToPlot(2,:),linearDepToPlot(1,:));
-% grid on; xlabel('Noise'); title('Linear');
-% 
-% subplot(3,3,2);
-% jbfill(noiseVec,quadraticDepToPlot(2,:),quadraticDepToPlot(1,:));
-% grid on; xlabel('Noise'); title('Quadratic');
-% 
-% subplot(3,3,3);
-% jbfill(noiseVec,cubicDepToPlot(2,:),cubicDepToPlot(1,:));
-% grid on; xlabel('Noise'); title('Cubic');
-% 
-% subplot(3,3,4);
-% jbfill(noiseVec,sinusoidalDepToPlot(2,:),sinusoidalDepToPlot(1,:));
-% grid on; xlabel('Noise'); title('Sinusoidal');
-% 
-% subplot(3,3,5);
-% jbfill(noiseVec,hiFreqSinDepToPlot(2,:),hiFreqSinDepToPlot(1,:));
-% grid on; xlabel('Noise'); title('Hi-Freq Sin');
-% 
-% subplot(3,3,6);
-% jbfill(noiseVec,fourthRootDepToPlot(2,:),fourthRootDepToPlot(1,:));
-% grid on; xlabel('Noise'); title('Fourth-Root');
-% 
-% subplot(3,3,7);
-% jbfill(noiseVec,circleDepToPlot(2,:),circleDepToPlot(1,:));
-% grid on; xlabel('Noise'); title('Circular');
-% 
-% subplot(3,3,8);
-% jbfill(noiseVec,stepDepToPlot(2,:),stepDepToPlot(1,:));
-% grid on; xlabel('Noise'); title('Step');
-% 
-% subplot(3,3,9);
-% jbfill(noiseVec,indepToPlot(2,:),indepToPlot(1,:));
-% grid on; xlabel('Noise'); title('Independence');
-
 figure;
 subplot(2,4,1);
 plot(noiseVec,linearDepToPlot(2,:)-linearDepToPlot(1,:));
@@ -327,15 +363,24 @@ grid on; xlabel('Noise'); title('Quadratic'); ylabel('$$max[\Delta \widehat{CIM}
 
 subplot(2,4,3);
 plot(noiseVec,cubicDepToPlot(2,:)-cubicDepToPlot(1,:));
+% hold on;
+% plot(noiseVec,cubicDepNoCorrectionToPlot(2,:)-cubicDepNoCorrectionToPlot(1,:));
 grid on; xlabel('Noise'); title('Cubic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+% legend({'Correction','No Correction'});
 
 subplot(2,4,4);
 plot(noiseVec,sinusoidalDepToPlot(2,:)-sinusoidalDepToPlot(1,:));
+% hold on;
+% plot(noiseVec,sinusoidalDepNoCorrectionToPlot(2,:)-sinusoidalDepNoCorrectionToPlot(1,:));
 grid on; xlabel('Noise'); title('Sinusoidal'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+% legend({'Correction','No Correction'});
 
 subplot(2,4,5);
 plot(noiseVec,hiFreqSinDepToPlot(2,:)-hiFreqSinDepToPlot(1,:));
+% hold on;
+% plot(noiseVec,hiFreqSinDepNoCorrectionToPlot(2,:)-hiFreqSinDepNoCorrectionToPlot(1,:));
 grid on; xlabel('Noise'); title('Hi-Freq Sin'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+% legend({'Correction','No Correction'});
 
 subplot(2,4,6);
 plot(noiseVec,fourthRootDepToPlot(2,:)-fourthRootDepToPlot(1,:));

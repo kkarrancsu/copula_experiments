@@ -1,4 +1,4 @@
-function [] = plotPowerSensitivity_withinM(cimVersion,MVecToPlot)
+function [] = plotPowerSensitivity_withinM(cimVersion,MVecToPlot,num_noise_test_min,num_noise_test_max)
 
 switch cimVersion
     case 1
@@ -16,9 +16,6 @@ switch cimVersion
     otherwise
 end
 CIMVECIDX = 3;
-num_noise_test_min = 0;
-num_noise_test_max = 30;
-noiseVec = num_noise_test_min:num_noise_test_max;
 
 linearDepCell = cell(1,length(MVecToPlot));
 quadraticDepCell = cell(1,length(MVecToPlot));
@@ -40,9 +37,6 @@ for MIdx=1:length(MVecToPlot)
     else
         load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/%s_powerSensitivity_M_%d.mat', fnameStr, M));
     end
-    
-    num_noise_test_min = 1;
-    num_noise_test_max = 30;
     noiseVec = num_noise_test_min:num_noise_test_max;
 
     linearDep = zeros(2,length(noiseVec));      % 1 - min
@@ -61,14 +55,14 @@ for MIdx=1:length(MVecToPlot)
     for ii=1:length(scanincrsToTest)
         scanincrVal = scanincrsToTest(ii);
         % TODO: INDEX PROPERLY
-        linearData     = squeeze(powerCurve(ii,1,:));
-        quadraticData  = squeeze(powerCurve(ii,2,:));
-        cubicData      = squeeze(powerCurve(ii,3,:));
-        sinusoidalData = squeeze(powerCurve(ii,4,:));
-        hiFreqSinData  = squeeze(powerCurve(ii,5,:));
-        fourthRootData = squeeze(powerCurve(ii,6,:));
-        circleData     = squeeze(powerCurve(ii,7,:));
-        stepData       = squeeze(powerCurve(ii,8,:));
+        linearData     = squeeze(powerCurve(ii,1,noiseVec));
+        quadraticData  = squeeze(powerCurve(ii,2,noiseVec));
+        cubicData      = squeeze(powerCurve(ii,3,noiseVec));
+        sinusoidalData = squeeze(powerCurve(ii,4,noiseVec));
+        hiFreqSinData  = squeeze(powerCurve(ii,5,noiseVec));
+        fourthRootData = squeeze(powerCurve(ii,6,noiseVec));
+        circleData     = squeeze(powerCurve(ii,7,noiseVec));
+        stepData       = squeeze(powerCurve(ii,8,noiseVec));
         
         % seed the data
         if(ii==1)
