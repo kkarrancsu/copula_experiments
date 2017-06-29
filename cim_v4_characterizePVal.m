@@ -20,8 +20,11 @@ rsdmNullDistributionResultsHybrid1 = zeros(nsim, length(M_vec));
 rsdmNullDistributionResultsHybrid2 = zeros(nsim, length(M_vec));
 
 numDiscreteIntervals = 4;
+dispstat('','init'); % One time only initialization
+dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
 
 for ii=1:nsim
+    dispstat(sprintf('Computing for sim=%d/%d',ii,nsim),'keepthis', 'timestamp');
     parfor jj=1:length(M_vec)
         M = M_vec(jj);
         
