@@ -15,6 +15,8 @@ dispstat('','init'); % One time only initialization
 dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
 num_noise_test_min = 1;
 num_noise_test_max = 30;
+xMin = 0;
+xMax = 1;
 for scanincrIdx=1:length(scanincrsToTest)
     minscanincrVal = scanincrsToTest(scanincrIdx);
     for l=num_noise_test_min:num_noise_test_max
