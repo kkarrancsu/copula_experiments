@@ -1,4 +1,4 @@
-function [] = plotAlgoSensitivity_withinM(cimVersion,MVecToPlot)
+function [] = plotAlgoSensitivity_withinM(cimVersion,MVecToPlot,num_noise_test_min,num_noise_test_max)
 
 switch cimVersion
     case 1
@@ -16,8 +16,6 @@ switch cimVersion
     otherwise
 end
 CIMVECIDX = 3;
-num_noise_test_min = 0;
-num_noise_test_max = 30;
 noiseVec = num_noise_test_min:num_noise_test_max;
 
 linearDepCell = cell(1,length(MVecToPlot));
@@ -66,49 +64,49 @@ for MIdx=1:length(MVecToPlot)
     for ii=1:length(scanincrsToTest)
         scanincrVal = scanincrsToTest(ii);
         rawData = algoSensitivityData{ii};  % algoSensitivityData is loaded from the file above
-        linearData = rawData.linearDep(CIMVECIDX,:);
-        quadraticData = rawData.quadraticDep(CIMVECIDX,:);
-        cubicData = rawData.cubicDep(CIMVECIDX,:);
-        sinusoidalData = rawData.sinusoidalDep(CIMVECIDX,:);
-        hiFreqSinData = rawData.hiFreqSinDep(CIMVECIDX,:);
-        fourthRootData = rawData.fourthRootDep(CIMVECIDX,:);
-        circleData = rawData.circleDep(CIMVECIDX,:);
-        stepData = rawData.stepDep(CIMVECIDX,:);
-        indepData = rawData.indep(CIMVECIDX,:);
+        linearData = rawData.linearDep(CIMVECIDX,noiseVec);
+        quadraticData = rawData.quadraticDep(CIMVECIDX,noiseVec);
+        cubicData = rawData.cubicDep(CIMVECIDX,noiseVec);
+        sinusoidalData = rawData.sinusoidalDep(CIMVECIDX,noiseVec);
+        hiFreqSinData = rawData.hiFreqSinDep(CIMVECIDX,noiseVec);
+        fourthRootData = rawData.fourthRootDep(CIMVECIDX,noiseVec);
+        circleData = rawData.circleDep(CIMVECIDX,noiseVec);
+        stepData = rawData.stepDep(CIMVECIDX,noiseVec);
+        indepData = rawData.indep(CIMVECIDX,noiseVec);
         
-        cubicDataNoCorrection = rawData.cubicDep(CIMVECIDX,:);
-        sinusoidalDataNoCorrection = rawData.sinusoidalDep(CIMVECIDX,:);
-        hiFreqSinDataNoCorrection = rawData.hiFreqSinDep(CIMVECIDX,:);
+        cubicDataNoCorrection = rawData.cubicDep(CIMVECIDX,noiseVec);
+        sinusoidalDataNoCorrection = rawData.sinusoidalDep(CIMVECIDX,noiseVec);
+        hiFreqSinDataNoCorrection = rawData.hiFreqSinDep(CIMVECIDX,noiseVec);
         
         % seed the data
         if(ii==1)
             for jj=1:2
-                linearDep(jj,:) = linearData;
-                quadraticDep(jj,:) = quadraticData;
-                fourthRootDep(jj,:) = fourthRootData;
-                circleDep(jj,:) = circleData;
-                cubicDep(jj,:) = cubicData;
-                stepDep(jj,:) = stepData;
-                indep(jj,:) = indepData;
+                linearDep(jj,noiseVec) = linearData;
+                quadraticDep(jj,noiseVec) = quadraticData;
+                fourthRootDep(jj,noiseVec) = fourthRootData;
+                circleDep(jj,noiseVec) = circleData;
+                cubicDep(jj,noiseVec) = cubicData;
+                stepDep(jj,noiseVec) = stepData;
+                indep(jj,noiseVec) = indepData;
                 
-                cubicDep_noCorrection(jj,:) = cubicDataNoCorrection;
-                sinusoidalDep_noCorrection(jj,:) = sinusoidalDataNoCorrection;
-                hiFreqSinDep_noCorrection(jj,:) = hiFreqSinDataNoCorrection;
+                cubicDep_noCorrection(jj,noiseVec) = cubicDataNoCorrection;
+                sinusoidalDep_noCorrection(jj,noiseVec) = sinusoidalDataNoCorrection;
+                hiFreqSinDep_noCorrection(jj,noiseVec) = hiFreqSinDataNoCorrection;
             end
         end
         if(scanincrVal<0.25)
             for jj=1:2
-                cubicDep(jj,:) = cubicData;
+                cubicDep(jj,noiseVec) = cubicData;
             end
         end
         if(scanincrVal<0.1138)
             for jj=1:2
-                sinusoidalDep(jj,:) = sinusoidalData;
+                sinusoidalDep(jj,noiseVec) = sinusoidalData;
             end
         end
         if(scanincrVal<0.029)
             for jj=1:2
-                hiFreqSinDep(jj,:) = hiFreqSinData;
+                hiFreqSinDep(jj,noiseVec) = hiFreqSinData;
             end
         end
 
@@ -352,46 +350,48 @@ for ii=1:length(noiseVec)
     end
 end
 
+noiseVecToPlot = noiseVec-1;
+
 figure;
 subplot(2,4,1);
-plot(noiseVec,linearDepToPlot(2,:)-linearDepToPlot(1,:));
+plot(noiseVecToPlot,linearDepToPlot(2,:)-linearDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Linear'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 subplot(2,4,2);
-plot(noiseVec,quadraticDepToPlot(2,:)-quadraticDepToPlot(1,:));
+plot(noiseVecToPlot,quadraticDepToPlot(2,:)-quadraticDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Quadratic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 subplot(2,4,3);
-plot(noiseVec,cubicDepToPlot(2,:)-cubicDepToPlot(1,:));
+plot(noiseVecToPlot,cubicDepToPlot(2,:)-cubicDepToPlot(1,:));
 % hold on;
 % plot(noiseVec,cubicDepNoCorrectionToPlot(2,:)-cubicDepNoCorrectionToPlot(1,:));
 grid on; xlabel('Noise'); title('Cubic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 % legend({'Correction','No Correction'});
 
 subplot(2,4,4);
-plot(noiseVec,sinusoidalDepToPlot(2,:)-sinusoidalDepToPlot(1,:));
+plot(noiseVecToPlot,sinusoidalDepToPlot(2,:)-sinusoidalDepToPlot(1,:));
 % hold on;
 % plot(noiseVec,sinusoidalDepNoCorrectionToPlot(2,:)-sinusoidalDepNoCorrectionToPlot(1,:));
 grid on; xlabel('Noise'); title('Sinusoidal'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 % legend({'Correction','No Correction'});
 
 subplot(2,4,5);
-plot(noiseVec,hiFreqSinDepToPlot(2,:)-hiFreqSinDepToPlot(1,:));
+plot(noiseVecToPlot,hiFreqSinDepToPlot(2,:)-hiFreqSinDepToPlot(1,:));
 % hold on;
 % plot(noiseVec,hiFreqSinDepNoCorrectionToPlot(2,:)-hiFreqSinDepNoCorrectionToPlot(1,:));
 grid on; xlabel('Noise'); title('Hi-Freq Sin'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 % legend({'Correction','No Correction'});
 
 subplot(2,4,6);
-plot(noiseVec,fourthRootDepToPlot(2,:)-fourthRootDepToPlot(1,:));
+plot(noiseVecToPlot,fourthRootDepToPlot(2,:)-fourthRootDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Fourth-Root'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 subplot(2,4,7);
-plot(noiseVec,circleDepToPlot(2,:)-circleDepToPlot(1,:));
+plot(noiseVecToPlot,circleDepToPlot(2,:)-circleDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Circular'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 subplot(2,4,8);
-plot(noiseVec,stepDepToPlot(2,:)-stepDepToPlot(1,:));
+plot(noiseVecToPlot,stepDepToPlot(2,:)-stepDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Step'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 % subplot(3,3,9);

@@ -125,10 +125,11 @@ close all;
 dbstop if error;
 
 cimVersion = 4;
-MVecToPlot = 100:100:900;
+MVecToPlot = 100:100:1000;
 num_noise_test_min = 1;
-num_noise_test_max = 20;
+num_noise_test_max = 20+1;
 plotPowerSensitivity_withinM(cimVersion,MVecToPlot,num_noise_test_min,num_noise_test_max);
+figtitle(sprintf('Algorithm Power Sensitivity (M=%d - %d)',min(MVecToPlot),max(MVecToPlot)));
 
 %% Run the algorithm sensitivity analysis
 
@@ -209,7 +210,6 @@ num_noise_test_min = 1;
 num_noise_test_max = 20;
 noiseVec = num_noise_test_min:num_noise_test_max;
 
-
 plotAlgoSensitivity(algoSensitivityData, scanincrsToTest, noiseVec, M)
 
 %% Plot the Algorithm sensitivity analysis including M
@@ -221,10 +221,11 @@ dbstop if error;
 cimVersion = 4;
 MVecToPlot = 100:100:1000;
 % plotAlgoSensitivity_acrossM(cimVersion,MVecToPlot);
-plotAlgoSensitivity_withinM(cimVersion,MVecToPlot);
+num_noise_test_min = 1;
+num_noise_test_max = 20+1;
+
+plotAlgoSensitivity_withinM(cimVersion,MVecToPlot,num_noise_test_min,num_noise_test_max);
 figtitle(sprintf('Algorithm Sensitivity (M=%d - %d)',min(MVecToPlot),max(MVecToPlot)));
-
-
 %% simulate the difference between computing monotonic, detecting the region, and theoretical CIM value
 clear;
 clc;
@@ -242,7 +243,7 @@ numMCSim = 200;
 
 minscanincrVal = 0.015625;
 
-cimVersion = 3;
+cimVersion = 4;
 
 switch(cimVersion)
     case 1
@@ -451,10 +452,13 @@ switch cim_version
         error('no data exists!');
 end
 
-MVecDataAvailable = [100:100:1000];  % add 5000 and 10000 to this as they come online
-tol = 0.02;
-noiseMinToTest = 1; noiseMaxToTest = 20;
-noiseToTest = noiseMinToTest:noiseMaxToTest;
+MVecDataAvailable = [100:100:1000 2500];  % add 5000 and 10000 to this as they come online
+tol = 0.015;
+noiseMinToAnalyze = 0; noiseMaxToAnalyze = 20;
+noiseVecToAnalyze = noiseMinToAnalyze:noiseMaxToAnalyze;  
+
+% do a +1 to account for matlab indexing
+noiseVecToAnalyze = noiseVecToAnalyze + 1;
 
 % aggregatefunc = @sum;
 % aggregatefunc = @max;
@@ -472,14 +476,14 @@ for MIdx=1:length(MVecDataAvailable)
     else
         load(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/regionDetection_%s_M_%d.mat', fnameStr, M));
     end
-
+    
     % compute error between theoretical CIM and actual CIM for each of the
     % dependencies, if the total error is within the sseTol value, then we
     % store that as the M Value for which the error is acceptable.
     
     if(depTestVec(1))
 %         linearDepErr = (linearDep(2,noiseToTest)-linearDep(3,noiseToTest)).^2;
-        linearDepErr = abs(linearDep(2,noiseToTest)-linearDep(3,noiseToTest));
+        linearDepErr = abs(linearDep(2,noiseVecToAnalyze)-linearDep(3,noiseVecToAnalyze));
         if(aggregatefunc(linearDepErr)<=tol)
             MVecResults(1) = M;
             depTestVec(1) = 0;
@@ -489,7 +493,7 @@ for MIdx=1:length(MVecDataAvailable)
     
     if(depTestVec(2))
 %         quadraticDepErr = (quadraticDep(2,noiseToTest)-quadraticDep(3,noiseToTest)).^2;
-        quadraticDepErr = abs(quadraticDep(2,noiseToTest)-quadraticDep(3,noiseToTest));
+        quadraticDepErr = abs(quadraticDep(2,noiseVecToAnalyze)-quadraticDep(3,noiseVecToAnalyze));
         if(aggregatefunc(quadraticDepErr)<=tol)
             MVecResults(2) = M;
             depTestVec(2) = 0;
@@ -499,8 +503,7 @@ for MIdx=1:length(MVecDataAvailable)
     
     if(depTestVec(3))
 %         cubicDepErr = (cubicDep(2,noiseToTest)-cubicDep(3,noiseToTest)).^2;
-        cubicDepErr = abs(cubicDep(2,noiseToTest)-cubicDep(3,noiseToTest));
-        fprintf('M=%d aggregatefunc(cubicDepErr)=%0.05f\n', M, aggregatefunc(cubicDepErr));
+        cubicDepErr = abs(cubicDep(2,noiseVecToAnalyze)-cubicDep(3,noiseVecToAnalyze));
         if(aggregatefunc(cubicDepErr)<=tol)
             MVecResults(3) = M;
             depTestVec(3) = 0;
@@ -510,7 +513,7 @@ for MIdx=1:length(MVecDataAvailable)
     
     if(depTestVec(4))
 %         sinusoidalDepErr = (sinusoidalDep(2,noiseToTest)-sinusoidalDep(3,noiseToTest)).^2;
-        sinusoidalDepErr = abs(sinusoidalDep(2,noiseToTest)-sinusoidalDep(3,noiseToTest));
+        sinusoidalDepErr = abs(sinusoidalDep(2,noiseVecToAnalyze)-sinusoidalDep(3,noiseVecToAnalyze));
         if(aggregatefunc(sinusoidalDepErr)<=tol)
             MVecResults(4) = M;
             depTestVec(4) = 0;
@@ -520,7 +523,8 @@ for MIdx=1:length(MVecDataAvailable)
     
     if(depTestVec(5))
 %         hiFreqSinDepErr = (hiFreqSinDep(2,noiseToTest)-hiFreqSinDep(3,noiseToTest)).^2;
-        hiFreqSinDepErr = abs(hiFreqSinDep(2,noiseToTest)-hiFreqSinDep(3,noiseToTest));
+%         hiFreqSinDep(2,1) = 1;
+        hiFreqSinDepErr = abs(hiFreqSinDep(2,noiseVecToAnalyze)-hiFreqSinDep(3,noiseVecToAnalyze));
         if(aggregatefunc(hiFreqSinDepErr)<=tol)
             MVecResults(5) = M;
             depTestVec(5) = 0;
@@ -530,7 +534,7 @@ for MIdx=1:length(MVecDataAvailable)
     
     if(depTestVec(6))
 %         fourthRootDepErr = (fourthRootDep(2,noiseToTest)-fourthRootDep(3,noiseToTest)).^2;
-        fourthRootDepErr = abs(fourthRootDep(2,noiseToTest)-fourthRootDep(3,noiseToTest));
+        fourthRootDepErr = abs(fourthRootDep(2,noiseVecToAnalyze)-fourthRootDep(3,noiseVecToAnalyze));
         if(aggregatefunc(fourthRootDepErr)<=tol)
             MVecResults(6) = M;
             depTestVec(6) = 0;
@@ -540,7 +544,7 @@ for MIdx=1:length(MVecDataAvailable)
     
     if(depTestVec(7))
 %         circleDepErr = (circleDep(2,noiseToTest)-circleDep(3,noiseToTest)).^2;
-        circleDepErr = abs(circleDep(2,noiseToTest)-circleDep(3,noiseToTest));
+        circleDepErr = abs(circleDep(2,noiseVecToAnalyze)-circleDep(3,noiseVecToAnalyze));
         if(aggregatefunc(circleDepErr)<=tol)
             MVecResults(7) = M;
             depTestVec(7) = 0;
@@ -550,8 +554,9 @@ for MIdx=1:length(MVecDataAvailable)
     
     if(depTestVec(8))
 %         stepDepErr = (stepDep(2,noiseToTest)-stepDep(3,noiseToTest)).^2;
-        stepDep(2,1) = 1; % due to a bug in the way we simulated
-        stepDepErr = abs(stepDep(2,noiseToTest)-stepDep(3,noiseToTest));
+        stepDep(2,1) = 1; % due to a bug in the way we simulated we need to force
+                          % this value to 1
+        stepDepErr = abs(stepDep(2,noiseVecToAnalyze)-stepDep(3,noiseVecToAnalyze));
         if(aggregatefunc(stepDepErr)<=tol)
             MVecResults(8) = M;
             depTestVec(8) = 0;
@@ -583,25 +588,28 @@ for depTestValIdx=1:length(depTestVec)
                 sinusoidalDepToPlot = sinusoidalDep;
             case 5
                 hiFreqSinDepToPlot = hiFreqSinDep;
+%                 hiFreqSinDepToPlot(2,1) = 1;
             case 6
                 fourthRootDepToPlot = fourthRootDep;
             case 7
                 circleDepToPlot = circleDep;
             case 8
                 stepDepToPlot = stepDep;
+                stepDepToPlot(2,1) = 1;
             otherwise
                 error('UNK!');
         end
     end
 end
 
+noiseVecPlot = noiseVecToAnalyze-1;
 
 subplot(2,4,1);
 % hh1 = plot(noiseToTest,linearDepToPlot(1,noiseToTest),'o-.', ...
 %      noiseToTest,linearDepToPlot(2,noiseToTest),'+-.', ...
 %      noiseToTest,linearDepToPlot(3,noiseToTest),'d-.');
-hh1 = plot(noiseToTest/10,linearDepToPlot(2,noiseToTest),'+-.', ...
-     noiseToTest/10,linearDepToPlot(3,noiseToTest),'d-.');
+hh1 = plot(noiseVecPlot/10,linearDepToPlot(2,noiseVecToAnalyze),'+-.', ...
+     noiseVecPlot/10,linearDepToPlot(3,noiseVecToAnalyze),'d-.');
 grid on;
 xlabel('noise');
 % legend('\tau','CIM Theoretical',legendStr);
@@ -613,8 +621,8 @@ hh1(2).LineWidth = 1.5;
 % hh1(3).LineWidth = 1.5; 
 
 subplot(2,4,2);
-hh1 = plot(noiseToTest/10,quadraticDepToPlot(2,noiseToTest),'+-.', ...
-     noiseToTest/10,quadraticDepToPlot(3,noiseToTest),'d-.');
+hh1 = plot(noiseVecPlot/10,quadraticDepToPlot(2,noiseVecToAnalyze),'+-.', ...
+     noiseVecPlot/10,quadraticDepToPlot(3,noiseVecToAnalyze),'d-.');
 grid on;
 xlabel('noise');
 title({'Quadratic Dependency', sprintf('min(M)=%d',MVecResults(2))});
@@ -623,8 +631,8 @@ hh1(2).LineWidth = 1.5;
 % hh1(3).LineWidth = 1.5; 
 
 subplot(2,4,3);
-hh1 = plot(noiseToTest/10,cubicDepToPlot(2,noiseToTest),'+-.', ...
-     noiseToTest/10,cubicDepToPlot(3,noiseToTest),'d-.');
+hh1 = plot(noiseVecPlot/10,cubicDepToPlot(2,noiseVecToAnalyze),'+-.', ...
+     noiseVecPlot/10,cubicDepToPlot(3,noiseVecToAnalyze),'d-.');
 grid on;
 xlabel('noise');
 title({'Cubic Dependency', sprintf('min(M)=%d',MVecResults(3))});
@@ -633,8 +641,8 @@ hh1(2).LineWidth = 1.5;
 % hh1(3).LineWidth = 1.5; 
 
 subplot(2,4,4);
-hh1 = plot(noiseToTest/10,sinusoidalDepToPlot(2,noiseToTest),'+-.', ...
-     noiseToTest/10,sinusoidalDepToPlot(3,noiseToTest),'d-.');
+hh1 = plot(noiseVecPlot/10,sinusoidalDepToPlot(2,noiseVecToAnalyze),'+-.', ...
+     noiseVecPlot/10,sinusoidalDepToPlot(3,noiseVecToAnalyze),'d-.');
 grid on;
 xlabel('noise');
 title({'LF-Sin Dependency', sprintf('min(M)=%d',MVecResults(4))});
@@ -643,8 +651,8 @@ hh1(2).LineWidth = 1.5;
 % hh1(3).LineWidth = 1.5; 
 
 subplot(2,4,5);
-hh1 = plot(noiseToTest/10,hiFreqSinDepToPlot(2,noiseToTest),'+-.', ...
-     noiseToTest/10,hiFreqSinDepToPlot(3,noiseToTest),'d-.');
+hh1 = plot(noiseVecPlot/10,hiFreqSinDepToPlot(2,noiseVecToAnalyze),'+-.', ...
+     noiseVecPlot/10,hiFreqSinDepToPlot(3,noiseVecToAnalyze),'d-.');
 grid on;
 xlabel('noise');
 title({'HF-Sin Dependency', sprintf('min(M)=%d',MVecResults(5))});
@@ -653,8 +661,8 @@ hh1(2).LineWidth = 1.5;
 % hh1(3).LineWidth = 1.5; 
 
 subplot(2,4,6);
-hh1 = plot(noiseToTest/10,fourthRootDepToPlot(2,noiseToTest),'+-.', ...
-     noiseToTest/10,fourthRootDepToPlot(3,noiseToTest),'d-.');
+hh1 = plot(noiseVecPlot/10,fourthRootDepToPlot(2,noiseVecToAnalyze),'+-.', ...
+     noiseVecPlot/10,fourthRootDepToPlot(3,noiseVecToAnalyze),'d-.');
 grid on;
 xlabel('noise');
 title({'Fourth-Root Dependency', sprintf('min(M)=%d',MVecResults(6))});
@@ -663,8 +671,8 @@ hh1(2).LineWidth = 1.5;
 % hh1(3).LineWidth = 1.5; 
 
 subplot(2,4,7);
-hh1 = plot(noiseToTest/10,circleDepToPlot(2,noiseToTest),'+-.', ...
-     noiseToTest/10,circleDepToPlot(3,noiseToTest),'d-.');
+hh1 = plot(noiseVecPlot/10,circleDepToPlot(2,noiseVecToAnalyze),'+-.', ...
+     noiseVecPlot/10,circleDepToPlot(3,noiseVecToAnalyze),'d-.');
 grid on;
 xlabel('noise');
 title({'Circular Dependency', sprintf('min(M)=%d',MVecResults(7))});
@@ -673,8 +681,8 @@ hh1(2).LineWidth = 1.5;
 % hh1(3).LineWidth = 1.5; 
 
 subplot(2,4,8);
-hh1 = plot(noiseToTest/10,stepDepToPlot(2,noiseToTest),'+-.', ...
-     noiseToTest/10,stepDepToPlot(3,noiseToTest),'d-.');
+hh1 = plot(noiseVecPlot/10,stepDepToPlot(2,noiseVecToAnalyze),'+-.', ...
+     noiseVecPlot/10,stepDepToPlot(3,noiseVecToAnalyze),'d-.');
 grid on;
 xlabel('noise');
 title({'Step-Function Dependency', sprintf('min(M)=%d',MVecResults(8))});
@@ -692,3 +700,127 @@ hh1(2).LineWidth = 1.5;
 % hh1(1).LineWidth = 1.5; 
 % hh1(2).LineWidth = 1.5; 
 % hh1(3).LineWidth = 1.5; 
+
+%% HI-FREQ SIN VALUE VERIFICATION
+
+clear;
+clc;
+
+xMin = 0;
+xMax = 1;
+num_noise = 30;                    % The number of different noise levels used
+noise = 3;                         % A constant to determine the amount of noise
+
+MVecResults = [100:100:1000 2500 5000 10000];
+num_noise_test_min = 0;
+num_noise_test_max = 20;
+noiseVec = num_noise_test_min:num_noise_test_max;
+numMCSim = 200;
+
+minscanincrVal = 0.015625;
+
+cimVersion = 4;
+
+switch(cimVersion)
+    case 1
+        fnameStr = 'cimv1';
+        cimfunc = @cim;
+    case 3
+        fnameStr = 'cimv3';
+        cimfunc = @cim_v3;
+    case 4
+        fnameStr = 'cimv4';
+        cimfunc = @cim_v4;
+    case 5
+        fnameStr = 'cimv5';
+        cimfunc = @cim_v5;
+    case 6
+        fnameStr = 'cimv6';
+        cimfunc = @cim_v6;
+    case 7
+        fnameStr = 'cimv7';
+        cimfunc = @cim_v7;
+    otherwise
+        error('Unrecognized CIM version!');
+end
+        
+dispstat('','init'); % One time only initialization
+dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
+
+for M=MVecResults
+    % Test Empirical copula distance as a distance measure under various
+    % amounts of noise
+    hiFreqSinDep  = zeros(2,length(noiseVec));
+                  
+    for l=noiseVec
+        dispstat(sprintf('Computing for noise level=%d >> M=%d',l,M),'keepthis', 'timestamp');
+        t5 = 0; c5 = 0; c55 = 0;
+        parfor mcSimNum=1:numMCSim
+            x = rand(M,1)*(xMax-xMin)+xMin;
+            y5 = sin(16*pi*x) + noise*(l/num_noise)*randn(M,1);
+
+            U5 = pobs([x y5]);
+            t5 = t5 + abs(corr(x,y5,'type','kendall'));
+            zz1 = 0; zz2 = 0.02900;   r1 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w1 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.09158; r2 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w2 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.1528;  r3 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w3 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.2108;  r4 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w4 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.2715;  r5 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w5 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.3339;  r6 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w6 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.3999;  r7 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w7 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.4613;  r8 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w8 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.5227;  r9 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w9 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.5893;  r10 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w10 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.6547;  r11 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w11 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.7135;  r12 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w12 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.7734;  r13 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w13 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.8438;  r14 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w14 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.9074;  r15 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w15 = zz2-zz1;
+            zz1 = zz2; zz2 = 0.9694;  r16 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w16 = zz2-zz1;
+            zz1 = zz2; zz2 = 1;       r17 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w17 = zz2-zz1;
+            c5 = c5 + ( abs(corr(r1(:,1),r1(:,2),'type','kendall'))*w1 + ...
+                        abs(corr(r2(:,1),r2(:,2),'type','kendall'))*w2 + ...
+                        abs(corr(r3(:,1),r3(:,2),'type','kendall'))*w3 + ...
+                        abs(corr(r4(:,1),r4(:,2),'type','kendall'))*w4 + ...
+                        abs(corr(r5(:,1),r5(:,2),'type','kendall'))*w5 + ...
+                        abs(corr(r6(:,1),r6(:,2),'type','kendall'))*w6 + ...
+                        abs(corr(r7(:,1),r7(:,2),'type','kendall'))*w7 + ...
+                        abs(corr(r8(:,1),r8(:,2),'type','kendall'))*w8 + ...
+                        abs(corr(r9(:,1),r9(:,2),'type','kendall'))*w9 + ...
+                        abs(corr(r10(:,1),r10(:,2),'type','kendall'))*w10 + ...
+                        abs(corr(r11(:,1),r11(:,2),'type','kendall'))*w11 + ...
+                        abs(corr(r12(:,1),r12(:,2),'type','kendall'))*w12 + ...
+                        abs(corr(r13(:,1),r13(:,2),'type','kendall'))*w13 + ...
+                        abs(corr(r14(:,1),r14(:,2),'type','kendall'))*w14 + ...
+                        abs(corr(r15(:,1),r15(:,2),'type','kendall'))*w15 + ...
+                        abs(corr(r16(:,1),r16(:,2),'type','kendall'))*w16 + ...
+                        abs(corr(r17(:,1),r17(:,2),'type','kendall'))*w17);
+        end
+        hiFreqSinDep(1,l+1) = t5/numMCSim; hiFreqSinDep(2,l+1) = c5/numMCSim;
+    end
+
+    % save the data
+    if(ispc)
+        save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\regionTheoretical_hiFreqSin_M_%d.mat', M));
+    elseif(ismac)
+        save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/regionTheoretical_hiFreqSin_M_%d.mat', M));
+    else
+        save(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/regionTheoretical_hiFreqSin_M_%d', M));
+    end
+end
+
+%% Plot the HI-FREQ sinusoidal stuff to see if our simulations match up with intuition
+clear;
+clc;
+
+M = 1000;
+if(ispc)
+    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\regionTheoretical_hiFreqSin_M_%d.mat', M));
+elseif(ismac)
+    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/regionTheoretical_hiFreqSin_M_%d.mat', M));
+else
+    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/regionTheoretical_hiFreqSin_M_%d', M));
+end
+
+plot(noiseVec, hiFreqSinDep(2,:)); grid on;
+xlabel('noise'); ylabel('CIM');

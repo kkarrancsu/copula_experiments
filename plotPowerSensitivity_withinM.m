@@ -255,37 +255,39 @@ for ii=1:length(noiseVec)
     end
 end
 
+noiseVecToPlot = noiseVec-1;
+
 figure;
 subplot(2,4,1);
-plot(noiseVec,linearDepToPlot(2,:)-linearDepToPlot(1,:));
+plot(noiseVecToPlot,linearDepToPlot(2,:)-linearDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Linear'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 subplot(2,4,2);
-plot(noiseVec,quadraticDepToPlot(2,:)-quadraticDepToPlot(1,:));
+plot(noiseVecToPlot,quadraticDepToPlot(2,:)-quadraticDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Quadratic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 subplot(2,4,3);
-plot(noiseVec,cubicDepToPlot(2,:)-cubicDepToPlot(1,:));
+plot(noiseVecToPlot,cubicDepToPlot(2,:)-cubicDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Cubic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 subplot(2,4,4);
-plot(noiseVec,sinusoidalDepToPlot(2,:)-sinusoidalDepToPlot(1,:));
+plot(noiseVecToPlot,sinusoidalDepToPlot(2,:)-sinusoidalDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Sinusoidal'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 subplot(2,4,5);
-plot(noiseVec,hiFreqSinDepToPlot(2,:)-hiFreqSinDepToPlot(1,:));
+plot(noiseVecToPlot,hiFreqSinDepToPlot(2,:)-hiFreqSinDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Hi-Freq Sin'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 subplot(2,4,6);
-plot(noiseVec,fourthRootDepToPlot(2,:)-fourthRootDepToPlot(1,:));
+plot(noiseVecToPlot,fourthRootDepToPlot(2,:)-fourthRootDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Fourth-Root'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 subplot(2,4,7);
-plot(noiseVec,circleDepToPlot(2,:)-circleDepToPlot(1,:));
+plot(noiseVecToPlot,circleDepToPlot(2,:)-circleDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Circular'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 subplot(2,4,8);
-plot(noiseVec,stepDepToPlot(2,:)-stepDepToPlot(1,:));
+plot(noiseVecToPlot,stepDepToPlot(2,:)-stepDepToPlot(1,:));
 grid on; xlabel('Noise'); title('Step'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
 
 end
