@@ -195,7 +195,9 @@ while ax1max<=1
     numPts = size(matchPts,1);
     if(numPts>=2)   % make sure we have enough points to compute the metric
         % compute the concordance
-        metricRectangle = abs(taukl( matchPts(:,1),matchPts(:,2) ));
+        metricRectangle = abs(taukl( matchPts(:,1),matchPts(:,2)));
+%         metricRectangle = abs(taukl_fast( matchPts(:,1),matchPts(:,2),4,1,1));
+%         metricRectangle = abs(corr(matchPts(:,1),matchPts(:,2),'type','kendall'));
         zsc  = metricRectangle./sqrt( (2*(2*numPts+5))./(9*numPts.*(numPts-1)) );   
         if(newRectangle)
             newRectangle = 0;
