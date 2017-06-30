@@ -4,10 +4,10 @@ clc;
 
 rng(1234);
 
-nsim = 1000;
-M_vec = 100:100:1000;
+nsim = 500;
+M_vec = 100:100:2500;
 initLen = length(M_vec);
-M_vec = [M_vec 1500:500:10000];
+M_vec = [M_vec 5000];
 
 xMin = 0; xMax = 1;
 yMin = 0; yMax = 1;
@@ -37,10 +37,15 @@ for ii=1:nsim
         y_discrete = discretizeRv(y,numDiscreteIntervals)';
     
         % compute CIM
-        rsdmNullDistributionResultsContinuous(ii,jj) = cim_v4(x, y);
-        rsdmNullDistributionResultsHybrid1(ii,jj) = cim_v4(x_discrete,y);
-        rsdmNullDistributionResultsHybrid2(ii,jj) = cim_v4(x,y_discrete);
-        rsdmNullDistributionResultsDiscrete(ii,jj) = cim_v4(x_discrete,y_discrete);
+%         rsdmNullDistributionResultsContinuous(ii,jj) = cim_v4(x, y);
+%         rsdmNullDistributionResultsHybrid1(ii,jj) = cim_v4(x_discrete,y);
+%         rsdmNullDistributionResultsHybrid2(ii,jj) = cim_v4(x,y_discrete);
+%         rsdmNullDistributionResultsDiscrete(ii,jj) = cim_v4(x_discrete,y_discrete);
+        
+        rsdmNullDistributionResultsContinuous(ii,jj) = cim_v4_cc_mex(x, y);
+        rsdmNullDistributionResultsHybrid1(ii,jj) = cim_v4_cc_mex(x_discrete,y);
+        rsdmNullDistributionResultsHybrid2(ii,jj) = cim_v4_cc_mex(x,y_discrete);
+        rsdmNullDistributionResultsDiscrete(ii,jj) = cim_v4_cc_mex(x_discrete,y_discrete);
     end
 end
 
