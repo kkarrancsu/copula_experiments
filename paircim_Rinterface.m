@@ -17,7 +17,7 @@ load(fname);
 X = dat;
 
 % compute the pairwise-cim estimates
-R = paircim_v4( X );
+R = paircim_v4_cc_mex( X );
 
 fnameOut = strcat(fname,'.matlab');
 dlmwrite(fnameOut,R)

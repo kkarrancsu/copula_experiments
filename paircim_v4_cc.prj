@@ -1,18 +1,18 @@
 <deployment-project plugin="plugin.coder" plugin-version="R2016a">
-  <configuration build-checksum="2992781617" file="/home/kiran/stochasticresearch/copula_experiments/cim_v4_cc.prj" location="/home/kiran/stochasticresearch/copula_experiments" name="cim_v4_cc" target="target.unifiedcoder" target-name="MATLAB Coder">
+  <configuration build-checksum="2486494745" file="/home/kiran/stochasticresearch/copula_experiments/paircim_v4_cc.prj" location="/home/kiran/stochasticresearch/copula_experiments" name="paircim_v4_cc" target="target.unifiedcoder" target-name="MATLAB Coder">
     <profile key="profile.mex">
-      <param.BuiltInstrumentedMex />
+      <param.BuiltInstrumentedMex>false</param.BuiltInstrumentedMex>
       <param.RanInstrumentedMex>false</param.RanInstrumentedMex>
       <param.WorkingFolder>option.WorkingFolder.Project</param.WorkingFolder>
       <param.SpecifiedWorkingFolder />
       <param.BuildFolder>option.BuildFolder.Project</param.BuildFolder>
       <param.SpecifiedBuildFolder />
       <param.SearchPaths />
-      <param.ResponsivenessChecks />
-      <param.ExtrinsicCalls />
-      <param.IntegrityChecks />
+      <param.ResponsivenessChecks>true</param.ResponsivenessChecks>
+      <param.ExtrinsicCalls>true</param.ExtrinsicCalls>
+      <param.IntegrityChecks>true</param.IntegrityChecks>
       <param.SaturateOnIntegerOverflow>true</param.SaturateOnIntegerOverflow>
-      <param.GlobalDataSyncMethod />
+      <param.GlobalDataSyncMethod>option.GlobalDataSyncMethod.SyncAlways</param.GlobalDataSyncMethod>
       <param.EnableVariableSizing>true</param.EnableVariableSizing>
       <param.DynamicMemoryAllocation>option.DynamicMemoryAllocation.Threshold</param.DynamicMemoryAllocation>
       <param.DynamicMemoryAllocationThreshold>65536</param.DynamicMemoryAllocationThreshold>
@@ -21,7 +21,7 @@
       <param.GenerateComments>true</param.GenerateComments>
       <param.MATLABSourceComments>false</param.MATLABSourceComments>
       <param.ReservedNameArray />
-      <param.EnableDebugging />
+      <param.EnableDebugging>false</param.EnableDebugging>
       <param.GenerateReport>true</param.GenerateReport>
       <param.LaunchReport>false</param.LaunchReport>
       <param.DefaultTestFile />
@@ -36,13 +36,13 @@
       <param.CustomSource />
       <param.CustomLibrary />
       <param.PostCodeGenCommand />
-      <param.mex.GenCodeOnly />
+      <param.mex.GenCodeOnly>false</param.mex.GenCodeOnly>
       <param.ConstantFoldingTimeout>40000</param.ConstantFoldingTimeout>
       <param.CompileTimeRecursionLimit>50</param.CompileTimeRecursionLimit>
       <param.EnableRuntimeRecursion>true</param.EnableRuntimeRecursion>
       <param.PreserveVariableNames>option.PreserveVariableNames.None</param.PreserveVariableNames>
       <param.TargetLang>option.TargetLang.C</param.TargetLang>
-      <param.EchoExpressions />
+      <param.EchoExpressions>true</param.EchoExpressions>
       <param.InlineThreshold>10</param.InlineThreshold>
       <param.InlineThresholdMax>200</param.InlineThresholdMax>
       <param.InlineStackLimit>4000</param.InlineStackLimit>
@@ -50,11 +50,11 @@
       <param.MemcpyThreshold>64</param.MemcpyThreshold>
       <param.EnableOpenMP>true</param.EnableOpenMP>
       <param.InitFltsAndDblsToZero>true</param.InitFltsAndDblsToZero>
-      <param.ConstantInputs />
+      <param.ConstantInputs>option.ConstantInputs.CheckValues</param.ConstantInputs>
       <param.EnableCRICodeCoverage>true</param.EnableCRICodeCoverage>
       <param.EnableJIT>false</param.EnableJIT>
-      <param.EnableJITSilentBailOut />
-      <param.CheckForIssuesJIT />
+      <param.EnableJITSilentBailOut>false</param.EnableJITSilentBailOut>
+      <param.CheckForIssuesJIT>true</param.CheckForIssuesJIT>
       <unset>
         <param.BuiltInstrumentedMex />
         <param.RanInstrumentedMex />
@@ -720,12 +720,12 @@
     <param.objective>option.objective.c</param.objective>
     <param.WorkflowStep>workflowSummary</param.WorkflowStep>
     <param.TestSnippets>
-      <item>x = rand(500,1); y = x; cim_v4_cc(x,y)</item>
+      <item>X = randn(500,4); paircim_v4_cc(X)</item>
     </param.TestSnippets>
     <param.DefaultImportExportVariable>config</param.DefaultImportExportVariable>
     <param.RowMajor>false</param.RowMajor>
     <param.UseGlobals>option.UseGlobals.No</param.UseGlobals>
-    <param.outputfile>${PROJECT_ROOT}/codegen/lib/cim_v4_cc/cim_v4_cc.a</param.outputfile>
+    <param.outputfile>${PROJECT_ROOT}/codegen/lib/paircim_v4_cc/paircim_v4_cc.a</param.outputfile>
     <param.version>R2012a</param.version>
     <param.HasECoderFeatures>true</param.HasECoderFeatures>
     <param.mex.mainhtml />
@@ -738,29 +738,29 @@
     <param.AutoInferUnboundedSizeThreshold>2048</param.AutoInferUnboundedSizeThreshold>
     <param.EnableFixedPointStep>false</param.EnableFixedPointStep>
     <param.EnableScreener>true</param.EnableScreener>
-    <param.AnnotationChecksum>47473778</param.AnnotationChecksum>
+    <param.AnnotationChecksum>3502952495</param.AnnotationChecksum>
     <var.LegacyTarget />
     <var.MirrorOnOpen>false</var.MirrorOnOpen>
     <param.FixedPointEnabled>false</param.FixedPointEnabled>
     <var.redirectedInputTypeData />
     <var.DismissScreener>true</var.DismissScreener>
     <param.unifiedParamStorage />
-    <var.gc.lastOutputRoot>codegen/lib/cim_v4_cc</var.gc.lastOutputRoot>
+    <var.gc.lastOutputRoot>codegen/lib/paircim_v4_cc</var.gc.lastOutputRoot>
     <var.gc.lastOutputType>C_CODE</var.gc.lastOutputType>
-    <var.gc.preBuildChecksum>31477026</var.gc.preBuildChecksum>
-    <var.cfi.lastOutputRoot>codegen/mex/cim_v4_cc</var.cfi.lastOutputRoot>
-    <var.cfi.preBuildChecksum>3710098840</var.cfi.preBuildChecksum>
-    <var.lastCfiTestSnippet>x = rand(500,1); y = x; cim_v4_cc(x,y)</var.lastCfiTestSnippet>
+    <var.gc.preBuildChecksum>3455746181</var.gc.preBuildChecksum>
+    <var.cfi.lastOutputRoot>codegen/mex/paircim_v4_cc</var.cfi.lastOutputRoot>
+    <var.cfi.preBuildChecksum>2879120834</var.cfi.preBuildChecksum>
+    <var.lastCfiTestSnippet>X = randn(500,4); paircim_v4_cc(X)</var.lastCfiTestSnippet>
     <var.outdatedOnRestore>false</var.outdatedOnRestore>
-    <var.lastUserSourceChecksum>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;checksum&gt;&lt;includedFiles&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/cim_v4_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/pobs_sorted_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/taukl_cc.m&lt;/file&gt;&lt;/includedFiles&gt;&lt;value&gt;632647627&lt;/value&gt;&lt;/checksum&gt;</var.lastUserSourceChecksum>
-    <var.sourceSetState>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;sourceModel&gt;&lt;primarySourceFiles&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/cim_v4_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/pobs_sorted_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/taukl_cc.m&lt;/file&gt;&lt;/primarySourceFiles&gt;&lt;fixedPointSourceFiles/&gt;&lt;fixedPointSourceRegistered&gt;false&lt;/fixedPointSourceRegistered&gt;&lt;fixedPointSourceSelected&gt;false&lt;/fixedPointSourceSelected&gt;&lt;/sourceModel&gt;</var.sourceSetState>
+    <var.lastUserSourceChecksum>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;checksum&gt;&lt;includedFiles&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/cim_v4_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/paircim_v4_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/pobs_sorted_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/taukl_cc.m&lt;/file&gt;&lt;/includedFiles&gt;&lt;value&gt;3633512352&lt;/value&gt;&lt;/checksum&gt;</var.lastUserSourceChecksum>
+    <var.sourceSetState>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;sourceModel&gt;&lt;primarySourceFiles&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/cim_v4_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/paircim_v4_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/pobs_sorted_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/taukl_cc.m&lt;/file&gt;&lt;/primarySourceFiles&gt;&lt;fixedPointSourceFiles/&gt;&lt;fixedPointSourceRegistered&gt;false&lt;/fixedPointSourceRegistered&gt;&lt;fixedPointSourceSelected&gt;false&lt;/fixedPointSourceSelected&gt;&lt;/sourceModel&gt;</var.sourceSetState>
     <param.forceMexBuild>false</param.forceMexBuild>
     <param.configImportActive>false</param.configImportActive>
     <var.boundToGui>true</var.boundToGui>
-    <param.mex.outputfile>cim_v4_cc_mex</param.mex.outputfile>
-    <param.grt.outputfile>cim_v4_cc</param.grt.outputfile>
+    <param.mex.outputfile>paircim_v4_cc_mex</param.mex.outputfile>
+    <param.grt.outputfile>paircim_v4_cc</param.grt.outputfile>
     <param.artifact>option.target.artifact.lib</param.artifact>
-    <param.outputfile>${PROJECT_ROOT}/codegen/lib/cim_v4_cc/cim_v4_cc.a</param.outputfile>
+    <param.outputfile>${PROJECT_ROOT}/codegen/lib/paircim_v4_cc/paircim_v4_cc.a</param.outputfile>
     <param.EnableAutoExtrinsicCalls>true</param.EnableAutoExtrinsicCalls>
     <param.UsePreconditions>false</param.UsePreconditions>
     <param.FeatureFlags />
@@ -880,20 +880,19 @@
       <param.FixedPointUseDesignRanges />
     </unset>
     <fileset.entrypoints>
-      <file custom-data-expanded="false" value="${PROJECT_ROOT}/cim_v4_cc.m">
-        <Marker>1498833044644</Marker>
+      <file custom-data-expanded="false" value="${PROJECT_ROOT}/paircim_v4_cc.m">
+        <Marker>1498835573954</Marker>
       </file>
     </fileset.entrypoints>
     <fileset.testbench />
     <fileset.inputtypes>
-      <file custom-data-expanded="false" value="${PROJECT_ROOT}/cim_v4_cc.m">
-        <Inputs fileName="cim_v4_cc.m" functionName="cim_v4_cc">
-          <Input Name="x" typeId="0" />
-          <Input Name="y" typeId="0" />
+      <file custom-data-expanded="false" value="${PROJECT_ROOT}/paircim_v4_cc.m">
+        <Inputs fileName="paircim_v4_cc.m" functionName="paircim_v4_cc">
+          <Input Name="X" typeId="0" />
           <idpTable>
             <type typeId="0">
               <Class>double</Class>
-              <Size>:inf x 1</Size>
+              <Size>:inf x :inf</Size>
               <Value />
               <InitialValue />
               <UserDefined>true</UserDefined>
@@ -904,7 +903,7 @@
       </file>
     </fileset.inputtypes>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}/codegen/lib/cim_v4_cc" name="cim_v4_cc.a" optional="false">/home/kiran/stochasticresearch/copula_experiments/codegen/lib/cim_v4_cc/cim_v4_cc.a</file>
+      <file location="${PROJECT_ROOT}/codegen/lib/paircim_v4_cc" name="paircim_v4_cc.a" optional="false">/home/kiran/stochasticresearch/copula_experiments/codegen/lib/paircim_v4_cc/paircim_v4_cc.a</file>
     </build-deliverables>
     <workflow />
     <matlab>
