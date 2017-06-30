@@ -1,2 +1,2 @@
 % Generate the R executable
-mcc -mv paircim_Rinterface.m
+mcc -d ../ -mv paircim_Rinterface.m
