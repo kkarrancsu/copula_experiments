@@ -1,18 +1,18 @@
 <deployment-project plugin="plugin.coder" plugin-version="R2016a">
-  <configuration build-checksum="2992781617" file="/home/kiran/stochasticresearch/copula_experiments/cim_v4_cc.prj" location="/home/kiran/stochasticresearch/copula_experiments" name="cim_v4_cc" target="target.unifiedcoder" target-name="MATLAB Coder">
+  <configuration build-checksum="3540996049" file="/home/kiran/stochasticresearch/copula_experiments/cim_v4_cc.prj" location="/home/kiran/stochasticresearch/copula_experiments" name="cim_v4_cc" target="target.unifiedcoder" target-name="MATLAB Coder">
     <profile key="profile.mex">
-      <param.BuiltInstrumentedMex />
+      <param.BuiltInstrumentedMex>false</param.BuiltInstrumentedMex>
       <param.RanInstrumentedMex>false</param.RanInstrumentedMex>
       <param.WorkingFolder>option.WorkingFolder.Project</param.WorkingFolder>
       <param.SpecifiedWorkingFolder />
       <param.BuildFolder>option.BuildFolder.Project</param.BuildFolder>
       <param.SpecifiedBuildFolder />
       <param.SearchPaths />
-      <param.ResponsivenessChecks />
-      <param.ExtrinsicCalls />
-      <param.IntegrityChecks />
+      <param.ResponsivenessChecks>true</param.ResponsivenessChecks>
+      <param.ExtrinsicCalls>true</param.ExtrinsicCalls>
+      <param.IntegrityChecks>true</param.IntegrityChecks>
       <param.SaturateOnIntegerOverflow>true</param.SaturateOnIntegerOverflow>
-      <param.GlobalDataSyncMethod />
+      <param.GlobalDataSyncMethod>option.GlobalDataSyncMethod.SyncAlways</param.GlobalDataSyncMethod>
       <param.EnableVariableSizing>true</param.EnableVariableSizing>
       <param.DynamicMemoryAllocation>option.DynamicMemoryAllocation.Threshold</param.DynamicMemoryAllocation>
       <param.DynamicMemoryAllocationThreshold>65536</param.DynamicMemoryAllocationThreshold>
@@ -21,9 +21,10 @@
       <param.GenerateComments>true</param.GenerateComments>
       <param.MATLABSourceComments>false</param.MATLABSourceComments>
       <param.ReservedNameArray />
-      <param.EnableDebugging />
+      <param.EnableDebugging>false</param.EnableDebugging>
       <param.GenerateReport>true</param.GenerateReport>
       <param.LaunchReport>false</param.LaunchReport>
+      <param.ReportPotentialDifferences>false</param.ReportPotentialDifferences>
       <param.DefaultTestFile />
       <param.MergeInstrumentationResults>false</param.MergeInstrumentationResults>
       <param.VerificationMode>option.VerificationMode.None</param.VerificationMode>
@@ -36,13 +37,13 @@
       <param.CustomSource />
       <param.CustomLibrary />
       <param.PostCodeGenCommand />
-      <param.mex.GenCodeOnly />
+      <param.mex.GenCodeOnly>false</param.mex.GenCodeOnly>
       <param.ConstantFoldingTimeout>40000</param.ConstantFoldingTimeout>
       <param.CompileTimeRecursionLimit>50</param.CompileTimeRecursionLimit>
       <param.EnableRuntimeRecursion>true</param.EnableRuntimeRecursion>
       <param.PreserveVariableNames>option.PreserveVariableNames.None</param.PreserveVariableNames>
       <param.TargetLang>option.TargetLang.C</param.TargetLang>
-      <param.EchoExpressions />
+      <param.EchoExpressions>true</param.EchoExpressions>
       <param.InlineThreshold>10</param.InlineThreshold>
       <param.InlineThresholdMax>200</param.InlineThresholdMax>
       <param.InlineStackLimit>4000</param.InlineStackLimit>
@@ -50,11 +51,11 @@
       <param.MemcpyThreshold>64</param.MemcpyThreshold>
       <param.EnableOpenMP>true</param.EnableOpenMP>
       <param.InitFltsAndDblsToZero>true</param.InitFltsAndDblsToZero>
-      <param.ConstantInputs />
+      <param.ConstantInputs>option.ConstantInputs.CheckValues</param.ConstantInputs>
       <param.EnableCRICodeCoverage>true</param.EnableCRICodeCoverage>
       <param.EnableJIT>false</param.EnableJIT>
-      <param.EnableJITSilentBailOut />
-      <param.CheckForIssuesJIT />
+      <param.EnableJITSilentBailOut>false</param.EnableJITSilentBailOut>
+      <param.CheckForIssuesJIT>true</param.CheckForIssuesJIT>
       <unset>
         <param.BuiltInstrumentedMex />
         <param.RanInstrumentedMex />
@@ -79,6 +80,7 @@
         <param.EnableDebugging />
         <param.GenerateReport />
         <param.LaunchReport />
+        <param.ReportPotentialDifferences />
         <param.DefaultTestFile />
         <param.MergeInstrumentationResults />
         <param.VerificationMode />
@@ -154,6 +156,7 @@
       <param.GenerateCodeReplacementReport>false</param.GenerateCodeReplacementReport>
       <param.HighlightPotentialDataTypeIssues>false</param.HighlightPotentialDataTypeIssues>
       <param.LaunchReport>false</param.LaunchReport>
+      <param.ReportPotentialDifferences>false</param.ReportPotentialDifferences>
       <param.SILDebugging>false</param.SILDebugging>
       <param.CodeExecutionProfiling>false</param.CodeExecutionProfiling>
       <param.DefaultTestFile />
@@ -292,6 +295,7 @@
         <param.GenerateCodeReplacementReport />
         <param.HighlightPotentialDataTypeIssues />
         <param.LaunchReport />
+        <param.ReportPotentialDifferences />
         <param.SILDebugging />
         <param.CodeExecutionProfiling />
         <param.DefaultTestFile />
@@ -724,10 +728,13 @@
     </param.TestSnippets>
     <param.DefaultImportExportVariable>config</param.DefaultImportExportVariable>
     <param.RowMajor>false</param.RowMajor>
+    <param.HighlightPotentialRowMajorIssues>false</param.HighlightPotentialRowMajorIssues>
+    <param.ExternalFcnMajority>column</param.ExternalFcnMajority>
     <param.UseGlobals>option.UseGlobals.No</param.UseGlobals>
     <param.outputfile>${PROJECT_ROOT}/codegen/lib/cim_v4_cc/cim_v4_cc.a</param.outputfile>
     <param.version>R2012a</param.version>
     <param.HasECoderFeatures>true</param.HasECoderFeatures>
+    <param.HasGpuCoder>true</param.HasGpuCoder>
     <param.mex.mainhtml />
     <param.grt.mainhtml />
     <param.CallGeneratedCodeFromTest>true</param.CallGeneratedCodeFromTest>
@@ -747,12 +754,12 @@
     <param.unifiedParamStorage />
     <var.gc.lastOutputRoot>codegen/lib/cim_v4_cc</var.gc.lastOutputRoot>
     <var.gc.lastOutputType>C_CODE</var.gc.lastOutputType>
-    <var.gc.preBuildChecksum>31477026</var.gc.preBuildChecksum>
+    <var.gc.preBuildChecksum>911758075</var.gc.preBuildChecksum>
     <var.cfi.lastOutputRoot>codegen/mex/cim_v4_cc</var.cfi.lastOutputRoot>
-    <var.cfi.preBuildChecksum>3710098840</var.cfi.preBuildChecksum>
+    <var.cfi.preBuildChecksum>1758121822</var.cfi.preBuildChecksum>
     <var.lastCfiTestSnippet>x = rand(500,1); y = x; cim_v4_cc(x,y)</var.lastCfiTestSnippet>
     <var.outdatedOnRestore>false</var.outdatedOnRestore>
-    <var.lastUserSourceChecksum>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;checksum&gt;&lt;includedFiles&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/cim_v4_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/pobs_sorted_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/taukl_cc.m&lt;/file&gt;&lt;/includedFiles&gt;&lt;value&gt;632647627&lt;/value&gt;&lt;/checksum&gt;</var.lastUserSourceChecksum>
+    <var.lastUserSourceChecksum>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;checksum&gt;&lt;includedFiles&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/cim_v4_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/pobs_sorted_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/taukl_cc.m&lt;/file&gt;&lt;/includedFiles&gt;&lt;value&gt;2339384906&lt;/value&gt;&lt;/checksum&gt;</var.lastUserSourceChecksum>
     <var.sourceSetState>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;sourceModel&gt;&lt;primarySourceFiles&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/cim_v4_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/pobs_sorted_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/taukl_cc.m&lt;/file&gt;&lt;/primarySourceFiles&gt;&lt;fixedPointSourceFiles/&gt;&lt;fixedPointSourceRegistered&gt;false&lt;/fixedPointSourceRegistered&gt;&lt;fixedPointSourceSelected&gt;false&lt;/fixedPointSourceSelected&gt;&lt;/sourceModel&gt;</var.sourceSetState>
     <param.forceMexBuild>false</param.forceMexBuild>
     <param.configImportActive>false</param.configImportActive>
@@ -802,6 +809,7 @@
     <param.fpDataRoot />
     <param.fpUserFileChecksum />
     <var.snapshotChecksum />
+    <param.fpLastConvertChecksum />
     <var.functionBlockSid />
     <param.fptSignedness>false</param.fptSignedness>
     <var.FixedPointAnalysisMode>option.FixedPointAnalysisMode.Sim</var.FixedPointAnalysisMode>
@@ -810,10 +818,13 @@
       <param.objective />
       <param.DefaultImportExportVariable />
       <param.RowMajor />
+      <param.HighlightPotentialRowMajorIssues />
+      <param.ExternalFcnMajority />
       <param.UseGlobals />
       <param.outputfile />
       <param.version />
       <param.HasECoderFeatures />
+      <param.HasGpuCoder />
       <param.mex.mainhtml />
       <param.grt.mainhtml />
       <param.CallGeneratedCodeFromTest />
@@ -874,6 +885,7 @@
       <param.fpDataRoot />
       <param.fpUserFileChecksum />
       <var.snapshotChecksum />
+      <param.fpLastConvertChecksum />
       <var.functionBlockSid />
       <param.fptSignedness />
       <var.FixedPointAnalysisMode />
@@ -908,7 +920,7 @@
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/usr/local/MATLAB/R2016b</root>
+      <root>/usr/local/MATLAB/R2017a</root>
       <toolboxes>
         <toolbox name="fixedpoint" />
         <toolbox name="matlabcoder" />
@@ -945,7 +957,7 @@
       <vista>false</vista>
       <linux>true</linux>
       <solaris>false</solaris>
-      <osver>3.16.0-031600rc6-generic</osver>
+      <osver>4.8.0-58-generic</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>glnxa64</arch>

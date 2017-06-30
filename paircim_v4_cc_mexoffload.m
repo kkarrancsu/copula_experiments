@@ -29,7 +29,7 @@ R = zeros(n,n);
 
 for ii=1:n
     x = X(:,ii);
-    parfor (jj=ii+1:n)
+    parfor (jj=ii+1:n, getParforArg())
         y = X(:,jj);        
         cimVal = cim_v4_cc_mex(x,y);
         R(ii,jj) = cimVal;

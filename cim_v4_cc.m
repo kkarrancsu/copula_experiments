@@ -45,7 +45,7 @@ function [metric] = cim_v4_cc(x, y)
 
 % convert X and Y to pseudo-observations, and scale to be between 0-1
 [u,v] = pobs_sorted_cc(x,y);
-MAX_NUM_RECT = length(x)/2;
+MAX_NUM_RECT = ceil(length(x)/2);
 
 axisCfgs = [1 2];
 ax2minmaxCfgs = { {[0,1]}, {[0,0.5],[0.5,1]} };
