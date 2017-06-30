@@ -30,7 +30,7 @@ RectanglesCell = cell(n,n);
 
 for ii=1:n
     x = X(:,ii);
-    parfor jj=ii+1:n
+    parfor (jj=ii+1:n,getParforArg())
         y = X(:,jj);        
         [cimVal, rco] = cim_v4(x,y);
         R(ii,jj) = cimVal;
@@ -43,7 +43,7 @@ end
 % make matrix symmetric.  The below works because R is initialized to
 % zeros.
 R=R+R';
-R(1:n+1:n*n) = 1;   % set the diagonal to 1
+R(1:n+1:n*n) = 0;   % set the diagonal to 0, to match R's MINET package
 % TODO: is there an easier way to do this w/ cell arrays?
 for ii=1:n
     for jj=ii+1:n
