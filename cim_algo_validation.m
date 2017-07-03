@@ -485,8 +485,8 @@ for l=num_noise_test_min:num_noise_test_max
         cim_cut = quantile(cimNull, 0.95);
         cimv3_cut = quantile(cimv3Null, 0.95);
         cimv4_cut = quantile(cimv4Null, 0.95);
-        cimv5_cut = quantile(cimv8aNull, 0.95);
-        cimv6_cut = quantile(cimv8bNull, 0.95);
+        cimv8a_cut = quantile(cimv8aNull, 0.95);
+        cimv8b_cut = quantile(cimv8bNull, 0.95);
         cimv7_cut = quantile(cimv7Null, 0.95);
         
         % resimulate the data under the alternative hypothesis
@@ -534,8 +534,8 @@ for l=num_noise_test_min:num_noise_test_max
         cimPower(typ, l)   = sum(cimAlt > cim_cut)/nsim_alt;
         cimv3Power(typ, l)  = sum(cimv3Alt > cimv3_cut)/nsim_alt;
         cimv4Power(typ, l) = sum(cimv4Alt > cimv4_cut)/nsim_alt;
-        cimv8aPower(typ, l)  = sum(cimv8aAlt > cimv5_cut)/nsim_alt;
-        cimv8bPower(typ, l)  = sum(cimv8bAlt > cimv6_cut)/nsim_alt;
+        cimv8aPower(typ, l)  = sum(cimv8aAlt > cimv8a_cut)/nsim_alt;
+        cimv8bPower(typ, l)  = sum(cimv8bAlt > cimv8b_cut)/nsim_alt;
         cimv7Power(typ, l)  = sum(cimv7Alt > cimv7_cut)/nsim_alt;
     end
 end
@@ -659,15 +659,15 @@ for l=num_noise_test_min:num_noise_test_max
             x = rand(M,1)*(xMax-xMin)+xMin;
             
             % calculate the metrics
-            cimv4Null(ii) = cim_v4_cc_mex(x,y,minscanincrVal);
-            cimv8aNull(ii) = cim_v8a_cc_mex(x,y,minscanincrVal);
-            cimv8bNull(ii) = cim_v8b_cc_mex(x,y,minscanincrVal);
+            cimv4Null(ii) = cim_v4_cc_mex(x,y);
+            cimv8aNull(ii) = cim_v8a_cc_mex(x,y);
+            cimv8bNull(ii) = cim_v8b_cc_mex(x,y);
         end
         
         % compute the rejection cutoffs
         cimv4_cut = quantile(cimv4Null, 0.95);
-        cimv5_cut = quantile(cimv8aNull, 0.95);
-        cimv6_cut = quantile(cimv8bNull, 0.95);
+        cimv8a_cut = quantile(cimv8aNull, 0.95);
+        cimv8b_cut = quantile(cimv8bNull, 0.95);
         
         % resimulate the data under the alternative hypothesis
         parfor ii=1:nsim_alt
@@ -702,15 +702,15 @@ for l=num_noise_test_min:num_noise_test_max
             end
             
             % calculate the metrics
-            cimv4Alt(ii) = cim_v4_cc_mex(x,y,minscanincrVal);
-            cimv8aAlt(ii) = cim_v8a_cc_mex(x,y,minscanincrVal);
-            cimv8bAlt(ii) = cim_v8b_cc_mex(x,y,minscanincrVal);
+            cimv4Alt(ii) = cim_v4_cc_mex(x,y);
+            cimv8aAlt(ii) = cim_v8a_cc_mex(x,y);
+            cimv8bAlt(ii) = cim_v8b_cc_mex(x,y);
         end
         
         % compute the power
         cimv4Power(typ, l) = sum(cimv4Alt > cimv4_cut)/nsim_alt;
-        cimv8aPower(typ, l)  = sum(cimv8aAlt > cimv5_cut)/nsim_alt;
-        cimv8bPower(typ, l)  = sum(cimv8bAlt > cimv6_cut)/nsim_alt;
+        cimv8aPower(typ, l)  = sum(cimv8aAlt > cimv8a_cut)/nsim_alt;
+        cimv8bPower(typ, l)  = sum(cimv8bAlt > cimv8b_cut)/nsim_alt;
     end
 end
 
