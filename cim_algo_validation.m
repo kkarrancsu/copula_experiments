@@ -407,15 +407,15 @@ minscanincrVal = 0.015625;
 cimNull = zeros(1,nsim_null);
 cimv3Null = zeros(1,nsim_null);
 cimv4Null = zeros(1,nsim_null);
-cimv5Null = zeros(1,nsim_null);
-cimv6Null = zeros(1,nsim_null);
+cimv8aNull = zeros(1,nsim_null);
+cimv8bNull = zeros(1,nsim_null);
 cimv7Null = zeros(1,nsim_null);
 
 cimAlt  = zeros(1,nsim_alt);
 cimv3Alt = zeros(1,nsim_alt);
 cimv4Alt = zeros(1,nsim_alt);
-cimv5Alt = zeros(1,nsim_alt);
-cimv6Alt = zeros(1,nsim_alt);
+cimv8aAlt = zeros(1,nsim_alt);
+cimv8bAlt = zeros(1,nsim_alt);
 cimv7Alt = zeros(1,nsim_alt);
 
 % Arrays holding the estimated power for each of the "correlation" types, 
@@ -423,8 +423,8 @@ cimv7Alt = zeros(1,nsim_alt);
 cimPower = zeros(numDepTests, num_noise);
 cimv3Power = zeros(numDepTests, num_noise);
 cimv4Power = zeros(numDepTests, num_noise);
-cimv5Power = zeros(numDepTests,num_noise);
-cimv6Power = zeros(numDepTests,num_noise);
+cimv8aPower = zeros(numDepTests,num_noise);
+cimv8bPower = zeros(numDepTests,num_noise);
 cimv7Power = zeros(numDepTests,num_noise);
 
 % Simon & Tibshirani use xMin=0, xMax=1 for performing their analysis ...
@@ -476,8 +476,8 @@ for l=num_noise_test_min:num_noise_test_max
             cimNull(ii)   = cim(x,y);
             cimv3Null(ii) = cim_v3(x,y,minscanincrVal);
             cimv4Null(ii) = cim_v4(x,y,minscanincrVal);
-            cimv5Null(ii) = cim_v5(x,y,minscanincrVal);
-            cimv6Null(ii) = cim_v6(x,y,minscanincrVal);
+            cimv8aNull(ii) = cim_v5(x,y,minscanincrVal);
+            cimv8bNull(ii) = cim_v6(x,y,minscanincrVal);
             cimv7Null(ii) = cim_v7(x,y,minscanincrVal);
         end
         
@@ -485,8 +485,8 @@ for l=num_noise_test_min:num_noise_test_max
         cim_cut = quantile(cimNull, 0.95);
         cimv3_cut = quantile(cimv3Null, 0.95);
         cimv4_cut = quantile(cimv4Null, 0.95);
-        cimv5_cut = quantile(cimv5Null, 0.95);
-        cimv6_cut = quantile(cimv6Null, 0.95);
+        cimv5_cut = quantile(cimv8aNull, 0.95);
+        cimv6_cut = quantile(cimv8bNull, 0.95);
         cimv7_cut = quantile(cimv7Null, 0.95);
         
         % resimulate the data under the alternative hypothesis
@@ -525,8 +525,8 @@ for l=num_noise_test_min:num_noise_test_max
             cimAlt(ii)   = cim(x,y);
             cimv3Alt(ii) = cim_v3(x,y,minscanincrVal);
             cimv4Alt(ii) = cim_v4(x,y,minscanincrVal);
-            cimv5Alt(ii) = cim_v5(x,y,minscanincrVal);
-            cimv6Alt(ii) = cim_v6(x,y,minscanincrVal);
+            cimv8aAlt(ii) = cim_v5(x,y,minscanincrVal);
+            cimv8bAlt(ii) = cim_v6(x,y,minscanincrVal);
             cimv7Alt(ii) = cim_v7(x,y,minscanincrVal);
         end
         
@@ -534,8 +534,8 @@ for l=num_noise_test_min:num_noise_test_max
         cimPower(typ, l)   = sum(cimAlt > cim_cut)/nsim_alt;
         cimv3Power(typ, l)  = sum(cimv3Alt > cimv3_cut)/nsim_alt;
         cimv4Power(typ, l) = sum(cimv4Alt > cimv4_cut)/nsim_alt;
-        cimv5Power(typ, l)  = sum(cimv5Alt > cimv5_cut)/nsim_alt;
-        cimv6Power(typ, l)  = sum(cimv6Alt > cimv6_cut)/nsim_alt;
+        cimv8aPower(typ, l)  = sum(cimv8aAlt > cimv5_cut)/nsim_alt;
+        cimv8bPower(typ, l)  = sum(cimv8bAlt > cimv6_cut)/nsim_alt;
         cimv7Power(typ, l)  = sum(cimv7Alt > cimv7_cut)/nsim_alt;
     end
 end
@@ -568,8 +568,8 @@ powerMat = zeros(6,8,length(num_noise_test_min:num_noise_test_max));
 powerMat(1,:,:) = cimPower;
 powerMat(2,:,:) = cimv3Power;
 powerMat(3,:,:) = cimv4Power;
-powerMat(4,:,:) = cimv5Power;
-powerMat(5,:,:) = cimv6Power;
+powerMat(4,:,:) = cimv8aPower;
+powerMat(5,:,:) = cimv8bPower;
 powerMat(6,:,:) = cimv7Power;
 noiseVec = (num_noise_test_min:num_noise_test_max)/10;
 
@@ -578,3 +578,173 @@ plotStyle = 1;
 plotPower(powerMat, M, labels, noiseVec, num_noise_test_min, num_noise_test_max, plotStyle)
 
 
+%% Generate statistical power curves for CIMv4 vs CIMv8a/b
+% same methodology as Simon & Tibshirani:
+% http://statweb.stanford.edu/~tibs/reshef/script.R
+
+clear;
+clc;
+
+rng(1234);
+dbstop if error;
+
+nsim_null = 200;   % The number of null datasets we use to estimate our rejection reject regions for an alternative with level 0.05
+nsim_alt  = 200;   % Number of alternative datasets we use to estimate our power
+
+num_noise = 30;                    % The number of different noise levels used
+noise = 3;                         % A constant to determine the amount of noise
+
+M = 500;                % number of samples
+numDepTests = 8;        % the number of different dependency tests we will conduct
+
+% Vectors holding the null "correlations" (for pearson, dcor and mic respectively) 
+% for each of the nsim null datasets at a given noise level
+cimv4Null = zeros(1,nsim_null);
+cimv8aNull = zeros(1,nsim_null);
+cimv8bNull = zeros(1,nsim_null);
+
+cimv4Alt = zeros(1,nsim_alt);
+cimv8aAlt = zeros(1,nsim_alt);
+cimv8bAlt = zeros(1,nsim_alt);
+
+% Arrays holding the estimated power for each of the "correlation" types, 
+% for each data type (linear, parabolic, etc...) with each noise level
+cimv4Power = zeros(numDepTests, num_noise);
+cimv8aPower = zeros(numDepTests,num_noise);
+cimv8bPower = zeros(numDepTests,num_noise);
+
+% Simon & Tibshirani use xMin=0, xMax=1 for performing their analysis ...
+xMin = 0;
+xMax = 1;
+
+dispstat('','init'); % One time only initialization
+dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
+num_noise_test_min = 1;
+num_noise_test_max = 20;
+for l=num_noise_test_min:num_noise_test_max
+    for typ=1:numDepTests
+        dispstat(sprintf('Computing for noise level=%d Dependency Test=%d',l, typ),'keepthis', 'timestamp');
+        % simulate data under the null w/ correct marginals
+        parfor ii=1:nsim_null
+            x = rand(M,1)*(xMax-xMin)+xMin;
+            switch(typ)
+                case 1
+                    % linear
+                    y = x + noise*(l/num_noise)*randn(M,1); 
+                case 2
+                    % parabolic
+                    y = 4*(x-.5).^2 + noise*(l/num_noise)*randn(M,1);
+                case 3
+                    % cubic
+                    y = 128*(x-1/3).^3-48*(x-1/3).^3-12*(x-1/3)+10* noise*(l/num_noise)*randn(M,1);
+                case 4
+                    % low-freq sin
+                    y = sin(4*pi*x) + 2*noise*(l/num_noise)*randn(M,1);
+                case 5
+                    % high-freq sin
+                    y = sin(16*pi*x) + noise*(l/num_noise)*randn(M,1);
+                case 6
+                    % fourth root
+                    y = x.^(1/4) + noise*(l/num_noise)*randn(M,1);
+                case 7
+                    % circle
+                    y=(2*binornd(1,0.5,M,1)-1) .* (sqrt(1 - (2*x - 1).^2)) + noise/4*l/num_noise*randn(M,1);
+                case 8
+                    % step function
+                    y = (x > 0.5) + noise*5*l/num_noise*randn(M,1);
+                otherwise
+                    error('unknown dep type!');
+            end
+            % resimulate x so we have null scenario
+            x = rand(M,1)*(xMax-xMin)+xMin;
+            
+            % calculate the metrics
+            cimv4Null(ii) = cim_v4_cc_mex(x,y,minscanincrVal);
+            cimv8aNull(ii) = cim_v8a_cc_mex(x,y,minscanincrVal);
+            cimv8bNull(ii) = cim_v8b_cc_mex(x,y,minscanincrVal);
+        end
+        
+        % compute the rejection cutoffs
+        cimv4_cut = quantile(cimv4Null, 0.95);
+        cimv5_cut = quantile(cimv8aNull, 0.95);
+        cimv6_cut = quantile(cimv8bNull, 0.95);
+        
+        % resimulate the data under the alternative hypothesis
+        parfor ii=1:nsim_alt
+            x = rand(M,1)*(xMax-xMin)+xMin;
+            switch(typ)
+                case 1
+                    % linear
+                    y = x + noise*(l/num_noise)*randn(M,1); 
+                case 2
+                    % parabolic
+                    y = 4*(x-.5).^2 + noise*(l/num_noise)*randn(M,1);
+                case 3
+                    % cubic
+                    y = 128*(x-1/3).^3-48*(x-1/3).^3-12*(x-1/3) + 10*noise*(l/num_noise)*randn(M,1);
+                case 4
+                    % low-freq sin
+                    y = sin(4*pi*x) + 2*noise*(l/num_noise)*randn(M,1);
+                case 5
+                    % high-freq sin
+                    y = sin(16*pi*x) + noise*(l/num_noise)*randn(M,1);
+                case 6
+                    % fourth root
+                    y = x.^(1/4) + noise*(l/num_noise)*randn(M,1);
+                case 7
+                    % circle
+                    y=(2*binornd(1,0.5,M,1)-1) .* (sqrt(1 - (2*x - 1).^2)) + noise/4*l/num_noise*randn(M,1);
+                case 8
+                    % step function
+                    y = (x > 0.5) + noise*5*l/num_noise*randn(M,1);
+                otherwise
+                    error('unknown dep type!');
+            end
+            
+            % calculate the metrics
+            cimv4Alt(ii) = cim_v4_cc_mex(x,y,minscanincrVal);
+            cimv8aAlt(ii) = cim_v8a_cc_mex(x,y,minscanincrVal);
+            cimv8bAlt(ii) = cim_v8b_cc_mex(x,y,minscanincrVal);
+        end
+        
+        % compute the power
+        cimv4Power(typ, l) = sum(cimv4Alt > cimv4_cut)/nsim_alt;
+        cimv8aPower(typ, l)  = sum(cimv8aAlt > cimv5_cut)/nsim_alt;
+        cimv8bPower(typ, l)  = sum(cimv8bAlt > cimv6_cut)/nsim_alt;
+    end
+end
+
+% save the data
+if(ispc)
+    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_vstar8_power_M_%d.mat', M));
+elseif(ismac)
+    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_vstar8_power_M_%d.mat', M));
+else
+    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_vstar8_power_M_%d.mat', M));
+end
+
+%%
+clear;
+clc;
+close all;
+dbstop if error;
+
+M = 500;  % which one do we want to plot?
+
+if(ispc)
+    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_vstar8_power_M_%d.mat', M));
+elseif(ismac)
+    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_vstar8_power_M_%d.mat', M));
+else
+    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_vstar8_power_M_%d.mat', M));
+end
+
+powerMat = zeros(3,8,length(num_noise_test_min:num_noise_test_max));
+powerMat(1,:,:) = cimv4Power;
+powerMat(2,:,:) = cimv8aPower;
+powerMat(3,:,:) = cimv8bPower;
+noiseVec = (num_noise_test_min:num_noise_test_max)/10;
+
+labels = {'CIMv4', 'CIMv8a', 'CIMv8b'};
+plotStyle = 1;
+plotPower(powerMat, M, labels, noiseVec, num_noise_test_min, num_noise_test_max, plotStyle)
