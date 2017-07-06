@@ -591,7 +591,10 @@ dbstop if error;
 nsim_null = 200;   % The number of null datasets we use to estimate our rejection reject regions for an alternative with level 0.05
 nsim_alt  = 200;   % Number of alternative datasets we use to estimate our power
 
-num_noise = 30;                    % The number of different noise levels used
+num_noise_test_min = 1;
+num_noise_test_max = 20;
+num_noise = num_noise_test_max-num_noise_test_min+1;                    
+                                   % The number of different noise levels used
 noise = 3;                         % A constant to determine the amount of noise
 
 M = 500;                % number of samples
@@ -619,8 +622,6 @@ xMax = 1;
 
 dispstat('','init'); % One time only initialization
 dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
-num_noise_test_min = 1;
-num_noise_test_max = 20;
 for l=num_noise_test_min:num_noise_test_max
     for typ=1:numDepTests
         dispstat(sprintf('Computing for noise level=%d Dependency Test=%d',l, typ),'keepthis', 'timestamp');
@@ -659,7 +660,7 @@ for l=num_noise_test_min:num_noise_test_max
             x = rand(M,1)*(xMax-xMin)+xMin;
             
             % calculate the metrics
-            cimv4Null(ii) = cim_v4_cc_mex(x,y);
+            cimv4Null(ii)  = cim_v4_cc_mex(x,y);
             cimv8aNull(ii) = cim_v8a_cc_mex(x,y);
             cimv8bNull(ii) = cim_v8b_cc_mex(x,y);
         end
@@ -702,7 +703,7 @@ for l=num_noise_test_min:num_noise_test_max
             end
             
             % calculate the metrics
-            cimv4Alt(ii) = cim_v4_cc_mex(x,y);
+            cimv4Alt(ii)  = cim_v4_cc_mex(x,y);
             cimv8aAlt(ii) = cim_v8a_cc_mex(x,y);
             cimv8bAlt(ii) = cim_v8b_cc_mex(x,y);
         end

@@ -92,7 +92,7 @@ for axisCfg=axisCfgs
                         ax1pts = v; ax2pts = u;
                     case 3
                         ax1pts = u; ax2pts = -v;
-                    case 4
+                    otherwise
                         ax1pts = -v; ax2pts = -u;
                 end
 
