@@ -81,8 +81,8 @@ for MIdx=1:length(MVecToPlot)
     meanDataEmpirical = mean(data);
     subplot(p(1),p(2),MIdx);
     varTheoretical = ones(1,length(noiseVec))*(2*(2*M+5))./(9*M.*(M-1));
-    plot(noiseVec,varDataEmpirical,noiseVec,(1-meanDataEmpirical).*varTheoretical);
-    grid on; xlabel('noise'); ylabel('var(\tau)'); 
+    plot(noiseVec,sqrt(varDataEmpirical),noiseVec,(1-meanDataEmpirical).*sqrt(varTheoretical));
+    grid on; xlabel('noise'); ylabel('\sigma(\tau)'); 
     title(sprintf('M=%d',M));
     
 end
