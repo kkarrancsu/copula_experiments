@@ -1,11 +1,12 @@
-function [ tau ] = taukl_cc( X, Y )
+function [ tau ] = taukl_cc( U, V )
 %TAUKL - computes a rescaled version of Kendall's tau that preserves
 %         the definition of Kendall's tau, but assures that in the 
 %         scenario of perfect concordance or discordance for discrete
 %         or hybrid datatypes, taucj achieves +/- 1 respectively
 % Inputs:
-%  X - first variable input.
-%  Y - second variable input.
+%  U - first variable input.
+%  V - second variable input.
+%  THE CC VERSION REQUIRES U & V to be sorted by U!
 % Outputs:
 %  tau - the rescaled version of Kendall's tau
 %  
@@ -30,15 +31,9 @@ function [ tau ] = taukl_cc( X, Y )
 %* 
 %**************************************************************************
 
-data_sorted = sort(X);
-[~, U] = ismember(X,data_sorted);
-
-data_sorted = sort(Y);
-[~, V] = ismember(Y,data_sorted);
-
 % compute the numerator the tau_hat
 K = 0;
-len = length(X);
+len = length(U);
 for k = 1:len-1
     K = K + sum( sign(U(k)-U(k+1:len)) .* sign(V(k)-V(k+1:len)) );
 end
@@ -50,24 +45,33 @@ end
 
 % compute the denominator ... compute the # of unique values of U and V and
 % how many times each of those unique values occur
-uniqueU = unique(U);
-uniqueV = unique(V);
+% uniqueUValues = unique(U);
+% uniqueVValues = unique(V);
+[uniqueUValues, uniqueUCounts] = uniqueSorted(U);
+[uniqueVValues, uniqueVCounts] = uniqueSorted(V);
 
-uniqueUCounts = zeros(1,length(uniqueU));
-uniqueVCounts = zeros(1,length(uniqueV));
-
-% TODO: we can combine the loops below after verification of functionality
-for ii=1:length(uniqueU)
-    uniqueUCounts(ii) = sum(U==uniqueU(ii));
+if((length(uniqueUValues) >= len/2) && (length(uniqueVValues) >= len/2))
+    % means we can reasonably assume that we have continuous data
+    % for data-sizes >=50
+    tau = K/(len*(len-1)/2);
+    return;
 end
 
-for ii=1:length(uniqueV)
-    uniqueVCounts(ii) = sum(V==uniqueV(ii));
-end
+% % uniqueUCounts = zeros(1,length(uniqueU));
+% % uniqueVCounts = zeros(1,length(uniqueV));
+% % 
+% % % TODO: we can combine the loops below after verification of functionality
+% % for ii=1:length(uniqueU)
+% %     uniqueUCounts(ii) = sum(U==uniqueU(ii));
+% % end
+% % 
+% % for ii=1:length(uniqueV)
+% %     uniqueVCounts(ii) = sum(V==uniqueV(ii));
+% % end
 
 u = 0;
 k = 2;
-for ii=1:length(uniqueU)
+for ii=1:length(uniqueUValues)
     n = uniqueUCounts(ii);
     if(k<=n)
         addVal = nchoosek(n,k);
@@ -77,7 +81,7 @@ for ii=1:length(uniqueU)
     u = u + addVal;
 end
 v = 0;
-for ii=1:length(uniqueV)
+for ii=1:length(uniqueVValues)
     n = uniqueVCounts(ii);
     if(k<=n)
         addVal = nchoosek(n,k);

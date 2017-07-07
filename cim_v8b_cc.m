@@ -83,7 +83,7 @@ for axisCfg=axisCfgs
             ax2min = ax2mmCfg(1);
             ax2max = ax2mmCfg(2);
 
-            for zz=1:scanVecLen
+            parfor zz=1:scanVecLen
                 scanincr = scanPattern(zz);
                 switch(axisCfg)
                     case 1
