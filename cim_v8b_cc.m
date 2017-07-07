@@ -183,13 +183,13 @@ while ax1max<=1
     if(numPts>=2)   % make sure we have enough points to compute the metric
         % compute the concordance
         metricRectangle = abs(taukl_cc( matchPts(:,1),matchPts(:,2)));
-        varTau = (1-metricRectangle)*sqrt( (2*(2*numPts+5))/(9*numPts*(numPts-1)) )*numStdDev;
+        stdTau = ((1-metricRectangle)*sqrt( (2*(2*numPts+5))/(9*numPts*(numPts-1)) ) )*numStdDev;
         if(newRectangle)
             newRectangle = 0;
         else
             % compare to the previous concordance, if there is a change by the
             % threshold amount, rewind the axes of the cover rectangle and 
-            if( (metricRectangle < (metricRectanglePrev-varTau)) )
+            if( (metricRectangle < (metricRectanglePrev-stdTau)) )
                 metricVec(rectanglesIdx) = metricRectanglePrev;
                 numPtsVec(rectanglesIdx) = numPtsPrev;
                 rectanglesIdx = rectanglesIdx + 1;
