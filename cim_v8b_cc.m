@@ -1,28 +1,16 @@
-function [metric] = cim_v8b_cc(x, y)
+function [metric] = cim_v8b_cc(x, y, minScanIncr)
 %CIM - Copula Index for Detecting Dependence and Monotonicity between
 %Stochastic Signals.  See associated paper... to be published and preprint
 %located here: 
 % Inputs:
 %  x - the x variable
 %  y - the y variable
-%  varargin{1} - minscanincr - the minimum scanning increment.  Large
+%  minscanincr - the minimum scanning increment.  Large
 %                              values will filter out high frequency
 %                              dependencies, small values decrease the
 %                              statistical power of the dependency metric
-%  varargin{2} - diffthresh  - the threshold at which a change in
-%                              concordance amount is detected.  Larger
-%                              values are more robust to noise, but tend to
-%                              miss high frequency changes.
-%  varargin{3} - alpha       - the value used to determine significance
-%                              level of a box's concordance level
 % Outputs:
 %  metric - the calculated dependency metric between x and y
-%  resid  - the residual between the estimated concordance boxes and the
-%           observed statistical variables.  Each concordance box's
-%           residuals are provided separately
-%  residAssocIdxs - the indices of the independent variable associated with
-%                   each residual point, this is used by rscdm for residual
-%                   alignment.
 %
 %**************************************************************************
 %*                                                                        *
@@ -52,11 +40,18 @@ ax2minmaxCfgs = { {[0,1]}, {[0,0.5],[0.5,1]} };
 
 % perform a scan pattern while varying U with V full-range, then swap the U-V axes
 vecLen = length(axisCfgs)*length(ax2minmaxCfgs);
-scanPattern = [1,0.5,0.25,0.125,0.0625,0.03125,0.015625];
-scanVecLen = length(scanPattern);
+numScans = ceil(log2(1/minScanIncr))+1;
+% scanincr = 1;
+% scanPattern = zeros(1,numScans);
+% for ii=1:numScans
+%     scanPattern(ii) = scanincr;
+%     scanincr = scanincr/2;
+% end
+% % scanPattern = [1,0.5,0.25,0.125,0.0625,0.03125,0.015625];
+% numScans = length(scanPattern);
 
-metricCell = zeros(scanVecLen,MAX_NUM_RECT); numPtsCell = zeros(scanVecLen,MAX_NUM_RECT);
-numRectanglesCreatedVec = zeros(scanVecLen);
+metricCell = zeros(numScans,MAX_NUM_RECT); numPtsCell = zeros(numScans,MAX_NUM_RECT);
+numRectanglesCreatedVec = zeros(numScans);
 
 % pre-allocate to max-length for matlab coder speed purposes
 metricVecAggr = cell(1,2);
@@ -82,9 +77,10 @@ for axisCfg=axisCfgs
             ax2mmCfg = ax2minmaxCfg{ax2mmCfgIdx};
             ax2min = ax2mmCfg(1);
             ax2max = ax2mmCfg(2);
-
-            parfor zz=1:scanVecLen
-                scanincr = scanPattern(zz);
+            
+            scanincr = 1;
+            for zz=1:numScans
+%                 scanincr = scanPattern(zz);
                 switch(axisCfg)
                     case 1
                         ax1pts = u; ax2pts = v;
@@ -102,6 +98,8 @@ for axisCfg=axisCfgs
                 metricCell(zz,:) = metricVecTmp;
                 numPtsCell(zz,:) = numPtsVecTmp;
                 numRectanglesCreatedVec(zz) = numRectanglesCreated;
+                
+                scanincr = scanincr/2;
             end
             metricVecAggr{ax2mmCfgIdx} = metricCell;
             numPtsVecAggr{ax2mmCfgIdx} = numPtsCell;
@@ -125,7 +123,7 @@ metric = max(metrics);
 end
 
 function [metric] = computeMetricFromAggregates(metricVecAggr, numPtsVecAggr, ax2minmaxCfgLen, numRectanglesAggr)
-
+coder.inline('always');
 metrics = zeros(2,ax2minmaxCfgLen);
 
 for jj=1:ax2minmaxCfgLen
@@ -164,6 +162,7 @@ function [metricVec, numPtsVec, rectanglesIdx] = scanForDep(ax1pts, ax2pts, ax2m
 %scanForDep - scans for dependencies across the first axis (if you would
 %like to scan across the second axis, simply swap the input arguments to 
 %this function).
+coder.inline('always');
 
 ax1min = 0; ax1max = scanincr;
 newRectangle = 1;
@@ -175,7 +174,9 @@ rectanglesIdx = 1;
 metricRectanglePrev = -999;
 numPtsPrev = 1;  % should get overwritten
 numStdDev = 4;
-while ax1max<=1
+% while ax1max<=1
+numLoops = ceil(1/scanincr);  %%
+for ii=1:numLoops             %%
     % find all the points which are contained within this cover rectangle
     matchPts = getPointsWithinBounds(ax1pts, ax2pts, ax1min, ax1max, ax2min, ax2max);
     
@@ -215,8 +216,9 @@ end
 end
 
 function [matchPts, matchIdxs] = getPointsWithinBounds(ax1pts, ax2pts, ax1min, ax1max, ax2min, ax2max)
-    ax1_match = find(ax1pts>ax1min & ax1pts<=ax1max);
-    ax2_match = find(ax2pts>ax2min & ax2pts<=ax2max);
-    matchIdxs = intersect(ax1_match,ax2_match);
-    matchPts = [ax1pts(matchIdxs) ax2pts(matchIdxs)];
+coder.inline('always');
+ax1_match = find(ax1pts>ax1min & ax1pts<=ax1max);
+ax2_match = find(ax2pts>ax2min & ax2pts<=ax2max);
+matchIdxs = intersect(ax1_match,ax2_match);
+matchPts = [ax1pts(matchIdxs) ax2pts(matchIdxs)];
 end

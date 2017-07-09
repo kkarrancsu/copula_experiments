@@ -30,13 +30,15 @@ function [ tau ] = taukl_cc( U, V )
 %* along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %* 
 %**************************************************************************
+len = length(U);
 
 % compute the numerator the tau_hat
-K = 0;
-len = length(U);
-for k = 1:len-1
-    K = K + sum( sign(U(k)-U(k+1:len)) .* sign(V(k)-V(k+1:len)) );
-end
+% K = 0;
+% for k = 1:len-1
+%     K = K + sum( sign(U(k)-U(k+1:len)) .* sign(V(k)-V(k+1:len)) );
+% end
+K = kendallsTauNumer1(U,V);
+% K = kendallsTauNumer2(U,V);
 
 if(K==0)
     tau = 0;

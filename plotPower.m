@@ -29,7 +29,7 @@ if(style==1)
     % we break it up into 2 figures, 2x2 subplots on each figure for
     % readability
     captionTextIdx = 1;
-    noiseVecToPlot = noiseVec-1;  % convert 1-based stuff to 0-based
+    noiseVecToPlot = noiseVec;  % convert 1-based stuff to 0-based
     for figNum=[1,2]
         figure(figNum);
         for subplotNum=1:4
@@ -37,7 +37,7 @@ if(style==1)
             hhCell = cell(1,length(labels));
             for ii=1:length(labels)
                 h = subplot(2,2,subplotNum);
-                hh = plot(noiseVecToPlot, squeeze(powerMat(ii,depTypeIdx,noiseMin:noiseMax)), plotStyle{ii});
+                hh = plot(noiseVecToPlot, squeeze(powerMat(ii,depTypeIdx,1:length(noiseVecToPlot))), plotStyle{ii});
                 hhCell{ii} = hh;
                 hold on;
             end
