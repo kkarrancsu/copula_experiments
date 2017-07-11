@@ -752,22 +752,23 @@ M = 500;  % which one do we want to plot?
 % else
 %     load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_vstar4_8_power_M_%d.mat', M));
 % end
-load('/home/kiran/Desktop/cim_v8_debug_power_M_500.mat');
+load('/home/kiran/Desktop/cim_v8rev3_debug_power_M_500.mat');
 
 num_noise_test_min = 0;
-num_noise_test_max = 15;
+num_noise_test_max = 14;
 noiseVec = num_noise_test_min:num_noise_test_max;
 
-powerMat = zeros(5,8,length(noiseVec));
-powerMat(1,:,:) = cimv4Power(:,1:length(noiseVec));
-powerMat(2,:,:) = cimv8aPower(:,1:length(noiseVec));
-powerMat(3,:,:) = cimv8aRev1CCPower(:,1:length(noiseVec));
-powerMat(4,:,:) = cimv8aRev2CCPower(:,1:length(noiseVec));
-powerMat(5,:,:) = cimv8aRev3CCPower(:,1:length(noiseVec));
+powerMat = zeros(4,8,length(noiseVec));
+powerMat(1,:,:) = cimv8aPower(:,1:length(noiseVec));
+powerMat(2,:,:) = cimv8aRev3CCPower(:,1:length(noiseVec));
+powerMat(3,:,:) = cimv8aRev3aCCPower(:,1:length(noiseVec));
+powerMat(4,:,:) = cimv8aRev3bCCPower(:,1:length(noiseVec));
+% powerMat(5,:,:) = cimv8aRev3CCPower(:,1:length(noiseVec));
 noiseVec = (num_noise_test_min:num_noise_test_max)/10;
 
 % labels = {'CIMv4', 'CIMv8a', 'CIMv8b'};
 % labels = {'CIMv4', 'CIMv4[MEX]', 'CIMv8a[MEX]', 'CIMv8b[MEX]'};
-labels = {'CIMv4', 'CIMv8a', 'CIMv8a[REV1]', 'CIMv8a[REV2]', 'CIMv8a[REV3]'};
+% labels = {'CIMv4', 'CIMv8a', 'CIMv8a[REV1]', 'CIMv8a[REV2]', 'CIMv8a[REV3]'};
+labels = {'CIMv4', 'CIMv8a', 'CIMv8a[REV3a]', 'CIMv8a[REV3b]'};
 plotStyle = 1;
 plotPower(powerMat, M, labels, noiseVec, num_noise_test_min, num_noise_test_max, plotStyle)

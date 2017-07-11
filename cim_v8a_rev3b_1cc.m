@@ -1,4 +1,4 @@
-function [metric, rectangleCellOut] = cim_v8a_rev3bcc(x, y, varargin)
+function [metric, rectangleCellOut] = cim_v8a_rev3b_1cc(x, y, varargin)
 % in this version, this is the same as cim_v8a.m, except the scanForDep
 % function is copied from cim_v8a_cc.m
 % This is broken!  see the
@@ -164,7 +164,7 @@ for ii=1:numLoops             %%
     numPts = size(matchPts,1);
     if(numPts>=2)   % make sure we have enough points to compute the metric
         % compute the concordance
-        metricRectangle = abs(taukl_cc( matchPts(:,1),matchPts(:,2)));
+        metricRectangle = abs(taukl( matchPts(:,1),matchPts(:,2)));
         stdTau = ((1-metricRectangle)*sqrt( (2*(2*numPts+5))/(9*numPts*(numPts-1)) ) )*numStdDev;
         if(newRectangle)
             newRectangle = 0;

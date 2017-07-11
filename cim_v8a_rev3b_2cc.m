@@ -1,4 +1,4 @@
-function [metric, rectangleCellOut] = cim_v8a_rev3bcc(x, y, varargin)
+function [metric, rectangleCellOut] = cim_v8a_rev3b_2cc(x, y, varargin)
 % in this version, this is the same as cim_v8a.m, except the scanForDep
 % function is copied from cim_v8a_cc.m
 % This is broken!  see the
@@ -190,9 +190,14 @@ for ii=1:numLoops             %%
         if(metricRectanglePrev>=0)
             metricVec(rectanglesIdx) = metricRectanglePrev;
             numPtsVec(rectanglesIdx) = length(matchPts);
+            rectanglesIdx = rectanglesIdx + 1;
         end
     end
 end
+
+metricVec(rectanglesIdx:end) = [];
+numPtsVec(rectanglesIdx:end) = [];
+rectanglesIdx = rectanglesIdx - 1;
 
 end
 
