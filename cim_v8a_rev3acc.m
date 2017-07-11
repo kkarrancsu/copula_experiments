@@ -1,66 +1,74 @@
-function [metric, rectangleCellOut] = ...
-    cim_v8a_rev1cc(x, y, varargin)
-% REV1 -- tests whether pobs_sorted_cc is causing the glitches
-% SEEMS TO WORK FINE!!!  LOAD cim_v8_debug_power_M_500 to see that this
-% matches cim_v8a.m
-
-% default values
-minscanincr = 0.015625;
-
-% overwrite defaults with user-inputted values
-nVarargin = length(varargin);
-switch nVarargin
-    case 0
-    otherwise
-        minscanincr = varargin{1};
-end
+function [metric] = cim_v8a_rev3acc(x, y, minScanIncr)
+% in this version, this is the same as cim_v8a_cc.m, except the scanForDep
+% function is copied from cim_v8a.m
 
 % convert X and Y to pseudo-observations, and scale to be between 0-1
-M = length(x);
 [u,v] = pobs_sorted_cc(x,y);
+MAX_NUM_RECT = ceil(length(x)/2);
 
 axisCfgs = [1 2];
 ax2minmaxCfgs = { {[0,1]}, {[0,0.5],[0.5,1]} };
 
 % perform a scan pattern while varying U with V full-range, then swap the U-V axes
-metrics = []; maxIICell = {};
-rectangleAggr = {};  rectangleAggrIdx = 1;
+vecLen = length(axisCfgs)*length(ax2minmaxCfgs);
+numScans = ceil(log2(1/minScanIncr))+1;
+% scanPattern = [1,0.5,0.25,0.125,0.0625,0.03125,0.015625];
+% numScans = length(scanPattern);
+
+metricCell = zeros(numScans,MAX_NUM_RECT); numPtsCell = zeros(numScans,MAX_NUM_RECT);
+numRectanglesCreatedVec = zeros(numScans);
+
+% pre-allocate to max-length for matlab coder speed purposes
+metricVecAggr = cell(1,2);
+numPtsVecAggr = cell(1,2);
+numRectanglesVecAggr = cell(1,2); 
+
+% assign cell elements empty stuff to make matlab-coder happy :x
+for ii=1:2
+    metricVecAggr{ii} = metricCell;
+    numPtsVecAggr{ii} = numPtsCell;
+    numRectanglesVecAggr{ii} = numRectanglesCreatedVec;
+end
+
+metrics = zeros(1,vecLen); 
+rectangleAggrIdx = 1;
 for axisCfg=axisCfgs
     for ax2minmaxCfgsIdx=1:length(ax2minmaxCfgs)
         ax2minmaxCfg = ax2minmaxCfgs{ax2minmaxCfgsIdx};
-        metricVecAggr = cell(1,length(ax2minmaxCfg));
-        numPtsVecAggr = cell(1,length(ax2minmaxCfg));
-        rectangleCellAggr = cell(1,length(ax2minmaxCfg));
-        for ax2mmCfgIdx=1:length(ax2minmaxCfg)
+        
+        ax2minmaxCfgLen = length(ax2minmaxCfg);
+        
+        for ax2mmCfgIdx=1:ax2minmaxCfgLen
             ax2mmCfg = ax2minmaxCfg{ax2mmCfgIdx};
             ax2min = ax2mmCfg(1);
             ax2max = ax2mmCfg(2);
 
-            metricCell = {}; numPtsCell = {};
-            rectanglesCell = {}; rectanglesCellIdx = 1;
             scanincr = 1;
-            while(scanincr>=minscanincr)
+            for zz=1:numScans
+%                 scanincr = scanPattern(zz);
                 switch(axisCfg)
                     case 1
                         ax1pts = u; ax2pts = v;
-                    case 2
+                    otherwise  % changed from case 2 to otherwise for matlab coder
                         ax1pts = v; ax2pts = u;
                 end
 
-                [metricVecTmp, numPtsVecTmp, rectangles] = ...
+                [metricVecTmp, numPtsVecTmp, numRectanglesCreated] = ...
                     scanForDep(ax1pts,ax2pts,ax2min,ax2max,scanincr);
                 
-                metricCell{rectanglesCellIdx} = metricVecTmp;
-                numPtsCell{rectanglesCellIdx} = numPtsVecTmp;
-                rectanglesCell{rectanglesCellIdx} = rectangles; 
+                % pad, so that we can conform to api :(
+                metricVecTmpPadded = [metricVecTmp zeros(1,MAX_NUM_RECT-length(metricVecTmp))];
+                numPtsVecTmpPadded = [numPtsVecTmp zeros(1,MAX_NUM_RECT-length(numPtsVecTmp))];
                 
-                rectanglesCellIdx = rectanglesCellIdx + 1;
-
+                metricCell(zz,:) = metricVecTmpPadded;  
+                numPtsCell(zz,:) = numPtsVecTmpPadded;
+                numRectanglesCreatedVec(zz) = numRectanglesCreated;
+                
                 scanincr = scanincr/2;
             end
             metricVecAggr{ax2mmCfgIdx} = metricCell;
             numPtsVecAggr{ax2mmCfgIdx} = numPtsCell;
-            rectangleCellAggr{ax2mmCfgIdx} = rectanglesCell;
+            numRectanglesVecAggr{ax2mmCfgIdx} = numRectanglesCreatedVec;
         end
         % compute the metric for this.  putting stuff outside the 2nd
         % for-loop allows us to combine the results for {[0,1]} and
@@ -69,51 +77,32 @@ for axisCfg=axisCfgs
         % should have the results for {[0,0.5],[0.5,1]} and compute a
         % metric for it.  at the end of processing, we compute a
         % maximum.
-        [m,maxIIVec] = computeMetricFromAggregates(metricVecAggr, numPtsVecAggr);
-        metrics = [metrics m]; maxIICell{rectangleAggrIdx} = maxIIVec;
-        rectangleAggr{rectangleAggrIdx} = rectangleCellAggr;
+        m = computeMetricFromAggregates(metricVecAggr, numPtsVecAggr, ax2minmaxCfgLen, numRectanglesVecAggr);
+        metrics(rectangleAggrIdx) = m;
         rectangleAggrIdx = rectangleAggrIdx + 1;
     end
 end
 
-[metric, metricMaxIdx] = max(metrics);
-if(nargout>1)
-    idx1 = metricMaxIdx;
-    tmp = maxIICell{idx1};
-    if(mod(metricMaxIdx,2)~=0)  % means full v-scale scan was best option
-        idx2 = 1; idx3 = tmp(1);
-        rectangleCellOut = rectangleAggr{idx1}{idx2}{idx3};
-    else
-        % WARNING -- need to change this along w/ the scan-patterns
-        idx3_1 = tmp(1); idx3_2 = tmp(2);
-        % disambiguate this to determine the number of regions!
-        regionMat1 = rectangleAggr{idx1}{1}{idx3_1};
-        regionMat2 = rectangleAggr{idx1}{2}{idx3_2};
-        % TODO: in the future, think about fancy merging of the regions to
-        % get a more accurate monotonicity count, for now, flatten the
-        % region matrices and return as a first order approximation of the
-        % monotonic regions
-        rectangleCellOut = [regionMat1 regionMat2];
-    end
-end
+metric = max(metrics);
 
 end
 
-function [metric, maxIIVec] = computeMetricFromAggregates(metricVecAggr, numPtsVecAggr)
+function [metric] = computeMetricFromAggregates(metricVecAggr, numPtsVecAggr, ax2minmaxCfgLen, numRectanglesAggr)
+coder.inline('always');
+metrics = zeros(2,ax2minmaxCfgLen);
 
-metrics = zeros(2,length(metricVecAggr));
-maxIIVec = [];
-
-for jj=1:length(metricVecAggr)
+for jj=1:ax2minmaxCfgLen
     groupMetrics = metricVecAggr{jj};
     groupVecLens = numPtsVecAggr{jj};
+    groupRectangles = numRectanglesAggr{jj};
     
     weightedMetric = -999;
     numPts = -999;
-    for ii=1:length(groupMetrics)
+    for ii=1:length(groupRectangles)
         % compute the metric for each group
-        gMetric = groupMetrics{ii};
-        gVecLen = groupVecLens{ii};
+        numRects = groupRectangles(ii);
+        gMetric = groupMetrics(ii,1:numRects);
+        gVecLen = groupVecLens(ii,1:numRects);
         
         % compute the weighted metric
         weightedMetricCompute = sum( gMetric.*gVecLen/(sum(gVecLen)) );
@@ -123,10 +112,8 @@ for jj=1:length(metricVecAggr)
         if(weightedMetricCompute>weightedMetric)
             weightedMetric = weightedMetricCompute;
             numPts = numPtsCompute;
-            maxIIVal = ii;
         end
     end
-    maxIIVec = [maxIIVec maxIIVal];
     metrics(1,jj) = weightedMetric;
     metrics(2,jj) = numPts;
 end
@@ -136,7 +123,10 @@ metric = sum( metrics(2,:)/sum(metrics(2,:)).*metrics(1,:) );
 
 end
 
-function [metricVec, numPtsVec, rectangles] = scanForDep(ax1pts, ax2pts, ax2min, ax2max, scanincr)
+% the only modification to this function was to return the rectanglesIdx as
+% the 3rd output argument, rather than the rectangles themselves, b/c we
+% are only caring about the metric right now, not the actual regions.
+function [metricVec, numPtsVec, rectanglesIdx] = scanForDep(ax1pts, ax2pts, ax2min, ax2max, scanincr)
 %scanForDep - scans for dependencies across the first axis (if you would
 %like to scan across the second axis, simply swap the input arguments to 
 %this function).
@@ -189,8 +179,9 @@ end
 end
 
 function [matchPts, matchIdxs] = getPointsWithinBounds(ax1pts, ax2pts, ax1min, ax1max, ax2min, ax2max)
-    ax1_match = find(ax1pts>ax1min & ax1pts<=ax1max);
-    ax2_match = find(ax2pts>ax2min & ax2pts<=ax2max);
-    matchIdxs = intersect(ax1_match,ax2_match);
-    matchPts = [ax1pts(matchIdxs) ax2pts(matchIdxs)];
+coder.inline('always');
+ax1_match = find(ax1pts>ax1min & ax1pts<=ax1max);
+ax2_match = find(ax2pts>ax2min & ax2pts<=ax2max);
+matchIdxs = intersect(ax1_match,ax2_match);
+matchPts = [ax1pts(matchIdxs) ax2pts(matchIdxs)];
 end

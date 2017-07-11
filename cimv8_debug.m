@@ -29,28 +29,28 @@ numDepTests = 8;        % the number of different dependency tests we will condu
 
 % Vectors holding the null "correlations" (for pearson, dcor and mic respectively) 
 % for each of the nsim null datasets at a given noise level
-cimv4Null     = zeros(1,nsim_null);
+% cimv4Null     = zeros(1,nsim_null);
 cimv8aNull = zeros(1,nsim_null);
-cimv8aRev1CCNull = zeros(1,nsim_null);
-cimv8aRev2CCNull = zeros(1,nsim_null);
 cimv8aRev3CCNull = zeros(1,nsim_null);
+cimv8aRev3aCCNull = zeros(1,nsim_null);
+cimv8aRev3bCCNull = zeros(1,nsim_null);
 
-cimv4Alt     = zeros(1,nsim_alt);
+% cimv4Alt     = zeros(1,nsim_alt);
 cimv8aAlt = zeros(1,nsim_alt);
-cimv8aRev1CCAlt = zeros(1,nsim_alt);
-cimv8aRev2CCAlt = zeros(1,nsim_alt);
 cimv8aRev3CCAlt = zeros(1,nsim_alt);
+cimv8aRev3aCCAlt = zeros(1,nsim_alt);
+cimv8aRev3bCCAlt = zeros(1,nsim_alt);
 
 % configuration parameter for cim algorithm
 minScanIncr=0.015625;
 
 % Arrays holding the estimated power for each of the "correlation" types, 
 % for each data type (linear, parabolic, etc...) with each noise level
-cimv4Power     = zeros(numDepTests,num_noise);
+% cimv4Power     = zeros(numDepTests,num_noise);
 cimv8aPower     = zeros(numDepTests,num_noise);
-cimv8aRev1CCPower = zeros(numDepTests,num_noise);
-cimv8aRev2CCPower = zeros(numDepTests,num_noise);
 cimv8aRev3CCPower = zeros(numDepTests,num_noise);
+cimv8aRev3aCCPower = zeros(numDepTests,num_noise);
+cimv8aRev3bCCPower = zeros(numDepTests,num_noise);
 
 % Simon & Tibshirani use xMin=0, xMax=1 for performing their analysis ...
 xMin = 0;
@@ -64,6 +64,7 @@ for lIdx=1:num_noise
         dispstat(sprintf('Computing for noise level=%d Dependency Test=%d',l, typ),'keepthis', 'timestamp');
         % simulate data under the null w/ correct marginals
         parfor ii=1:nsim_null
+%         for ii=1:nsim_null
             x = rand(M,1)*(xMax-xMin)+xMin;
             switch(typ)
                 case 1
@@ -97,22 +98,23 @@ for lIdx=1:num_noise
             x = rand(M,1)*(xMax-xMin)+xMin;
             
             % calculate the metrics
-            cimv4Null(ii)        = cim_v4(x,y,minScanIncr);
-            cimv8aNull(ii)       = cim_v8a(x,y,minScanIncr);
-            cimv8aRev1CCNull(ii) = cim_v8a_rev1cc(x,y,minScanIncr);
-            cimv8aRev2CCNull(ii) = cim_v8a_rev2cc(x,y,minScanIncr);
-            cimv8aRev3CCNull(ii) = cim_v8a_rev3cc(x,y,minScanIncr);
+%             cimv4Null(ii)        = cim_v4(x,y,minScanIncr);
+            cimv8aNull(ii)        = cim_v8a(x,y,minScanIncr);
+            cimv8aRev3CCNull(ii)  = cim_v8a_rev3cc(x,y,minScanIncr);
+            cimv8aRev3aCCNull(ii) = cim_v8a_rev3acc(x,y,minScanIncr);
+            cimv8aRev3bCCNull(ii) = cim_v8a_rev3bcc(x,y,minScanIncr);
         end
         
         % compute the rejection cutoffs
-        cimv4_cut        = quantile(cimv4Null, 0.95);
+%         cimv4_cut        = quantile(cimv4Null, 0.95);
         cimv8a_cut       = quantile(cimv8aNull, 0.95);
-        cimv8aRev1CC_cut = quantile(cimv8aRev1CCNull, 0.95);
-        cimv8aRev2CC_cut = quantile(cimv8aRev2CCNull, 0.95);
         cimv8aRev3CC_cut = quantile(cimv8aRev3CCNull, 0.95);
+        cimv8aRev3aCC_cut = quantile(cimv8aRev3aCCNull, 0.95);
+        cimv8aRev3bCC_cut = quantile(cimv8aRev3bCCNull, 0.95);
         
         % resimulate the data under the alternative hypothesis
         parfor ii=1:nsim_alt
+%         for ii=1:nsim_alt
             x = rand(M,1)*(xMax-xMin)+xMin;
             switch(typ)
                 case 1
@@ -144,36 +146,36 @@ for lIdx=1:num_noise
             end
             
             % calculate the metrics
-            cimv4Alt(ii)        = cim_v4(x,y,minScanIncr);
+%             cimv4Alt(ii)        = cim_v4(x,y,minScanIncr);
             cimv8aAlt(ii)       = cim_v8a(x,y,minScanIncr);
-            cimv8aRev1CCAlt(ii) = cim_v8a_rev1cc(x,y,minScanIncr);
-            cimv8aRev2CCAlt(ii) = cim_v8a_rev2cc(x,y,minScanIncr);
             cimv8aRev3CCAlt(ii) = cim_v8a_rev3cc(x,y,minScanIncr);
+            cimv8aRev3aCCAlt(ii) = cim_v8a_rev3acc(x,y,minScanIncr);
+            cimv8aRev3bCCAlt(ii) = cim_v8a_rev3bcc(x,y,minScanIncr);
         end
         
         % compute the power
-        cimv4Power(typ,lIdx)          = sum(cimv4Alt > cimv4_cut)/nsim_alt;
+%         cimv4Power(typ,lIdx)          = sum(cimv4Alt > cimv4_cut)/nsim_alt;
         cimv8aPower(typ, lIdx)        = sum(cimv8aAlt > cimv8a_cut)/nsim_alt;
-        cimv8aRev1CCPower(typ, lIdx)  = sum(cimv8aRev1CCAlt > cimv8aRev1CC_cut)/nsim_alt;
-        cimv8aRev2CCPower(typ, lIdx)  = sum(cimv8aRev2CCAlt > cimv8aRev2CC_cut)/nsim_alt;
         cimv8aRev3CCPower(typ, lIdx)  = sum(cimv8aRev3CCAlt > cimv8aRev3CC_cut)/nsim_alt;
+        cimv8aRev3aCCPower(typ, lIdx)  = sum(cimv8aRev3aCCAlt > cimv8aRev3aCC_cut)/nsim_alt;
+        cimv8aRev3bCCPower(typ, lIdx)  = sum(cimv8aRev3bCCAlt > cimv8aRev3bCC_cut)/nsim_alt;
     end
     
     % save the data in between data points so we can chart progress easily
     if(ispc)
-        save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8_debug_power_M_%d.mat', M));
+        save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev3_debug_power_M_%d.mat', M));
     elseif(ismac)
-        save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8_debug_power_M_%d.mat', M));
+        save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_debug_power_M_%d.mat', M));
     else
-        save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8_debug_power_M_%d.mat', M));
+        save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_debug_power_M_%d.mat', M));
     end
 end
 
 % save the data
 if(ispc)
-    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8_debug_power_M_%d.mat', M));
+    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev3_debug_power_M_%d.mat', M));
 elseif(ismac)
-    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8_debug_power_M_%d.mat', M));
+    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_debug_power_M_%d.mat', M));
 else
-    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8_debug_power_M_%d.mat', M));
+    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_debug_power_M_%d.mat', M));
 end

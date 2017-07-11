@@ -1,8 +1,6 @@
-function [metric, rectangleCellOut] = ...
-    cim_v8a_rev1cc(x, y, varargin)
-% REV1 -- tests whether pobs_sorted_cc is causing the glitches
-% SEEMS TO WORK FINE!!!  LOAD cim_v8_debug_power_M_500 to see that this
-% matches cim_v8a.m
+function [metric, rectangleCellOut] = cim_v8a_rev3bcc(x, y, varargin)
+% in this version, this is the same as cim_v8a.m, except the scanForDep
+% function is copied from cim_v8a_cc.m
 
 % default values
 minscanincr = 0.015625;
@@ -17,7 +15,10 @@ end
 
 % convert X and Y to pseudo-observations, and scale to be between 0-1
 M = length(x);
-[u,v] = pobs_sorted_cc(x,y);
+% u = pobs(x)*(M+1)/M;
+% v = pobs(y)*(M+1)/M;
+[u,v] = pobs_sorted(x,y,1);
+MAX_NUM_RECT = ceil(length(x)/2);
 
 axisCfgs = [1 2];
 ax2minmaxCfgs = { {[0,1]}, {[0,0.5],[0.5,1]} };
@@ -48,7 +49,7 @@ for axisCfg=axisCfgs
                 end
 
                 [metricVecTmp, numPtsVecTmp, rectangles] = ...
-                    scanForDep(ax1pts,ax2pts,ax2min,ax2max,scanincr);
+                    scanForDep(ax1pts,ax2pts,ax2min,ax2max,scanincr,MAX_NUM_RECT);
                 
                 metricCell{rectanglesCellIdx} = metricVecTmp;
                 numPtsCell{rectanglesCellIdx} = numPtsVecTmp;
@@ -136,25 +137,32 @@ metric = sum( metrics(2,:)/sum(metrics(2,:)).*metrics(1,:) );
 
 end
 
-function [metricVec, numPtsVec, rectangles] = scanForDep(ax1pts, ax2pts, ax2min, ax2max, scanincr)
+function [metricVec, numPtsVec, rectanglesIdx] = scanForDep(ax1pts, ax2pts, ax2min, ax2max, scanincr, maxNumRect)
 %scanForDep - scans for dependencies across the first axis (if you would
 %like to scan across the second axis, simply swap the input arguments to 
 %this function).
+coder.inline('always');
 
 ax1min = 0; ax1max = scanincr;
 newRectangle = 1;
-metricVec = [];
-numPtsVec = [];
-rectangles = []; rectanglesIdx = 1;
+
+metricVec = zeros(1,maxNumRect);
+numPtsVec = zeros(1,maxNumRect);
+rectanglesIdx = 1;
+
+metricRectanglePrev = -999;
+numPtsPrev = 1;  % should get overwritten
 numStdDev = 4;
-while ax1max<=1
+% while ax1max<=1
+numLoops = ceil(1/scanincr);  %%
+for ii=1:numLoops             %%
     % find all the points which are contained within this cover rectangle
     matchPts = getPointsWithinBounds(ax1pts, ax2pts, ax1min, ax1max, ax2min, ax2max);
     
     numPts = size(matchPts,1);
     if(numPts>=2)   % make sure we have enough points to compute the metric
         % compute the concordance
-        metricRectangle = abs(taukl( matchPts(:,1),matchPts(:,2)));
+        metricRectangle = abs(taukl_cc( matchPts(:,1),matchPts(:,2)));
         stdTau = ((1-metricRectangle)*sqrt( (2*(2*numPts+5))/(9*numPts*(numPts-1)) ) )*numStdDev;
         if(newRectangle)
             newRectangle = 0;
@@ -162,26 +170,24 @@ while ax1max<=1
             % compare to the previous concordance, if there is a change by the
             % threshold amount, rewind the axes of the cover rectangle and 
             if( (metricRectangle < (metricRectanglePrev-stdTau)) )
-                metricVec = [metricVec metricRectanglePrev];
-                numPtsVec = [numPtsVec numPtsPrev];
-                rectangles(:,rectanglesIdx) = [ax1min ax1max-scanincr ax2min ax2max]; rectanglesIdx = rectanglesIdx + 1;
+                metricVec(rectanglesIdx) = metricRectanglePrev;
+                numPtsVec(rectanglesIdx) = numPtsPrev;
+                rectanglesIdx = rectanglesIdx + 1;
                 % start the new cover rectangle
                 ax1min = ax1max - scanincr;
                 ax1max = ax1min;        % it will be incremented below
                 newRectangle = 1;
             end
         end
-
         metricRectanglePrev = metricRectangle;
         numPtsPrev = numPts;
     end
     ax1max = ax1max + scanincr;
     
     if(ax1max>1)
-        if(exist('metricRectanglePrev','var'))
-            metricVec = [metricVec metricRectanglePrev];
-            numPtsVec = [numPtsVec length(matchPts)];
-            rectangles(:,rectanglesIdx) = [ax1min 1 ax2min ax2max]; rectanglesIdx = rectanglesIdx + 1;
+        if(metricRectanglePrev>=0)
+            metricVec(rectanglesIdx) = metricRectanglePrev;
+            numPtsVec(rectanglesIdx) = length(matchPts);
         end
     end
 end

@@ -1,6 +1,8 @@
 function [metric] = cim_v8a_rev3cc(x, y, minScanIncr)
 % REV3 -- tests whether its the conversion from cell-->matrix, keeps the
 % other areas the same ... i.e. the pobs_sorted and the taukl
+% GLITCHES!! Does *not* match cim_v8a!  See cim_v8a_rev3acc.m and
+% cim_v8a_rev3bcc.m in order to determine where bug is!
 
 % convert X and Y to pseudo-observations, and scale to be between 0-1
 [u,v] = pobs_sorted(x,y,1);

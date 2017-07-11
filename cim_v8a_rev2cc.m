@@ -1,6 +1,8 @@
 function [metric, rectangleCellOut] = ...
     cim_v8a_rev2cc(x, y, varargin)
 % REV2 -- test's whether taukl_cc is causing the glitches
+% SEEMS TO WORK FINE!!!  LOAD cim_v8_debug_power_M_500 to see that this
+% matches cim_v8a.m
 
 % default values
 minscanincr = 0.015625;
