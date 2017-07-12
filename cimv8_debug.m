@@ -170,19 +170,19 @@ for lIdx=1:num_noise
     
     % save the data in between data points so we can chart progress easily
     if(ispc)
-        save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev3_subrev_debug_power_M_%d.mat', M));
+        save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev3_subrev2_debug_power_M_%d.mat', M));
     elseif(ismac)
-        save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev_debug_power_M_%d.mat', M));
+        save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev2_debug_power_M_%d.mat', M));
     else
-        save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev_debug_power_M_%d.mat', M));
+        save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev2_debug_power_M_%d.mat', M));
     end
 end
 
 % save the data
 if(ispc)
-    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev3_subrev_debug_power_M_%d.mat', M));
+    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev3_subrev2_debug_power_M_%d.mat', M));
 elseif(ismac)
-    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev_debug_power_M_%d.mat', M));
+    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev2_debug_power_M_%d.mat', M));
 else
-    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev_debug_power_M_%d.mat', M));
+    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev2_debug_power_M_%d.mat', M));
 end
