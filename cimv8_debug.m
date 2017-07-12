@@ -35,6 +35,7 @@ cimv8aRev3bCCNull = zeros(1,nsim_null);
 % cimv8aRev3b_1CCNull = zeros(1,nsim_null);
 cimv8aRev3b_2CCNull = zeros(1,nsim_null);
 cimv8aRev3b_3CCNull = zeros(1,nsim_null);
+cimv8aRev3b_4CCNull = zeros(1,nsim_null);
 
 % cimv4Alt     = zeros(1,nsim_alt);
 cimv8aAlt = zeros(1,nsim_alt);
@@ -42,6 +43,7 @@ cimv8aRev3bCCAlt = zeros(1,nsim_alt);
 % cimv8aRev3b_1CCAlt = zeros(1,nsim_alt);
 cimv8aRev3b_2CCAlt = zeros(1,nsim_alt);
 cimv8aRev3b_3CCAlt = zeros(1,nsim_alt);
+cimv8aRev3b_4CCAlt = zeros(1,nsim_alt);
 
 % configuration parameter for cim algorithm
 minScanIncr=0.015625;
@@ -54,6 +56,7 @@ cimv8aRev3bCCPower   = zeros(numDepTests,num_noise);
 % cimv8aRev3b_1CCPower = zeros(numDepTests,num_noise);
 cimv8aRev3b_2CCPower = zeros(numDepTests,num_noise);
 cimv8aRev3b_3CCPower = zeros(numDepTests,num_noise);
+cimv8aRev3b_4CCPower = zeros(numDepTests,num_noise);
 
 % Simon & Tibshirani use xMin=0, xMax=1 for performing their analysis ...
 xMin = 0;
@@ -107,6 +110,7 @@ for lIdx=1:num_noise
 %             cimv8aRev3b_1CCNull(ii) = cim_v8a_rev3b_1cc(x,y,minScanIncr);
             cimv8aRev3b_2CCNull(ii) = cim_v8a_rev3b_2cc(x,y,minScanIncr);
             cimv8aRev3b_3CCNull(ii) = cim_v8a_rev3b_3cc(x,y,minScanIncr);
+            cimv8aRev3b_4CCNull(ii) = cim_v8a_rev3b_4cc(x,y,minScanIncr);
         end
         
         % compute the rejection cutoffs
@@ -116,6 +120,7 @@ for lIdx=1:num_noise
 %         cimv8aRev3b_1CC_cut = quantile(cimv8aRev3b_1CCNull, 0.95);
         cimv8aRev3b_2CC_cut = quantile(cimv8aRev3b_2CCNull, 0.95);
         cimv8aRev3b_3CC_cut = quantile(cimv8aRev3b_3CCNull, 0.95);
+        cimv8aRev3b_4CC_cut = quantile(cimv8aRev3b_4CCNull, 0.95);
         
         % resimulate the data under the alternative hypothesis
         parfor ii=1:nsim_alt
@@ -157,6 +162,7 @@ for lIdx=1:num_noise
 %             cimv8aRev3b_1CCAlt(ii) = cim_v8a_rev3b_1cc(x,y,minScanIncr);
             cimv8aRev3b_2CCAlt(ii) = cim_v8a_rev3b_2cc(x,y,minScanIncr);
             cimv8aRev3b_3CCAlt(ii) = cim_v8a_rev3b_3cc(x,y,minScanIncr);
+            cimv8aRev3b_4CCAlt(ii) = cim_v8a_rev3b_4cc(x,y,minScanIncr);
         end
         
         % compute the power
@@ -166,23 +172,24 @@ for lIdx=1:num_noise
 %         cimv8aRev3b_1CCPower(typ, lIdx) = sum(cimv8aRev3b_1CCAlt > cimv8aRev3b_1CC_cut)/nsim_alt;
         cimv8aRev3b_2CCPower(typ, lIdx) = sum(cimv8aRev3b_2CCAlt > cimv8aRev3b_2CC_cut)/nsim_alt;
         cimv8aRev3b_3CCPower(typ, lIdx) = sum(cimv8aRev3b_3CCAlt > cimv8aRev3b_3CC_cut)/nsim_alt;
+        cimv8aRev3b_4CCPower(typ, lIdx) = sum(cimv8aRev3b_4CCAlt > cimv8aRev3b_4CC_cut)/nsim_alt;
     end
     
     % save the data in between data points so we can chart progress easily
     if(ispc)
-        save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev3_subrev2_debug_power_M_%d.mat', M));
+        save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev3_subrev3_debug_power_M_%d.mat', M));
     elseif(ismac)
-        save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev2_debug_power_M_%d.mat', M));
+        save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev3_debug_power_M_%d.mat', M));
     else
-        save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev2_debug_power_M_%d.mat', M));
+        save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev3_debug_power_M_%d.mat', M));
     end
 end
 
 % save the data
 if(ispc)
-    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev3_subrev2_debug_power_M_%d.mat', M));
+    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev3_subrev3_debug_power_M_%d.mat', M));
 elseif(ismac)
-    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev2_debug_power_M_%d.mat', M));
+    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev3_debug_power_M_%d.mat', M));
 else
-    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev2_debug_power_M_%d.mat', M));
+    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev3_subrev3_debug_power_M_%d.mat', M));
 end
