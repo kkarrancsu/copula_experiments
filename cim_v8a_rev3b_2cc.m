@@ -156,8 +156,8 @@ metricRectanglePrev = -999;
 numPtsPrev = 1;  % should get overwritten
 numStdDev = 4;
 % while ax1max<=1
-numLoops = ceil(1/scanincr);  %%
-for ii=1:numLoops             %%
+numLoops = ceil(1/scanincr)+1;  %%
+for ii=1:numLoops               %%
     % find all the points which are contained within this cover rectangle
     matchPts = getPointsWithinBounds(ax1pts, ax2pts, ax1min, ax1max, ax2min, ax2max);
     
