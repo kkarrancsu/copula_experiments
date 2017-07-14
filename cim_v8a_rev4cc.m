@@ -5,7 +5,7 @@ function [metric] = cim_v8a_rev4cc(x, y, minScanIncr)
 % cim_v8a_rev3bcc.m in order to determine where bug is!
 
 % convert X and Y to pseudo-observations, and scale to be between 0-1
-[u,v] = pobs_sorted(x,y,1);
+[u,v] = pobs_sorted_cc(x,y);
 MAX_NUM_RECT = ceil(length(x)/2);
 
 axisCfgs = [1 2];

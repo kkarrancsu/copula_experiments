@@ -13,7 +13,7 @@ powerCurve = zeros(length(scanincrsToTest),numDepTests,num_noise);
 
 dispstat('','init'); % One time only initialization
 dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
-num_noise_test_min = 1;
+num_noise_test_min = 0;
 num_noise_test_max = 30;
 xMin = 0;
 xMax = 1;

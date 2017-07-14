@@ -1,28 +1,88 @@
 %% Script which characterizes the CIM algorithm in many different ways
 
-%% Characterize the CIM Algorithm Power
+%% Compute the CIM algorithm power vs. other leading measures of dependence and leading measures of DPI
+clear;
+clc;
+close all;
+
+M = 500;
+minScanIncr = 0.015625;
+mine_c = 15;
+mine_alpha = 0.6;
+rdc_k = 20;
+rdc_s = 1/6;
+knn_1 = 1;
+knn_6 = 6;
+knn_20 = 20;
+
+nameIdxCorrelationCell = {'CIM', 'dCor','TICe','Corr','RDC','CoS', ...
+                          'cCor', 'KNN-1', 'KNN-6', 'KNN-20', 'vME', 'AP'};
+
+functionHandlesCell = {@cim_v8a_rev4cc_mex;
+                       @dcor;
+                       @mine_interface_tice;
+                       @corr;
+                       @rdc;
+                       @cosdv;
+                       @ccor;
+                       @KraskovMI;
+                       @KraskovMI;
+                       @KraskovMI;
+                       @vmeMI_interface;
+                       @apMI_interface};
+functionArgsCell    = {{minScanIncr};
+                       {};
+                       {mine_alpha,mine_c,'mic_e'};
+                       {};
+                       {rdc_k, rdc_s};
+                       {};
+                       {};
+                       {knn_1};
+                       {knn_6};
+                       {knn_20};
+                       {};
+                       {};};
+[powerCurve] = compute_power_curves(M,functionHandlesCell, functionArgsCell);
+
+% save the data
+if(ispc)
+    save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\power_M_%d.mat',M));
+elseif(ismac)
+    save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/power_M_%d.mat',M));
+else
+    save(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/power_M_%d.mat',M));
+end
+
+%% Plot the CIM Algorithm Power vs. other leading dependence measures
 clear;
 clc;
 close all;
 dbstop if error;
 
-if(ispc)
-    load('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\power_all_cimv4.mat');
-elseif(ismac)
-    load('/Users/Kiran/ownCloud/PhD/sim_results/independence/power_all_cimv4.mat');
-else
-    load('/home/kiran/ownCloud/PhD/sim_results/independence/power_all_cimv4.mat');
-end
-
 % select for which M to plot
 M = 500;
-% find the index we need to extract
-MIdx = find(M_vec==M);
+
+if(ispc)
+    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\power_M_%d.mat',M));
+elseif(ismac)
+    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/power_M_%d.mat',M));
+else
+    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/power_M_%d.mat',M));
+end
+
+labels = {'CIM', 'CoS', 'RDC', 'TICe', 'dCor', 'cCor'};
 
 num_noise_test_min = 1;
 num_noise_test_max = 20;
 noiseVec = num_noise_test_min:num_noise_test_max;
-powerMat = zeros(6,8,length(noiseVec));
+powerMat = zeros(length(labels),8,length(noiseVec));
+
+for labelIdx=1:length(labels)
+    label = labels{labelIdx};
+    % find which index this corresponds to
+    powerCurveIdx = find(contains(nameIdxCorrelationCell,label));
+end
+
 powerMat(1,:,:) = rsdmPower(:,noiseVec,MIdx);
 powerMat(2,:,:) = cosPower(:,noiseVec,MIdx);
 powerMat(3,:,:) = rdcPower(:,noiseVec,MIdx);
@@ -31,15 +91,20 @@ powerMat(5,:,:) = dcorrPower(:,noiseVec,MIdx);
 powerMat(6,:,:) = ccorrPower(:,noiseVec,MIdx);
 noiseVec = (num_noise_test_min:num_noise_test_max)/10;
 
-labels = {'CIM', 'CoS', 'RDC', 'TICe', 'dCor', 'cCor'};
+
 plotStyle = 1;
 plotPower(powerMat, M, labels, noiseVec, num_noise_test_min, num_noise_test_max, plotStyle)
+
+%% Plot the CIM Algorithm Power vs. other DPI satisfying measures (i.e. measures of Mutual Information)
+
 
 %% test the power sensitivity of the CIM algorithm
 
 clear;
 clc;
 close all;
+
+rng(1234);
 
 cimVersion = 6;
 scanincrsToTest = [0.25, 0.125, .0625, .03125, .015625];
@@ -136,6 +201,8 @@ figtitle(sprintf('Algorithm Power Sensitivity (M=%d - %d)',min(MVecToPlot),max(M
 clear;
 clc;
 close all;
+
+rng(1234);
 
 cimVersion = 4;
 scanincrsToTest = [0.25, 0.125, .0625, .03125, .015625];
@@ -588,14 +655,12 @@ for depTestValIdx=1:length(depTestVec)
                 sinusoidalDepToPlot = sinusoidalDep;
             case 5
                 hiFreqSinDepToPlot = hiFreqSinDep;
-%                 hiFreqSinDepToPlot(2,1) = 1;
             case 6
                 fourthRootDepToPlot = fourthRootDep;
             case 7
                 circleDepToPlot = circleDep;
             case 8
                 stepDepToPlot = stepDep;
-                stepDepToPlot(2,1) = 1;
             otherwise
                 error('UNK!');
         end
@@ -700,127 +765,3 @@ hh1(2).LineWidth = 1.5;
 % hh1(1).LineWidth = 1.5; 
 % hh1(2).LineWidth = 1.5; 
 % hh1(3).LineWidth = 1.5; 
-
-%% HI-FREQ SIN VALUE VERIFICATION
-
-clear;
-clc;
-
-xMin = 0;
-xMax = 1;
-num_noise = 30;                    % The number of different noise levels used
-noise = 3;                         % A constant to determine the amount of noise
-
-MVecResults = [100:100:1000 2500 5000 10000];
-num_noise_test_min = 0;
-num_noise_test_max = 20;
-noiseVec = num_noise_test_min:num_noise_test_max;
-numMCSim = 200;
-
-minscanincrVal = 0.015625;
-
-cimVersion = 4;
-
-switch(cimVersion)
-    case 1
-        fnameStr = 'cimv1';
-        cimfunc = @cim;
-    case 3
-        fnameStr = 'cimv3';
-        cimfunc = @cim_v3;
-    case 4
-        fnameStr = 'cimv4';
-        cimfunc = @cim_v4;
-    case 5
-        fnameStr = 'cimv5';
-        cimfunc = @cim_v5;
-    case 6
-        fnameStr = 'cimv6';
-        cimfunc = @cim_v6;
-    case 7
-        fnameStr = 'cimv7';
-        cimfunc = @cim_v7;
-    otherwise
-        error('Unrecognized CIM version!');
-end
-        
-dispstat('','init'); % One time only initialization
-dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
-
-for M=MVecResults
-    % Test Empirical copula distance as a distance measure under various
-    % amounts of noise
-    hiFreqSinDep  = zeros(2,length(noiseVec));
-                  
-    for l=noiseVec
-        dispstat(sprintf('Computing for noise level=%d >> M=%d',l,M),'keepthis', 'timestamp');
-        t5 = 0; c5 = 0; c55 = 0;
-        parfor mcSimNum=1:numMCSim
-            x = rand(M,1)*(xMax-xMin)+xMin;
-            y5 = sin(16*pi*x) + noise*(l/num_noise)*randn(M,1);
-
-            U5 = pobs([x y5]);
-            t5 = t5 + abs(corr(x,y5,'type','kendall'));
-            zz1 = 0; zz2 = 0.02900;   r1 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w1 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.09158; r2 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w2 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.1528;  r3 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w3 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.2108;  r4 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w4 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.2715;  r5 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w5 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.3339;  r6 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w6 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.3999;  r7 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w7 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.4613;  r8 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w8 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.5227;  r9 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w9 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.5893;  r10 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w10 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.6547;  r11 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w11 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.7135;  r12 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w12 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.7734;  r13 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w13 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.8438;  r14 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w14 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.9074;  r15 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w15 = zz2-zz1;
-            zz1 = zz2; zz2 = 0.9694;  r16 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w16 = zz2-zz1;
-            zz1 = zz2; zz2 = 1;       r17 = inBoundedPts(U5(:,1),U5(:,2),zz1,zz2,0,1); w17 = zz2-zz1;
-            c5 = c5 + ( abs(corr(r1(:,1),r1(:,2),'type','kendall'))*w1 + ...
-                        abs(corr(r2(:,1),r2(:,2),'type','kendall'))*w2 + ...
-                        abs(corr(r3(:,1),r3(:,2),'type','kendall'))*w3 + ...
-                        abs(corr(r4(:,1),r4(:,2),'type','kendall'))*w4 + ...
-                        abs(corr(r5(:,1),r5(:,2),'type','kendall'))*w5 + ...
-                        abs(corr(r6(:,1),r6(:,2),'type','kendall'))*w6 + ...
-                        abs(corr(r7(:,1),r7(:,2),'type','kendall'))*w7 + ...
-                        abs(corr(r8(:,1),r8(:,2),'type','kendall'))*w8 + ...
-                        abs(corr(r9(:,1),r9(:,2),'type','kendall'))*w9 + ...
-                        abs(corr(r10(:,1),r10(:,2),'type','kendall'))*w10 + ...
-                        abs(corr(r11(:,1),r11(:,2),'type','kendall'))*w11 + ...
-                        abs(corr(r12(:,1),r12(:,2),'type','kendall'))*w12 + ...
-                        abs(corr(r13(:,1),r13(:,2),'type','kendall'))*w13 + ...
-                        abs(corr(r14(:,1),r14(:,2),'type','kendall'))*w14 + ...
-                        abs(corr(r15(:,1),r15(:,2),'type','kendall'))*w15 + ...
-                        abs(corr(r16(:,1),r16(:,2),'type','kendall'))*w16 + ...
-                        abs(corr(r17(:,1),r17(:,2),'type','kendall'))*w17);
-        end
-        hiFreqSinDep(1,l+1) = t5/numMCSim; hiFreqSinDep(2,l+1) = c5/numMCSim;
-    end
-
-    % save the data
-    if(ispc)
-        save(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\regionTheoretical_hiFreqSin_M_%d.mat', M));
-    elseif(ismac)
-        save(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/regionTheoretical_hiFreqSin_M_%d.mat', M));
-    else
-        save(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/regionTheoretical_hiFreqSin_M_%d', M));
-    end
-end
-
-%% Plot the HI-FREQ sinusoidal stuff to see if our simulations match up with intuition
-clear;
-clc;
-
-M = 1000;
-if(ispc)
-    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\clustering\\regionTheoretical_hiFreqSin_M_%d.mat', M));
-elseif(ismac)
-    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/clustering/regionTheoretical_hiFreqSin_M_%d.mat', M));
-else
-    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/clustering/regionTheoretical_hiFreqSin_M_%d', M));
-end
-
-plot(noiseVec, hiFreqSinDep(2,:)); grid on;
-xlabel('noise'); ylabel('CIM');
