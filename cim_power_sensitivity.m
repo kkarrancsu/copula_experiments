@@ -15,11 +15,13 @@ dispstat('','init'); % One time only initialization
 dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
 num_noise_test_min = 0;
 num_noise_test_max = 30;
+noiseVec = num_noise_test_min:num_noise_test_max;
 xMin = 0;
 xMax = 1;
 for scanincrIdx=1:length(scanincrsToTest)
     minscanincrVal = scanincrsToTest(scanincrIdx);
-    for l=num_noise_test_min:num_noise_test_max
+    for lIdx=1:length(noiseVec)
+        l = noiseVec(lIdx);
         for typ=1:numDepTests
             dispstat(sprintf('Computing for noise level=%d Dependency Test=%d',l, typ),'keepthis', 'timestamp');
             % simulate data under the null w/ correct marginals
@@ -100,7 +102,7 @@ for scanincrIdx=1:length(scanincrsToTest)
             end
 
             % compute the power
-            powerCurve(scanincrIdx, typ, l)   = sum(cimAlt > cim_cut)/nsim_alt;
+            powerCurve(scanincrIdx, typ, lIdx)   = sum(cimAlt > cim_cut)/nsim_alt;
         end
     end
 end
