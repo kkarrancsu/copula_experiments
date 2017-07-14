@@ -37,15 +37,10 @@ for ii=1:nsim
         y_discrete = discretizeRv(y,numDiscreteIntervals)';
     
         % compute CIM
-%         rsdmNullDistributionResultsContinuous(ii,jj) = cim_v4(x, y);
-%         rsdmNullDistributionResultsHybrid1(ii,jj) = cim_v4(x_discrete,y);
-%         rsdmNullDistributionResultsHybrid2(ii,jj) = cim_v4(x,y_discrete);
-%         rsdmNullDistributionResultsDiscrete(ii,jj) = cim_v4(x_discrete,y_discrete);
-        
-        rsdmNullDistributionResultsContinuous(ii,jj) = cim_v4_cc_mex(x, y);
-        rsdmNullDistributionResultsHybrid1(ii,jj) = cim_v4_cc_mex(x_discrete,y);
-        rsdmNullDistributionResultsHybrid2(ii,jj) = cim_v4_cc_mex(x,y_discrete);
-        rsdmNullDistributionResultsDiscrete(ii,jj) = cim_v4_cc_mex(x_discrete,y_discrete);
+        rsdmNullDistributionResultsContinuous(ii,jj) = cim_v8a_cc_mex(x, y);
+        rsdmNullDistributionResultsHybrid1(ii,jj)    = cim_v8a_cc_mex(x_discrete,y);
+        rsdmNullDistributionResultsHybrid2(ii,jj)    = cim_v8a_cc_mex(x,y_discrete);
+        rsdmNullDistributionResultsDiscrete(ii,jj)   = cim_v8a_cc_mex(x_discrete,y_discrete);
     end
 end
 
@@ -314,11 +309,11 @@ end
 
 % save the data
 if(ispc)
-    save('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cimv4_nullDistribution.mat');
+    save('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cimv8_nullDistribution.mat');
 elseif(ismac)
-    save('/Users/Kiran/ownCloud/PhD/sim_results/independence/cimv4_nullDistribution.mat');
+    save('/Users/Kiran/ownCloud/PhD/sim_results/independence/cimv8_nullDistribution.mat');
 else
-    save('/home/kiran/ownCloud/PhD/sim_results/independence/cimv4_nullDistribution.mat');
+    save('/home/kiran/ownCloud/PhD/sim_results/independence/cimv8_nullDistribution.mat');
 end
 
 fprintf('*************** X & Y CONTINUOUS ****************\n');
@@ -414,11 +409,11 @@ clear;
 clc;
 
 if(ispc)
-    load('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cimv4_nullDistribution.mat');
+    load('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cimv8_nullDistribution.mat');
 elseif(ismac)
-    load('/Users/Kiran/ownCloud/PhD/sim_results/independence/cimv4_nullDistribution.mat');
+    load('/Users/Kiran/ownCloud/PhD/sim_results/independence/cimv8_nullDistribution.mat');
 else
-    load('/home/kiran/ownCloud/PhD/sim_results/independence/cimv4_nullDistribution.mat');
+    load('/home/kiran/ownCloud/PhD/sim_results/independence/cimv8_nullDistribution.mat');
 end
 
 

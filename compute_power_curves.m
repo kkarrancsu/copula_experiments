@@ -9,6 +9,9 @@ elseif(nargin<5)
     nsim_alt = 500;
 end
 
+num_noise_test_min = 0;
+num_noise_test_max = 30;
+noiseVec = num_noise_test_min:num_noise_test_max;
 num_noise = 30;
 noise = 3;
 numDepTests = 8;
@@ -17,13 +20,10 @@ numDepMeasures = length(functionHandlesCell);
 
 nullDataVec = zeros(numDepMeasures,nsim_null);
 altDataVec = zeros(numDepMeasures,nsim_alt);
-powerCurve = zeros(numDepMeasures,numDepTests,num_noise);
+powerCurve = zeros(numDepMeasures,numDepTests,length(noiseVec));
 
 dispstat('','init'); % One time only initialization
 dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
-num_noise_test_min = 0;
-num_noise_test_max = 30;
-noiseVec = num_noise_test_min:num_noise_test_max;
 xMin = 0;
 xMax = 1;
 for lIdx=1:length(noiseVec)

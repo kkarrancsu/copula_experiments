@@ -1,4 +1,4 @@
-function [R] = paircim_v4_cc_mexoffload( X )
+function [R] = paircim_v8_cc_mex( X )
 %PAIRCIM - computes pairwise dependency metrics of a given vector
 % Inputs:
 %  X - a matrix of observations from which pairwise CIM statistics are
@@ -31,7 +31,7 @@ for ii=1:n
     x = X(:,ii);
     parfor (jj=ii+1:n, getParforArg())
         y = X(:,jj);        
-        cimVal = cim_v4_cc_mex(x,y);
+        cimVal = cim_v8a_cc_mex(x,y);
         R(ii,jj) = cimVal;
     end
 end

@@ -753,7 +753,7 @@ else
     load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_vstar_power_M_%d.mat', M));
 end
 
-labels = {'CIMv4', 'CIMv4_cc','CIMv8a_cc','CIMv8b_cc'};
+labels = {'CIMv4', 'CIMv4_cc','CIMv8a_cc'};
 
 num_noise_test_min = 0;
 num_noise_test_max = 30;
