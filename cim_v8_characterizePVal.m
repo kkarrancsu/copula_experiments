@@ -2,17 +2,25 @@
 clear;
 clc;
 
+% setup and start the parallel pool
+myCluster = parcluster('local');
+myCluster.NumWorkers = 5;
+saveProfile(myCluster);
+p = gcp
+
 rng(1234);
 
-nsim = 500;
+nsim = 1000;
 M_vec = 100:100:2500;
 initLen = length(M_vec);
-M_vec = [M_vec 5000];
+M_vec = [M_vec 5000 10000];
 
 xMin = 0; xMax = 1;
 yMin = 0; yMax = 1;
 
-FIT_PLOTS = 1;
+minScanIncr = 0.015625;
+
+FIT_PLOTS = 0;
 
 rsdmNullDistributionResultsContinuous = zeros(nsim, length(M_vec));
 rsdmNullDistributionResultsDiscrete = zeros(nsim, length(M_vec));
@@ -37,10 +45,10 @@ for ii=1:nsim
         y_discrete = discretizeRv(y,numDiscreteIntervals)';
     
         % compute CIM
-        rsdmNullDistributionResultsContinuous(ii,jj) = cim_v8a_cc_mex(x, y);
-        rsdmNullDistributionResultsHybrid1(ii,jj)    = cim_v8a_cc_mex(x_discrete,y);
-        rsdmNullDistributionResultsHybrid2(ii,jj)    = cim_v8a_cc_mex(x,y_discrete);
-        rsdmNullDistributionResultsDiscrete(ii,jj)   = cim_v8a_cc_mex(x_discrete,y_discrete);
+        rsdmNullDistributionResultsContinuous(ii,jj) = cim_v8a_cc_mex(x,y,minScanIncr);
+        rsdmNullDistributionResultsHybrid1(ii,jj)    = cim_v8a_cc_mex(x_discrete,y,minScanIncr);
+        rsdmNullDistributionResultsHybrid2(ii,jj)    = cim_v8a_cc_mex(x,y_discrete,minScanIncr);
+        rsdmNullDistributionResultsDiscrete(ii,jj)   = cim_v8a_cc_mex(x_discrete,y_discrete,minScanIncr);
     end
 end
 
