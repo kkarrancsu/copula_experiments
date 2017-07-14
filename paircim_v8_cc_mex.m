@@ -27,11 +27,13 @@ function [R] = paircim_v8_cc_mex( X )
 n = size(X,2);      % the dimensionality of the dataset
 R = zeros(n,n);
 
+minScanIncr = 0.015625;
+
 for ii=1:n
     x = X(:,ii);
     parfor (jj=ii+1:n, getParforArg())
         y = X(:,jj);        
-        cimVal = cim_v8a_cc_mex(x,y);
+        cimVal = cim_v8a_cc_mex(x,y,minScanIncr);
         R(ii,jj) = cimVal;
     end
 end

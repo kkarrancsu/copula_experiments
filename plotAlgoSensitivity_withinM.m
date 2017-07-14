@@ -13,6 +13,8 @@ switch cimVersion
         fnameStr = 'cimv6';
     case 7
         fnameStr = 'cimv7';
+    case 8
+        fnameStr = 'cimv8';
     otherwise
 end
 CIMVECIDX = 3;

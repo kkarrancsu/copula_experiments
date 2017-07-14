@@ -29,7 +29,7 @@ xMax = 1;
 for lIdx=1:length(noiseVec)
     l = noiseVec(lIdx);
     for typ=1:numDepTests
-        dispstat(sprintf('Computing for noise level=%d Dependency Test=%d',l, typ),'keepthis', 'timestamp');
+        dispstat(sprintf('Computing for M=%d noise_level=%d Dependency=%d',M,l, typ),'keepthis', 'timestamp');
         % simulate data under the null w/ correct marginals
         parfor ii=1:nsim_null
             x = rand(M,1)*(xMax-xMin)+xMin;

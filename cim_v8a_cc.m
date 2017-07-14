@@ -1,29 +1,15 @@
 function [metric] = cim_v8a_cc(x, y, minScanIncr)
 %CIM - Copula Index for Detecting Dependence and Monotonicity between
 %Stochastic Signals.  See associated paper... to be published and preprint
-%located here: 
+%located here: https://arxiv.org/abs/1703.06686
 % Inputs:
 %  x - the x variable
 %  y - the y variable
-%  varargin{1} - minscanincr - the minimum scanning increment.  Large
-%                              values will filter out high frequency
-%                              dependencies, small values decrease the
-%                              statistical power of the dependency metric
-%  varargin{2} - diffthresh  - the threshold at which a change in
-%                              concordance amount is detected.  Larger
-%                              values are more robust to noise, but tend to
-%                              miss high frequency changes.
-%  varargin{3} - alpha       - the value used to determine significance
-%                              level of a box's concordance level
+%  minscanincr - the minimum scanning increment.  Large
+%                values will filter out high frequency dependencies, 
 % Outputs:
 %  metric - the calculated dependency metric between x and y
-%  resid  - the residual between the estimated concordance boxes and the
-%           observed statistical variables.  Each concordance box's
-%           residuals are provided separately
-%  residAssocIdxs - the indices of the independent variable associated with
-%                   each residual point, this is used by rscdm for residual
-%                   alignment.
-%
+% 
 %**************************************************************************
 %*                                                                        *
 %* Copyright (C) 2017  Kiran Karra <kiran.karra@gmail.com>                *
