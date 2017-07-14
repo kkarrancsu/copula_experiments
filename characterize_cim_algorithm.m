@@ -73,6 +73,7 @@ else
 end
 
 labels = {'CIM', 'CoS', 'RDC', 'TICe', 'dCor', 'cCor'};
+cellfind = @(string)(@(cell_contents)(strcmp(string,cell_contents)));
 
 num_noise_test_min = 0;
 num_noise_test_max = 20;
@@ -82,7 +83,8 @@ powerMat = zeros(length(labels),8,length(noiseVec));
 for labelIdx=1:length(labels)
     label = labels{labelIdx};
     % find which index this corresponds to
-    fIdx = find(contains(nameIdxCorrelationCell,label));
+%     fIdx = find(contains(nameIdxCorrelationCell,label));
+    fIdx = find(cellfun(cellfind(label),nameIdxCorrelationCell));
     powerMat(labelIdx,:,:) = powerCurve(fIdx,1:length(noiseVec),:);
 end
 

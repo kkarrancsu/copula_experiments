@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.coder" plugin-version="R2016a">
-  <configuration build-checksum="2151292879" file="/home/kiran/stochasticresearch/copula_experiments/cim_v8a_cc.prj" location="/home/kiran/stochasticresearch/copula_experiments" name="cim_v8a_cc" target="target.unifiedcoder" target-name="MATLAB Coder">
+  <configuration build-checksum="4046210990" file="/home/kiran/stochasticresearch/copula_experiments/cim_v8a_cc.prj" location="/home/kiran/stochasticresearch/copula_experiments" name="cim_v8a_cc" target="target.unifiedcoder" target-name="MATLAB Coder">
     <profile key="profile.mex">
       <param.BuiltInstrumentedMex>false</param.BuiltInstrumentedMex>
       <param.RanInstrumentedMex>false</param.RanInstrumentedMex>
@@ -168,7 +168,7 @@
       <param.PostCodeGenCommand />
       <param.TargetLangStandard>C89/C90 (ANSI)</param.TargetLangStandard>
       <param.CodeReplacementLibrary>None</param.CodeReplacementLibrary>
-      <param.DeprecatedCRLFlag>false</param.DeprecatedCRLFlag>
+      <param.DeprecatedCRLFlag />
       <param.SameHardware>true</param.SameHardware>
       <param.Toolchain>Automatically locate an installed toolchain</param.Toolchain>
       <param.BuildConfiguration>Faster Builds</param.BuildConfiguration>
@@ -751,7 +751,7 @@
     <var.gc.lastOutputType />
     <var.gc.preBuildChecksum />
     <var.cfi.lastOutputRoot>codegen/mex/cim_v8a_cc</var.cfi.lastOutputRoot>
-    <var.cfi.preBuildChecksum>2377960370</var.cfi.preBuildChecksum>
+    <var.cfi.preBuildChecksum>1134731879</var.cfi.preBuildChecksum>
     <var.lastCfiTestSnippet>x = rand(500,1); y = rand(500,1); cim_v8a_cc(x,y,0.015625)</var.lastCfiTestSnippet>
     <var.outdatedOnRestore>false</var.outdatedOnRestore>
     <var.lastUserSourceChecksum />
@@ -964,7 +964,7 @@
       <vista>false</vista>
       <linux>true</linux>
       <solaris>false</solaris>
-      <osver>4.8.0-58-generic</osver>
+      <osver>3.16.0-031600rc6-generic</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>glnxa64</arch>

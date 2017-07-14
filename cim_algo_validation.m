@@ -746,27 +746,29 @@ dbstop if error;
 M = 500;  % which one do we want to plot?
 
 if(ispc)
-    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev4_debug_power_M_%d.mat', M));
+    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_vstar_power_M_%d.mat', M));
 elseif(ismac)
-    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev4_debug_power_M_%d.mat', M));
+    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_vstar_power_M_%d.mat', M));
 else
-    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev4_debug_power_M_%d.mat', M));
+    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_vstar_power_M_%d.mat', M));
 end
 
+labels = {'CIMv4', 'CIMv4_cc','CIMv8a_cc','CIMv8b_cc'};
+
 num_noise_test_min = 0;
-num_noise_test_max = 11;
+num_noise_test_max = 30;
 noiseVec = num_noise_test_min:num_noise_test_max;
+powerMat = zeros(length(labels),8,length(noiseVec));
+cellfind = @(string)(@(cell_contents)(strcmp(string,cell_contents)));
 
-powerMat = zeros(4,8,length(noiseVec));
-powerMat(1,:,:) = cimv8aRev4CCPower(:,1:length(noiseVec));
-powerMat(2,:,:) = cimv8aPower(:,1:length(noiseVec));
-% powerMat(3,:,:) = cimv8aRev3CCPower(:,1:length(noiseVec));
-powerMat(3,:,:) = cimv4Power(:,1:length(noiseVec));
-noiseVec = (num_noise_test_min:num_noise_test_max)/10;
+for labelIdx=1:length(labels)
+    label = labels{labelIdx};
+    % find which index this corresponds to
+    fIdx = find(cellfun(cellfind(label),nameIdxCorrelationCell));
+    powerMat(labelIdx,:,:) = powerCurve(fIdx,:,1:length(noiseVec));
+end
 
-% labels = {'CIMv4', 'CIMv8a', 'CIMv8b'};
-% labels = {'CIMv4', 'CIMv4[MEX]', 'CIMv8a[MEX]', 'CIMv8b[MEX]'};
-% labels = {'CIMv4', 'CIMv8a', 'CIMv8a[REV1]', 'CIMv8a[REV2]', 'CIMv8a[REV3]'};
-labels = {'CIMv8a[REV4]', 'CIMv8a', 'CIMv4'};
+noiseVecToPlot = noiseVec/10;
+
 plotStyle = 1;
-plotPower(powerMat, M, labels, noiseVec, plotStyle)
+plotPower(powerMat, M, labels, noiseVecToPlot, plotStyle)
