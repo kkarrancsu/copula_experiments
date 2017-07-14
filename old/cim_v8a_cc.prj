@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.coder" plugin-version="R2016a">
-  <configuration build-checksum="4265726879" file="/Users/kiran/stochasticresearch/copula_experiments/cim_v8a_rev4cc.prj" location="/Users/kiran/stochasticresearch/copula_experiments" name="cim_v8a_rev4cc" target="target.unifiedcoder" target-name="MATLAB Coder">
+  <configuration build-checksum="983718223" file="/home/kiran/stochasticresearch/copula_experiments/cim_v8a_cc.prj" location="/home/kiran/stochasticresearch/copula_experiments" name="cim_v8a_cc" target="target.unifiedcoder" target-name="MATLAB Coder">
     <profile key="profile.mex">
       <param.BuiltInstrumentedMex>false</param.BuiltInstrumentedMex>
       <param.RanInstrumentedMex>false</param.RanInstrumentedMex>
@@ -8,15 +8,15 @@
       <param.BuildFolder>option.BuildFolder.Project</param.BuildFolder>
       <param.SpecifiedBuildFolder />
       <param.SearchPaths />
-      <param.ResponsivenessChecks>true</param.ResponsivenessChecks>
-      <param.ExtrinsicCalls>true</param.ExtrinsicCalls>
-      <param.IntegrityChecks>true</param.IntegrityChecks>
-      <param.SaturateOnIntegerOverflow>true</param.SaturateOnIntegerOverflow>
+      <param.ResponsivenessChecks>false</param.ResponsivenessChecks>
+      <param.ExtrinsicCalls>false</param.ExtrinsicCalls>
+      <param.IntegrityChecks>false</param.IntegrityChecks>
+      <param.SaturateOnIntegerOverflow>false</param.SaturateOnIntegerOverflow>
       <param.GlobalDataSyncMethod>option.GlobalDataSyncMethod.SyncAlways</param.GlobalDataSyncMethod>
       <param.EnableVariableSizing>true</param.EnableVariableSizing>
       <param.DynamicMemoryAllocation>option.DynamicMemoryAllocation.Threshold</param.DynamicMemoryAllocation>
-      <param.DynamicMemoryAllocationThreshold>65536</param.DynamicMemoryAllocationThreshold>
-      <param.StackUsageMax>200000</param.StackUsageMax>
+      <param.DynamicMemoryAllocationThreshold>1310720</param.DynamicMemoryAllocationThreshold>
+      <param.StackUsageMax>13107200</param.StackUsageMax>
       <param.FilePartitionMethod>option.FilePartitionMethod.MapMFileToCFile</param.FilePartitionMethod>
       <param.GenerateComments>true</param.GenerateComments>
       <param.MATLABSourceComments>false</param.MATLABSourceComments>
@@ -24,6 +24,7 @@
       <param.EnableDebugging>false</param.EnableDebugging>
       <param.GenerateReport>true</param.GenerateReport>
       <param.LaunchReport>false</param.LaunchReport>
+      <param.ReportPotentialDifferences>true</param.ReportPotentialDifferences>
       <param.DefaultTestFile />
       <param.MergeInstrumentationResults>false</param.MergeInstrumentationResults>
       <param.VerificationMode>option.VerificationMode.None</param.VerificationMode>
@@ -63,15 +64,9 @@
         <param.BuildFolder />
         <param.SpecifiedBuildFolder />
         <param.SearchPaths />
-        <param.ResponsivenessChecks />
-        <param.ExtrinsicCalls />
-        <param.IntegrityChecks />
-        <param.SaturateOnIntegerOverflow />
         <param.GlobalDataSyncMethod />
         <param.EnableVariableSizing />
         <param.DynamicMemoryAllocation />
-        <param.DynamicMemoryAllocationThreshold />
-        <param.StackUsageMax />
         <param.FilePartitionMethod />
         <param.GenerateComments />
         <param.MATLABSourceComments />
@@ -79,6 +74,7 @@
         <param.EnableDebugging />
         <param.GenerateReport />
         <param.LaunchReport />
+        <param.ReportPotentialDifferences />
         <param.DefaultTestFile />
         <param.MergeInstrumentationResults />
         <param.VerificationMode />
@@ -154,6 +150,7 @@
       <param.GenerateCodeReplacementReport>false</param.GenerateCodeReplacementReport>
       <param.HighlightPotentialDataTypeIssues>false</param.HighlightPotentialDataTypeIssues>
       <param.LaunchReport>false</param.LaunchReport>
+      <param.ReportPotentialDifferences>true</param.ReportPotentialDifferences>
       <param.SILDebugging>false</param.SILDebugging>
       <param.CodeExecutionProfiling>false</param.CodeExecutionProfiling>
       <param.DefaultTestFile />
@@ -173,8 +170,8 @@
       <param.CodeReplacementLibrary>None</param.CodeReplacementLibrary>
       <param.DeprecatedCRLFlag />
       <param.SameHardware>true</param.SameHardware>
-      <param.Toolchain>Automatically locate an installed toolchain</param.Toolchain>
-      <param.BuildConfiguration>Faster Builds</param.BuildConfiguration>
+      <param.Toolchain>GNU gcc/g++ v4.4.x | gmake (64-bit Linux)</param.Toolchain>
+      <param.BuildConfiguration>Faster Runs</param.BuildConfiguration>
       <param.CustomToolchainOptions />
       <var.ToolchainSettingsVisible />
       <param.target.Data />
@@ -231,7 +228,7 @@
       <param.IncludeTerminateFcn>true</param.IncludeTerminateFcn>
       <param.GenerateExampleMain>option.GenerateExampleMain.GenerateCodeOnly</param.GenerateExampleMain>
       <param.PreserveVariableNames>option.PreserveVariableNames.None</param.PreserveVariableNames>
-      <param.TargetLang>option.TargetLang.C</param.TargetLang>
+      <param.TargetLang>option.TargetLang.CPP</param.TargetLang>
       <param.CCompilerOptimization />
       <param.CCompilerCustomOptimizations />
       <param.GenerateMakefile>true</param.GenerateMakefile>
@@ -292,6 +289,7 @@
         <param.GenerateCodeReplacementReport />
         <param.HighlightPotentialDataTypeIssues />
         <param.LaunchReport />
+        <param.ReportPotentialDifferences />
         <param.SILDebugging />
         <param.CodeExecutionProfiling />
         <param.DefaultTestFile />
@@ -311,8 +309,6 @@
         <param.CodeReplacementLibrary />
         <param.DeprecatedCRLFlag />
         <param.SameHardware />
-        <param.Toolchain />
-        <param.BuildConfiguration />
         <param.CustomToolchainOptions />
         <var.ToolchainSettingsVisible />
         <param.target.Data />
@@ -353,7 +349,6 @@
         <param.IncludeTerminateFcn />
         <param.GenerateExampleMain />
         <param.PreserveVariableNames />
-        <param.TargetLang />
         <param.CCompilerOptimization />
         <param.CCompilerCustomOptimizations />
         <param.GenerateMakefile />
@@ -721,14 +716,18 @@
     <param.objective>option.objective.c</param.objective>
     <param.WorkflowStep>verifyCompatibility</param.WorkflowStep>
     <param.TestSnippets>
-      <item>x = rand(500,1); y = x; cim_v8a_rev4cc(x,y,0.015625)</item>
+      <item>x = rand(500,1); y = x; cim_v8a_cc(x,y,0.015625)</item>
+      <item>x = rand(500,1); y = x; cim_v8a_cc(x,y)</item>
     </param.TestSnippets>
-    <param.DefaultImportExportVariable>config</param.DefaultImportExportVariable>
+    <param.DefaultImportExportVariable>speed</param.DefaultImportExportVariable>
     <param.RowMajor>false</param.RowMajor>
+    <param.HighlightPotentialRowMajorIssues>false</param.HighlightPotentialRowMajorIssues>
+    <param.ExternalFcnMajority>column</param.ExternalFcnMajority>
     <param.UseGlobals>option.UseGlobals.No</param.UseGlobals>
-    <param.outputfile>${PROJECT_ROOT}/codegen/lib/cim_v8a_rev4cc/cim_v8a_rev4cc.a</param.outputfile>
+    <param.outputfile>${PROJECT_ROOT}/codegen/lib/cim_v8a_cc/cim_v8a_cc.a</param.outputfile>
     <param.version>R2012a</param.version>
     <param.HasECoderFeatures>true</param.HasECoderFeatures>
+    <param.HasGpuCoder>true</param.HasGpuCoder>
     <param.mex.mainhtml />
     <param.grt.mainhtml />
     <param.CallGeneratedCodeFromTest>true</param.CallGeneratedCodeFromTest>
@@ -739,29 +738,29 @@
     <param.AutoInferUnboundedSizeThreshold>2048</param.AutoInferUnboundedSizeThreshold>
     <param.EnableFixedPointStep>false</param.EnableFixedPointStep>
     <param.EnableScreener>true</param.EnableScreener>
-    <param.AnnotationChecksum>3398884793</param.AnnotationChecksum>
+    <param.AnnotationChecksum>3455002022</param.AnnotationChecksum>
     <var.LegacyTarget />
     <var.MirrorOnOpen>false</var.MirrorOnOpen>
     <param.FixedPointEnabled>false</param.FixedPointEnabled>
     <var.redirectedInputTypeData />
     <var.DismissScreener>true</var.DismissScreener>
     <param.unifiedParamStorage />
-    <var.gc.lastOutputRoot />
-    <var.gc.lastOutputType />
-    <var.gc.preBuildChecksum />
-    <var.cfi.lastOutputRoot>codegen/mex/cim_v8a_rev4cc</var.cfi.lastOutputRoot>
-    <var.cfi.preBuildChecksum>1096185496</var.cfi.preBuildChecksum>
-    <var.lastCfiTestSnippet>x = rand(500,1); y = x; cim_v8a_rev4cc(x,y,0.015625)</var.lastCfiTestSnippet>
+    <var.gc.lastOutputRoot>codegen/lib/cim_v8a_cc</var.gc.lastOutputRoot>
+    <var.gc.lastOutputType>C_CODE</var.gc.lastOutputType>
+    <var.gc.preBuildChecksum>3379553345</var.gc.preBuildChecksum>
+    <var.cfi.lastOutputRoot>codegen/mex/cim_v8a_cc</var.cfi.lastOutputRoot>
+    <var.cfi.preBuildChecksum>83867934</var.cfi.preBuildChecksum>
+    <var.lastCfiTestSnippet>x = rand(500,1); y = x; cim_v8a_cc(x,y,0.015625)</var.lastCfiTestSnippet>
     <var.outdatedOnRestore>false</var.outdatedOnRestore>
-    <var.lastUserSourceChecksum />
-    <var.sourceSetState>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;sourceModel&gt;&lt;primarySourceFiles&gt;&lt;file&gt;/Users/kiran/stochasticresearch/copula_experiments/cim_v8a_rev4cc.m&lt;/file&gt;&lt;file&gt;/Users/kiran/stochasticresearch/copula_experiments/kendallsTauNumer1.m&lt;/file&gt;&lt;file&gt;/Users/kiran/stochasticresearch/copula_experiments/pobs_sorted_cc.m&lt;/file&gt;&lt;file&gt;/Users/kiran/stochasticresearch/copula_experiments/taukl_cc.m&lt;/file&gt;&lt;file&gt;/Users/kiran/stochasticresearch/copula_experiments/uniqueSorted.m&lt;/file&gt;&lt;/primarySourceFiles&gt;&lt;fixedPointSourceFiles/&gt;&lt;fixedPointSourceRegistered&gt;false&lt;/fixedPointSourceRegistered&gt;&lt;fixedPointSourceSelected&gt;false&lt;/fixedPointSourceSelected&gt;&lt;/sourceModel&gt;</var.sourceSetState>
+    <var.lastUserSourceChecksum>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;checksum&gt;&lt;includedFiles&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/cim_v8a_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/pobs_sorted_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/taukl_cc.m&lt;/file&gt;&lt;/includedFiles&gt;&lt;value&gt;4195953108&lt;/value&gt;&lt;/checksum&gt;</var.lastUserSourceChecksum>
+    <var.sourceSetState>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;sourceModel&gt;&lt;primarySourceFiles&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/cim_v8a_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/kendallsTauNumer1.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/pobs_sorted_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/taukl_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/uniqueSorted.m&lt;/file&gt;&lt;/primarySourceFiles&gt;&lt;fixedPointSourceFiles/&gt;&lt;fixedPointSourceRegistered&gt;false&lt;/fixedPointSourceRegistered&gt;&lt;fixedPointSourceSelected&gt;false&lt;/fixedPointSourceSelected&gt;&lt;/sourceModel&gt;</var.sourceSetState>
     <param.forceMexBuild>false</param.forceMexBuild>
     <param.configImportActive>false</param.configImportActive>
     <var.boundToGui>true</var.boundToGui>
-    <param.mex.outputfile>cim_v8a_rev4cc_mex</param.mex.outputfile>
-    <param.grt.outputfile>cim_v8a_rev4cc</param.grt.outputfile>
+    <param.mex.outputfile>cim_v8a_cc_mex</param.mex.outputfile>
+    <param.grt.outputfile>cim_v8a_cc</param.grt.outputfile>
     <param.artifact>option.target.artifact.lib</param.artifact>
-    <param.outputfile>${PROJECT_ROOT}/codegen/lib/cim_v8a_rev4cc/cim_v8a_rev4cc.a</param.outputfile>
+    <param.outputfile>${PROJECT_ROOT}/codegen/lib/cim_v8a_cc/cim_v8a_cc.a</param.outputfile>
     <param.EnableAutoExtrinsicCalls>true</param.EnableAutoExtrinsicCalls>
     <param.UsePreconditions>false</param.UsePreconditions>
     <param.FeatureFlags />
@@ -803,18 +802,21 @@
     <param.fpDataRoot />
     <param.fpUserFileChecksum />
     <var.snapshotChecksum />
+    <param.fpLastConvertChecksum />
     <var.functionBlockSid />
     <param.fptSignedness>false</param.fptSignedness>
     <var.FixedPointAnalysisMode>option.FixedPointAnalysisMode.Sim</var.FixedPointAnalysisMode>
     <param.FixedPointUseDesignRanges>false</param.FixedPointUseDesignRanges>
     <unset>
       <param.objective />
-      <param.DefaultImportExportVariable />
       <param.RowMajor />
+      <param.HighlightPotentialRowMajorIssues />
+      <param.ExternalFcnMajority />
       <param.UseGlobals />
       <param.outputfile />
       <param.version />
       <param.HasECoderFeatures />
+      <param.HasGpuCoder />
       <param.mex.mainhtml />
       <param.grt.mainhtml />
       <param.CallGeneratedCodeFromTest />
@@ -830,11 +832,7 @@
       <param.FixedPointEnabled />
       <var.redirectedInputTypeData />
       <param.unifiedParamStorage />
-      <var.gc.lastOutputRoot />
-      <var.gc.lastOutputType />
-      <var.gc.preBuildChecksum />
       <var.outdatedOnRestore />
-      <var.lastUserSourceChecksum />
       <param.forceMexBuild />
       <param.configImportActive />
       <param.mex.outputfile />
@@ -879,20 +877,21 @@
       <param.fpDataRoot />
       <param.fpUserFileChecksum />
       <var.snapshotChecksum />
+      <param.fpLastConvertChecksum />
       <var.functionBlockSid />
       <param.fptSignedness />
       <var.FixedPointAnalysisMode />
       <param.FixedPointUseDesignRanges />
     </unset>
     <fileset.entrypoints>
-      <file custom-data-expanded="false" value="${PROJECT_ROOT}/cim_v8a_rev4cc.m">
-        <Marker>1499976712959</Marker>
+      <file custom-data-expanded="false" value="${PROJECT_ROOT}/cim_v8a_cc.m">
+        <Marker>1499533632573</Marker>
       </file>
     </fileset.entrypoints>
     <fileset.testbench />
     <fileset.inputtypes>
-      <file custom-data-expanded="false" value="${PROJECT_ROOT}/cim_v8a_rev4cc.m">
-        <Inputs fileName="cim_v8a_rev4cc.m" functionName="cim_v8a_rev4cc">
+      <file custom-data-expanded="false" value="${PROJECT_ROOT}/cim_v8a_cc.m">
+        <Inputs fileName="cim_v8a_cc.m" functionName="cim_v8a_cc">
           <Input Name="x" typeId="0" />
           <Input Name="y" typeId="0" />
           <Input Name="minScanIncr" typeId="1" />
@@ -910,7 +909,7 @@
               <Size>1 x 1</Size>
               <Value />
               <InitialValue />
-              <UserDefined>false</UserDefined>
+              <UserDefined>true</UserDefined>
               <Complex>false</Complex>
             </type>
           </idpTable>
@@ -918,11 +917,11 @@
       </file>
     </fileset.inputtypes>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}/codegen/lib/cim_v8a_rev4cc" name="cim_v8a_rev4cc.a" optional="false">/Users/kiran/stochasticresearch/copula_experiments/codegen/lib/cim_v8a_rev4cc/cim_v8a_rev4cc.a</file>
+      <file location="${PROJECT_ROOT}/codegen/lib/cim_v8a_cc" name="cim_v8a_cc.a" optional="false">/home/kiran/stochasticresearch/copula_experiments/codegen/lib/cim_v8a_cc/cim_v8a_cc.a</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/Applications/MATLAB_R2016b.app</root>
+      <root>/usr/local/MATLAB/R2017a</root>
       <toolboxes>
         <toolbox name="fixedpoint" />
         <toolbox name="matlabcoder" />
@@ -952,17 +951,17 @@
     </matlab>
     <platform>
       <unix>true</unix>
-      <mac>true</mac>
+      <mac>false</mac>
       <windows>false</windows>
       <win2k>false</win2k>
       <winxp>false</winxp>
       <vista>false</vista>
-      <linux>false</linux>
+      <linux>true</linux>
       <solaris>false</solaris>
-      <osver>10.12.5</osver>
+      <osver>4.8.0-58-generic</osver>
       <os32>false</os32>
       <os64>true</os64>
-      <arch>maci64</arch>
+      <arch>glnxa64</arch>
       <matlab>true</matlab>
     </platform>
   </configuration>

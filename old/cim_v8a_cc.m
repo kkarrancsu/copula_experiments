@@ -1,8 +1,4 @@
-function [metric] = cim_v8a_rev4cc(x, y, minScanIncr)
-% REV3 -- tests whether its the conversion from cell-->matrix, keeps the
-% other areas the same ... i.e. the pobs_sorted and the taukl
-% GLITCHES!! Does *not* match cim_v8a!  See cim_v8a_rev3acc.m and
-% cim_v8a_rev3bcc.m in order to determine where bug is!
+function [metric] = cim_v8a_cc(x, y, minScanIncr)
 
 % convert X and Y to pseudo-observations, and scale to be between 0-1
 [u,v] = pobs_sorted_cc(x,y);
@@ -14,6 +10,8 @@ ax2minmaxCfgs = { {[0,1]}, {[0,0.5],[0.5,1]} };
 % perform a scan pattern while varying U with V full-range, then swap the U-V axes
 vecLen = length(axisCfgs)*length(ax2minmaxCfgs);
 numScans = ceil(log2(1/minScanIncr))+1;
+% scanPattern = [1,0.5,0.25,0.125,0.0625,0.03125,0.015625];
+% numScans = length(scanPattern);
 
 metricCell = zeros(numScans,MAX_NUM_RECT); numPtsCell = zeros(numScans,MAX_NUM_RECT);
 numRectanglesCreatedVec = zeros(numScans);
@@ -45,6 +43,7 @@ for axisCfg=axisCfgs
 
             scanincr = 1;
             for zz=1:numScans
+%                 scanincr = scanPattern(zz);
                 switch(axisCfg)
                     case 1
                         ax1pts = u; ax2pts = v;
@@ -134,9 +133,9 @@ rectanglesIdx = 1;
 metricRectanglePrev = -999;
 numPtsPrev = 1;  % should get overwritten
 numStdDev = 4;
-while ax1max<=1
-% numLoops = ceil(1/scanincr);  %%
-% for ii=1:numLoops             %%
+% while ax1max<=1
+numLoops = ceil(1/scanincr);  %%
+for ii=1:numLoops             %%
     % find all the points which are contained within this cover rectangle
     matchPts = getPointsWithinBounds(ax1pts, ax2pts, ax1min, ax1max, ax2min, ax2max);
     

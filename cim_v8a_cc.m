@@ -1,4 +1,47 @@
 function [metric] = cim_v8a_cc(x, y, minScanIncr)
+%CIM - Copula Index for Detecting Dependence and Monotonicity between
+%Stochastic Signals.  See associated paper... to be published and preprint
+%located here: 
+% Inputs:
+%  x - the x variable
+%  y - the y variable
+%  varargin{1} - minscanincr - the minimum scanning increment.  Large
+%                              values will filter out high frequency
+%                              dependencies, small values decrease the
+%                              statistical power of the dependency metric
+%  varargin{2} - diffthresh  - the threshold at which a change in
+%                              concordance amount is detected.  Larger
+%                              values are more robust to noise, but tend to
+%                              miss high frequency changes.
+%  varargin{3} - alpha       - the value used to determine significance
+%                              level of a box's concordance level
+% Outputs:
+%  metric - the calculated dependency metric between x and y
+%  resid  - the residual between the estimated concordance boxes and the
+%           observed statistical variables.  Each concordance box's
+%           residuals are provided separately
+%  residAssocIdxs - the indices of the independent variable associated with
+%                   each residual point, this is used by rscdm for residual
+%                   alignment.
+%
+%**************************************************************************
+%*                                                                        *
+%* Copyright (C) 2017  Kiran Karra <kiran.karra@gmail.com>                *
+%*                                                                        *
+%* This program is free software: you can redistribute it and/or modify   *
+%* it under the terms of the GNU General Public License as published by   *
+%* the Free Software Foundation, either version 3 of the License, or      *
+%* (at your option) any later version.                                    *
+%*                                                                        *
+%* This program is distributed in the hope that it will be useful,        *
+%* but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+%* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+%* GNU General Public License for more details.                           *
+%*                                                                        *
+%* You should have received a copy of the GNU General Public License      *
+%* along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
+%*                                                                        *
+%**************************************************************************
 
 % convert X and Y to pseudo-observations, and scale to be between 0-1
 [u,v] = pobs_sorted_cc(x,y);
@@ -10,8 +53,6 @@ ax2minmaxCfgs = { {[0,1]}, {[0,0.5],[0.5,1]} };
 % perform a scan pattern while varying U with V full-range, then swap the U-V axes
 vecLen = length(axisCfgs)*length(ax2minmaxCfgs);
 numScans = ceil(log2(1/minScanIncr))+1;
-% scanPattern = [1,0.5,0.25,0.125,0.0625,0.03125,0.015625];
-% numScans = length(scanPattern);
 
 metricCell = zeros(numScans,MAX_NUM_RECT); numPtsCell = zeros(numScans,MAX_NUM_RECT);
 numRectanglesCreatedVec = zeros(numScans);
@@ -43,7 +84,6 @@ for axisCfg=axisCfgs
 
             scanincr = 1;
             for zz=1:numScans
-%                 scanincr = scanPattern(zz);
                 switch(axisCfg)
                     case 1
                         ax1pts = u; ax2pts = v;
@@ -133,9 +173,7 @@ rectanglesIdx = 1;
 metricRectanglePrev = -999;
 numPtsPrev = 1;  % should get overwritten
 numStdDev = 4;
-% while ax1max<=1
-numLoops = ceil(1/scanincr);  %%
-for ii=1:numLoops             %%
+while ax1max<=1
     % find all the points which are contained within this cover rectangle
     matchPts = getPointsWithinBounds(ax1pts, ax2pts, ax1min, ax1max, ax2min, ax2max);
     

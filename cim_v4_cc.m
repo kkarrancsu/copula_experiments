@@ -86,7 +86,6 @@ for axisCfg=axisCfgs
 
             scanincr = 1;
             for zz=1:numScans
-%                 scanincr = scanPattern(zz);
                 switch(axisCfg)
                     case 1
                         ax1pts = u; ax2pts = v;
@@ -175,9 +174,7 @@ rectanglesIdx = 1;
 
 metricRectanglePrev = -999;
 numPtsPrev = 1;  % should get overwritten
-% while ax1max<=1
-numLoops = ceil(1/scanincr);  %%
-for ii=1:numLoops             %%
+while ax1max<=1
     % find all the points which are contained within this cover rectangle
     matchPts = getPointsWithinBounds(ax1pts, ax2pts, ax1min, ax1max, ax2min, ax2max);
     
@@ -212,7 +209,6 @@ for ii=1:numLoops             %%
         if(metricRectanglePrev>=0)
             metricVec(rectanglesIdx) = metricRectanglePrev;
             numPtsVec(rectanglesIdx) = length(matchPts);
-%             rectanglesIdx = rectanglesIdx + 1;
         end
     end
 end

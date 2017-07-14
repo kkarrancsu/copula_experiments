@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.coder" plugin-version="R2016a">
-  <configuration build-checksum="983718223" file="/home/kiran/stochasticresearch/copula_experiments/cim_v8a_cc.prj" location="/home/kiran/stochasticresearch/copula_experiments" name="cim_v8a_cc" target="target.unifiedcoder" target-name="MATLAB Coder">
+  <configuration build-checksum="2151292879" file="/home/kiran/stochasticresearch/copula_experiments/cim_v8a_cc.prj" location="/home/kiran/stochasticresearch/copula_experiments" name="cim_v8a_cc" target="target.unifiedcoder" target-name="MATLAB Coder">
     <profile key="profile.mex">
       <param.BuiltInstrumentedMex>false</param.BuiltInstrumentedMex>
       <param.RanInstrumentedMex>false</param.RanInstrumentedMex>
@@ -168,10 +168,10 @@
       <param.PostCodeGenCommand />
       <param.TargetLangStandard>C89/C90 (ANSI)</param.TargetLangStandard>
       <param.CodeReplacementLibrary>None</param.CodeReplacementLibrary>
-      <param.DeprecatedCRLFlag />
+      <param.DeprecatedCRLFlag>false</param.DeprecatedCRLFlag>
       <param.SameHardware>true</param.SameHardware>
-      <param.Toolchain>GNU gcc/g++ v4.4.x | gmake (64-bit Linux)</param.Toolchain>
-      <param.BuildConfiguration>Faster Runs</param.BuildConfiguration>
+      <param.Toolchain>Automatically locate an installed toolchain</param.Toolchain>
+      <param.BuildConfiguration>Faster Builds</param.BuildConfiguration>
       <param.CustomToolchainOptions />
       <var.ToolchainSettingsVisible />
       <param.target.Data />
@@ -228,7 +228,7 @@
       <param.IncludeTerminateFcn>true</param.IncludeTerminateFcn>
       <param.GenerateExampleMain>option.GenerateExampleMain.GenerateCodeOnly</param.GenerateExampleMain>
       <param.PreserveVariableNames>option.PreserveVariableNames.None</param.PreserveVariableNames>
-      <param.TargetLang>option.TargetLang.CPP</param.TargetLang>
+      <param.TargetLang>option.TargetLang.C</param.TargetLang>
       <param.CCompilerOptimization />
       <param.CCompilerCustomOptimizations />
       <param.GenerateMakefile>true</param.GenerateMakefile>
@@ -309,6 +309,8 @@
         <param.CodeReplacementLibrary />
         <param.DeprecatedCRLFlag />
         <param.SameHardware />
+        <param.Toolchain />
+        <param.BuildConfiguration />
         <param.CustomToolchainOptions />
         <var.ToolchainSettingsVisible />
         <param.target.Data />
@@ -349,6 +351,7 @@
         <param.IncludeTerminateFcn />
         <param.GenerateExampleMain />
         <param.PreserveVariableNames />
+        <param.TargetLang />
         <param.CCompilerOptimization />
         <param.CCompilerCustomOptimizations />
         <param.GenerateMakefile />
@@ -716,8 +719,7 @@
     <param.objective>option.objective.c</param.objective>
     <param.WorkflowStep>verifyCompatibility</param.WorkflowStep>
     <param.TestSnippets>
-      <item>x = rand(500,1); y = x; cim_v8a_cc(x,y,0.015625)</item>
-      <item>x = rand(500,1); y = x; cim_v8a_cc(x,y)</item>
+      <item>x = rand(500,1); y = rand(500,1); cim_v8a_cc(x,y,0.015625)</item>
     </param.TestSnippets>
     <param.DefaultImportExportVariable>speed</param.DefaultImportExportVariable>
     <param.RowMajor>false</param.RowMajor>
@@ -738,21 +740,21 @@
     <param.AutoInferUnboundedSizeThreshold>2048</param.AutoInferUnboundedSizeThreshold>
     <param.EnableFixedPointStep>false</param.EnableFixedPointStep>
     <param.EnableScreener>true</param.EnableScreener>
-    <param.AnnotationChecksum>3455002022</param.AnnotationChecksum>
+    <param.AnnotationChecksum>2214253061</param.AnnotationChecksum>
     <var.LegacyTarget />
     <var.MirrorOnOpen>false</var.MirrorOnOpen>
     <param.FixedPointEnabled>false</param.FixedPointEnabled>
     <var.redirectedInputTypeData />
     <var.DismissScreener>true</var.DismissScreener>
     <param.unifiedParamStorage />
-    <var.gc.lastOutputRoot>codegen/lib/cim_v8a_cc</var.gc.lastOutputRoot>
-    <var.gc.lastOutputType>C_CODE</var.gc.lastOutputType>
-    <var.gc.preBuildChecksum>3379553345</var.gc.preBuildChecksum>
+    <var.gc.lastOutputRoot />
+    <var.gc.lastOutputType />
+    <var.gc.preBuildChecksum />
     <var.cfi.lastOutputRoot>codegen/mex/cim_v8a_cc</var.cfi.lastOutputRoot>
-    <var.cfi.preBuildChecksum>83867934</var.cfi.preBuildChecksum>
-    <var.lastCfiTestSnippet>x = rand(500,1); y = x; cim_v8a_cc(x,y,0.015625)</var.lastCfiTestSnippet>
+    <var.cfi.preBuildChecksum>2377960370</var.cfi.preBuildChecksum>
+    <var.lastCfiTestSnippet>x = rand(500,1); y = rand(500,1); cim_v8a_cc(x,y,0.015625)</var.lastCfiTestSnippet>
     <var.outdatedOnRestore>false</var.outdatedOnRestore>
-    <var.lastUserSourceChecksum>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;checksum&gt;&lt;includedFiles&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/cim_v8a_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/pobs_sorted_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/taukl_cc.m&lt;/file&gt;&lt;/includedFiles&gt;&lt;value&gt;4195953108&lt;/value&gt;&lt;/checksum&gt;</var.lastUserSourceChecksum>
+    <var.lastUserSourceChecksum />
     <var.sourceSetState>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;sourceModel&gt;&lt;primarySourceFiles&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/cim_v8a_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/kendallsTauNumer1.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/pobs_sorted_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/taukl_cc.m&lt;/file&gt;&lt;file&gt;/home/kiran/stochasticresearch/copula_experiments/uniqueSorted.m&lt;/file&gt;&lt;/primarySourceFiles&gt;&lt;fixedPointSourceFiles/&gt;&lt;fixedPointSourceRegistered&gt;false&lt;/fixedPointSourceRegistered&gt;&lt;fixedPointSourceSelected&gt;false&lt;/fixedPointSourceSelected&gt;&lt;/sourceModel&gt;</var.sourceSetState>
     <param.forceMexBuild>false</param.forceMexBuild>
     <param.configImportActive>false</param.configImportActive>
@@ -832,7 +834,11 @@
       <param.FixedPointEnabled />
       <var.redirectedInputTypeData />
       <param.unifiedParamStorage />
+      <var.gc.lastOutputRoot />
+      <var.gc.lastOutputType />
+      <var.gc.preBuildChecksum />
       <var.outdatedOnRestore />
+      <var.lastUserSourceChecksum />
       <param.forceMexBuild />
       <param.configImportActive />
       <param.mex.outputfile />
@@ -885,7 +891,7 @@
     </unset>
     <fileset.entrypoints>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}/cim_v8a_cc.m">
-        <Marker>1499533632573</Marker>
+        <Marker>1499996843358</Marker>
       </file>
     </fileset.entrypoints>
     <fileset.testbench />

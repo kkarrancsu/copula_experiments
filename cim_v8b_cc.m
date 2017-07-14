@@ -5,12 +5,24 @@ function [metric] = cim_v8b_cc(x, y, minScanIncr)
 % Inputs:
 %  x - the x variable
 %  y - the y variable
-%  minscanincr - the minimum scanning increment.  Large
+%  varargin{1} - minscanincr - the minimum scanning increment.  Large
 %                              values will filter out high frequency
 %                              dependencies, small values decrease the
 %                              statistical power of the dependency metric
+%  varargin{2} - diffthresh  - the threshold at which a change in
+%                              concordance amount is detected.  Larger
+%                              values are more robust to noise, but tend to
+%                              miss high frequency changes.
+%  varargin{3} - alpha       - the value used to determine significance
+%                              level of a box's concordance level
 % Outputs:
 %  metric - the calculated dependency metric between x and y
+%  resid  - the residual between the estimated concordance boxes and the
+%           observed statistical variables.  Each concordance box's
+%           residuals are provided separately
+%  residAssocIdxs - the indices of the independent variable associated with
+%                   each residual point, this is used by rscdm for residual
+%                   alignment.
 %
 %**************************************************************************
 %*                                                                        *
@@ -41,14 +53,6 @@ ax2minmaxCfgs = { {[0,1]}, {[0,0.5],[0.5,1]} };
 % perform a scan pattern while varying U with V full-range, then swap the U-V axes
 vecLen = length(axisCfgs)*length(ax2minmaxCfgs);
 numScans = ceil(log2(1/minScanIncr))+1;
-% scanincr = 1;
-% scanPattern = zeros(1,numScans);
-% for ii=1:numScans
-%     scanPattern(ii) = scanincr;
-%     scanincr = scanincr/2;
-% end
-% % scanPattern = [1,0.5,0.25,0.125,0.0625,0.03125,0.015625];
-% numScans = length(scanPattern);
 
 metricCell = zeros(numScans,MAX_NUM_RECT); numPtsCell = zeros(numScans,MAX_NUM_RECT);
 numRectanglesCreatedVec = zeros(numScans);
@@ -77,10 +81,9 @@ for axisCfg=axisCfgs
             ax2mmCfg = ax2minmaxCfg{ax2mmCfgIdx};
             ax2min = ax2mmCfg(1);
             ax2max = ax2mmCfg(2);
-            
+
             scanincr = 1;
             for zz=1:numScans
-%                 scanincr = scanPattern(zz);
                 switch(axisCfg)
                     case 1
                         ax1pts = u; ax2pts = v;
@@ -174,9 +177,7 @@ rectanglesIdx = 1;
 metricRectanglePrev = -999;
 numPtsPrev = 1;  % should get overwritten
 numStdDev = 4;
-% while ax1max<=1
-numLoops = ceil(1/scanincr);  %%
-for ii=1:numLoops             %%
+while ax1max<=1
     % find all the points which are contained within this cover rectangle
     matchPts = getPointsWithinBounds(ax1pts, ax2pts, ax1min, ax1max, ax2min, ax2max);
     

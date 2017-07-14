@@ -746,15 +746,15 @@ dbstop if error;
 M = 500;  % which one do we want to plot?
 
 if(ispc)
-    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev4_debug_power_M_%d_old.mat', M));
+    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8rev4_debug_power_M_%d.mat', M));
 elseif(ismac)
-    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev4_debug_power_M_%d_old.mat', M));
+    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8rev4_debug_power_M_%d.mat', M));
 else
-    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev4_debug_power_M_%d_old.mat', M));
+    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8rev4_debug_power_M_%d.mat', M));
 end
 
 num_noise_test_min = 0;
-num_noise_test_max = 13;
+num_noise_test_max = 11;
 noiseVec = num_noise_test_min:num_noise_test_max;
 
 powerMat = zeros(4,8,length(noiseVec));
@@ -769,4 +769,4 @@ noiseVec = (num_noise_test_min:num_noise_test_max)/10;
 % labels = {'CIMv4', 'CIMv8a', 'CIMv8a[REV1]', 'CIMv8a[REV2]', 'CIMv8a[REV3]'};
 labels = {'CIMv8a[REV4]', 'CIMv8a', 'CIMv4'};
 plotStyle = 1;
-plotPower(powerMat, M, labels, noiseVec, num_noise_test_min, num_noise_test_max, plotStyle)
+plotPower(powerMat, M, labels, noiseVec, plotStyle)

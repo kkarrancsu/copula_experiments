@@ -5,6 +5,8 @@ clear;
 clc;
 close all;
 
+rng(1230);
+
 M = 500;
 minScanIncr = 0.015625;
 mine_c = 15;
@@ -72,7 +74,7 @@ end
 
 labels = {'CIM', 'CoS', 'RDC', 'TICe', 'dCor', 'cCor'};
 
-num_noise_test_min = 1;
+num_noise_test_min = 0;
 num_noise_test_max = 20;
 noiseVec = num_noise_test_min:num_noise_test_max;
 powerMat = zeros(length(labels),8,length(noiseVec));
@@ -80,23 +82,50 @@ powerMat = zeros(length(labels),8,length(noiseVec));
 for labelIdx=1:length(labels)
     label = labels{labelIdx};
     % find which index this corresponds to
-    powerCurveIdx = find(contains(nameIdxCorrelationCell,label));
+    fIdx = find(contains(nameIdxCorrelationCell,label));
+    powerMat(labelIdx,:,:) = powerCurve(fIdx,1:length(noiseVec),:);
 end
 
-powerMat(1,:,:) = rsdmPower(:,noiseVec,MIdx);
-powerMat(2,:,:) = cosPower(:,noiseVec,MIdx);
-powerMat(3,:,:) = rdcPower(:,noiseVec,MIdx);
-powerMat(4,:,:) = ticePower(:,noiseVec,MIdx);
-powerMat(5,:,:) = dcorrPower(:,noiseVec,MIdx);
-powerMat(6,:,:) = ccorrPower(:,noiseVec,MIdx);
-noiseVec = (num_noise_test_min:num_noise_test_max)/10;
-
+noiseVecToPlot = noiseVec/10;
 
 plotStyle = 1;
-plotPower(powerMat, M, labels, noiseVec, num_noise_test_min, num_noise_test_max, plotStyle)
-
+plotPower(powerMat, M, labels, noiseVecToPlot, plotStyle)
 %% Plot the CIM Algorithm Power vs. other DPI satisfying measures (i.e. measures of Mutual Information)
 
+clear;
+clc;
+close all;
+dbstop if error;
+
+% select for which M to plot
+M = 500;
+
+if(ispc)
+    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\power_M_%d.mat',M));
+elseif(ismac)
+    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/power_M_%d.mat',M));
+else
+    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/power_M_%d.mat',M));
+end
+
+labels = {'CIM', 'KNN-1', 'KNN-6', 'KNN-20', 'AP', 'vME'};
+
+num_noise_test_min = 0;
+num_noise_test_max = 20;
+noiseVec = num_noise_test_min:num_noise_test_max;
+powerMat = zeros(length(labels),8,length(noiseVec));
+
+for labelIdx=1:length(labels)
+    label = labels{labelIdx};
+    % find which index this corresponds to
+    fIdx = find(contains(nameIdxCorrelationCell,label));
+    powerMat(labelIdx,:,:) = powerCurve(fIdx,1:length(noiseVec),:);
+end
+
+noiseVecToPlot = noiseVec/10;
+
+plotStyle = 1;
+plotPower(powerMat, M, labels, noiseVecToPlot, plotStyle)
 
 %% test the power sensitivity of the CIM algorithm
 
@@ -296,6 +325,8 @@ figtitle(sprintf('Algorithm Sensitivity (M=%d - %d)',min(MVecToPlot),max(MVecToP
 %% simulate the difference between computing monotonic, detecting the region, and theoretical CIM value
 clear;
 clc;
+
+rng(12345);
 
 xMin = 0;
 xMax = 1;

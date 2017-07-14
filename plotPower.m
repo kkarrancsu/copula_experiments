@@ -1,4 +1,4 @@
-function [] = plotPower(powerMat, M, labels, noiseVec, noiseMin, noiseMax, style)
+function [] = plotPower(powerMat, M, labels, noiseVec, style)
 
 if(style==1)
     numDepTypes = 8;

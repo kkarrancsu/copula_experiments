@@ -1,8 +1,14 @@
-function [powerCurve] = compute_power_curves(M,functionHandlesCell, functionArgsCell)
+function [powerCurve] = compute_power_curves(M,functionHandlesCell, functionArgsCell, ...
+                        nsim_null,nsim_alt)
 
 % standard test configurations
-nsim_null = 500;
-nsim_alt  = 500;
+if(nargin<4)
+    nsim_null = 500;
+    nsim_alt  = 500;
+elseif(nargin<5)
+    nsim_alt = 500;
+end
+
 num_noise = 30;
 noise = 3;
 numDepTests = 8;
@@ -17,9 +23,11 @@ dispstat('','init'); % One time only initialization
 dispstat(sprintf('Begining the simulation...\n'),'keepthis','timestamp');
 num_noise_test_min = 0;
 num_noise_test_max = 30;
+noiseVec = num_noise_test_min:num_noise_test_max;
 xMin = 0;
 xMax = 1;
-for l=num_noise_test_min:num_noise_test_max
+for lIdx=1:length(noiseVec)
+    l = noiseVec(lIdx);
     for typ=1:numDepTests
         dispstat(sprintf('Computing for noise level=%d Dependency Test=%d',l, typ),'keepthis', 'timestamp');
         % simulate data under the null w/ correct marginals
@@ -65,7 +73,7 @@ for l=num_noise_test_min:num_noise_test_max
         end
 
         % compute the rejection cutoffs
-        cut = quantile(nullDataVec, 0.95, 2);
+        cut = quantile(nullDataVec, 0.95, 2);  % compute row-wise
 
         % resimulate the data under the alternative hypothesis
         parfor ii=1:nsim_alt
@@ -108,7 +116,7 @@ for l=num_noise_test_min:num_noise_test_max
         end
 
         % compute the power
-        powerCurve(:, typ, l)   = sum(altDataVec > cut)/nsim_alt;
+        powerCurve(:, typ, lIdx)   = sum(altDataVec > cut, 2)/nsim_alt;  % compute sum row-wise
     end
 end
 
