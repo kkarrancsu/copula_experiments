@@ -359,22 +359,22 @@ noiseVecToPlot = noiseVec/10;
 figure;
 h = subplot(2,4,1);
 plot(noiseVecToPlot,linearDepToPlot(2,:)-linearDepToPlot(1,:));
-grid on; xlabel('Noise','FontSize',20); title('Linear','FontSize',20);
-ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+grid on; 
+title('Linear','FontSize',20);
 h.FontSize = 20;
 
 h = subplot(2,4,2);
 plot(noiseVecToPlot,quadraticDepToPlot(2,:)-quadraticDepToPlot(1,:));
-grid on; xlabel('Noise','FontSize',20); title('Quadratic','FontSize',20); 
-ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+grid on; 
+title('Quadratic','FontSize',20); 
 h.FontSize = 20;
 
 h = subplot(2,4,3);
 plot(noiseVecToPlot,cubicDepToPlot(2,:)-cubicDepToPlot(1,:));
 % hold on;
 % plot(noiseVec,cubicDepNoCorrectionToPlot(2,:)-cubicDepNoCorrectionToPlot(1,:));
-grid on; xlabel('Noise','FontSize',20); title('Cubic','FontSize',20);
-ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+grid on; 
+title('Cubic','FontSize',20);
 % legend({'Correction','No Correction'});
 h.FontSize = 20;
 
@@ -382,8 +382,8 @@ h = subplot(2,4,4);
 plot(noiseVecToPlot,sinusoidalDepToPlot(2,:)-sinusoidalDepToPlot(1,:));
 % hold on;
 % plot(noiseVec,sinusoidalDepNoCorrectionToPlot(2,:)-sinusoidalDepNoCorrectionToPlot(1,:));
-grid on; xlabel('Noise','FontSize',20); title('Sinusoidal','FontSize',20); 
-ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+grid on; 
+title('Sinusoidal','FontSize',20); 
 % legend({'Correction','No Correction'});
 h.FontSize = 20;
 
@@ -391,28 +391,35 @@ h = subplot(2,4,5);
 plot(noiseVecToPlot,hiFreqSinDepToPlot(2,:)-hiFreqSinDepToPlot(1,:));
 % hold on;
 % plot(noiseVec,hiFreqSinDepNoCorrectionToPlot(2,:)-hiFreqSinDepNoCorrectionToPlot(1,:));
-grid on; xlabel('Noise','FontSize',20); title('Hi-Freq Sin','FontSize',20); 
-ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+grid on; 
+title('Hi-Freq Sin','FontSize',20); 
 % legend({'Correction','No Correction'});
 h.FontSize = 20;
 
 h = subplot(2,4,6);
 plot(noiseVecToPlot,fourthRootDepToPlot(2,:)-fourthRootDepToPlot(1,:));
-grid on; xlabel('Noise','FontSize',20); title('Fourth-Root','FontSize',20);
-ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+grid on; 
+title('Fourth-Root','FontSize',20);
 h.FontSize = 20;
 
 h = subplot(2,4,7);
 plot(noiseVecToPlot,circleDepToPlot(2,:)-circleDepToPlot(1,:));
-grid on; xlabel('Noise','FontSize',20); title('Circular','FontSize',20);
-ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+grid on; 
+title('Circular','FontSize',20);
 h.FontSize = 20;
 
 h = subplot(2,4,8);
 plot(noiseVecToPlot,stepDepToPlot(2,:)-stepDepToPlot(1,:));
-grid on; xlabel('Noise','FontSize',20); title('Step','FontSize',20);
-ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+grid on; 
+title('Step','FontSize',20);
 h.FontSize = 20;
+
+
+[~,h] = suplabel('Noise','x');
+set(h,'FontSize',20);
+[~,h] = suplabel('$$max[\Delta \widehat{CIM}]$$','y');
+h.FontSize = 20;
+h.Interpreter = 'Latex';
 
 % subplot(3,3,9);
 % plot(noiseVec,indepToPlot(2,:)-indepToPlot(1,:));

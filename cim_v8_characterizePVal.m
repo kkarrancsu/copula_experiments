@@ -511,10 +511,10 @@ grid on; xlabel({'M', '(c)'}, 'FontSize', fontSize);
 ylabel('\alpha', 'FontSize', fontSize);
 % title('(c)', 'FontSize', fontSize);
 h3.FontSize = fontSize;
-p3(1).LineWidth = 3; p3(1).Marker = 'd'; p3(1).MarkerSize = 16;
-p3(2).LineWidth = 3; p3(2).Marker = 'v'; p3(2).MarkerSize = 16;
-p3(3).LineWidth = 3; p3(3).Marker = '*'; p3(3).MarkerSize = 16;
-p3(4).LineWidth = 3; p3(4).Marker = 'x'; p3(4).MarkerSize = 16;
+p3(1).LineWidth = 3; p3(1).Marker = 'd'; p3(1).MarkerSize = 12;
+p3(2).LineWidth = 3; p3(2).Marker = 'v'; p3(2).MarkerSize = 12;
+p3(3).LineWidth = 3; p3(3).Marker = '*'; p3(3).MarkerSize = 12;
+p3(4).LineWidth = 3; p3(4).Marker = 'x'; p3(4).MarkerSize = 12;
 
 h4 = subplot(2,2,4); 
 p4 = plot(M_vec_toPlot, betaVecContinuous(1:initLen), M_vec_toPlot, betaVecHybrid1(1:initLen), ...
@@ -523,9 +523,9 @@ grid on; xlabel({'M', '(d)'}, 'FontSize', fontSize);
 ylabel('\beta', 'FontSize', fontSize);
 % title('(d)', 'FontSize', fontSize);
 h4.FontSize = fontSize;
-p4(1).LineWidth = 3; p4(1).Marker = 'd'; p4(1).MarkerSize = 16;
-p4(2).LineWidth = 3; p4(2).Marker = 'v'; p4(2).MarkerSize = 16;
-p4(3).LineWidth = 3; p4(3).Marker = '*'; p4(3).MarkerSize = 16;
-p4(4).LineWidth = 3; p4(4).Marker = 'x'; p4(4).MarkerSize = 16;
+p4(1).LineWidth = 3; p4(1).Marker = 'd'; p4(1).MarkerSize = 12;
+p4(2).LineWidth = 3; p4(2).Marker = 'v'; p4(2).MarkerSize = 12;
+p4(3).LineWidth = 3; p4(3).Marker = '*'; p4(3).MarkerSize = 12;
+p4(4).LineWidth = 3; p4(4).Marker = 'x'; p4(4).MarkerSize = 12;
 
 legend({'Continuous', 'Hybrid-1', 'Hybrid-2', 'Discrete'}, 'location', 'NorthWest');

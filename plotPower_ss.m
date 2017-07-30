@@ -1,4 +1,4 @@
-function [] = plotPower(powerMat, M, labels, noiseVec, style)
+function [] = plotPower_ss(sampleSizeAnalysisVec, labels, noiseVec, style)
 
 if(style==1)
     numDepTypes = 8;
@@ -7,11 +7,7 @@ if(style==1)
     captionText = {'(a)', '(b)', '(c)', '(d)', '(e)', '(f)', '(g)', '(h)'};
     % inlet plot configuration
     M_inlet = 200;
-    if(M<=500)
-        inset_bufX = 0.0005; inset_bufY = 0.002;
-    else
-        inset_bufX = 0.15; inset_bufY = 0.26;
-    end
+    inset_bufX = 0.21; inset_bufY = 0.002;
     inset_width = 0.1; inset_height = 0.08;
     
     % generate the inlet data
@@ -26,6 +22,8 @@ if(style==1)
     inletData(6,:) = inletX.^(1/4);
     inletData(8,:) = (inletX > 0.5);
 
+    sampleSizeAnalysisVec(sampleSizeAnalysisVec==0)=NaN;
+
     % we break it up into 2 figures, 2x2 subplots on each figure for
     % readability
     captionTextIdx = 1;
@@ -36,11 +34,10 @@ if(style==1)
             hhCell = cell(1,length(labels));
             for ii=1:length(labels)
                 h = subplot(2,2,subplotNum);
-                hh = plot(noiseVec, squeeze(powerMat(ii,depTypeIdx,1:length(noiseVec))), plotStyle{ii});
+                hh = plot(noiseVec, squeeze(sampleSizeAnalysisVec(ii,depTypeIdx,1:length(noiseVec))), plotStyle{ii});
                 hhCell{ii} = hh;
                 hold on;
             end
-            axis([min(noiseVec) max(noiseVec) 0 1]);
             xlabel(captionText{captionTextIdx}, 'FontSize', 20); 
             captionTextIdx = captionTextIdx + 1;
             grid on;
@@ -67,8 +64,9 @@ if(style==1)
         end
         [~,h] = suplabel('Noise','x');
         set(h,'FontSize',20);
-        [~,h] = suplabel('\Gamma (Power)','y');
+        [~,h] = suplabel('$$M_{min}$$','y');
         h.FontSize = 20;
+        h.Interpreter = 'Latex';
     end
     
 else

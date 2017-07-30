@@ -12,11 +12,13 @@ runPower_M500              = 0;
 runPower_All               = 0;
 plotPower_M500_depMeasures = 0;
 plotPower_M500_miMeasures  = 0;
-runPowerSensitivity        = 1;
+plotPower_ss_depMeasures   = 1;
+plotPower_ss_miMeasures    = 0;
+runPowerSensitivity        = 0;
 plotPowerSensitivity       = 0;
-runAlgoSensitivity         = 1;
+runAlgoSensitivity         = 0;
 plotAlgoSensitivity        = 0;
-runConvergence             = 1;
+runConvergence             = 0;
 plotConvergence            = 0;
 
 dispstat('','init'); % One time only initialization
@@ -236,6 +238,61 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotPower_M500_miMeasures) )
     plotStyle = 1;
     plotPower(powerMat, M, labels, noiseVecToPlot, plotStyle)
 end
+%% Plot the small-sample results for CIM vs. other leading measures of dependence
+if(~exist('masterCfgRun'))  % means we are running the cell independently
+    clear;
+    clc;
+    close all;
+    dbstop if error;
+    dispstat('','init'); % One time only initialization
+end
+if(~exist('masterCfgRun') || (masterCfgRun==1 && plotPower_ss_depMeasures) )
+    % load the data
+    if(ispc)
+        load('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\power_all.mat');
+    elseif(ismac)
+        load('/Users/Kiran/ownCloud/PhD/sim_results/independence/power_all.mat');
+    else
+        load('/home/kiran/ownCloud/PhD/sim_results/independence/power_all.mat');
+    end
+    
+    labels = {'CIM', 'CoS', 'RDC', 'TICe', 'dCor', 'cCor'};
+    cellfind = @(string)(@(cell_contents)(strcmp(string,cell_contents)));
+
+    num_noise_test_min = 0;
+    num_noise_test_max = 20;
+    powerThreshold = 0.7;
+    noiseVec = num_noise_test_min:num_noise_test_max;
+    sampleSizeAnalysisVec = zeros(length(labels),8,length(noiseVec));
+    
+    for labelIdx=1:length(labels)
+        label = labels{labelIdx};
+        % find which index this corresponds to
+        fIdx = find(cellfun(cellfind(label),nameIdxCorrelationCell));
+        
+        for typ=1:numDepTests
+            for l=1:length(noiseVec)
+                for m=1:length(MVec)
+                    M = MVec(m);
+                    if(powerTensor(m,fIdx,typ,l)>powerThreshold)
+                        % TODO: we can do some interpolation here, so that we
+                        % are not restricted to the boundaries of which tests
+                        % were run ...
+                        sampleSizeAnalysisVec(labelIdx,typ,l) = M;
+                        break;
+                    end
+                end
+            end
+        end
+        
+    end
+
+    noiseVecToPlot = noiseVec/10;
+
+    plotStyle = 1;
+    plotPower_ss(sampleSizeAnalysisVec, labels, noiseVecToPlot, plotStyle)
+end
+
 %% test the power sensitivity of the CIM algorithm
 if(~exist('masterCfgRun'))  % means we are running the cell independently
     clear;
@@ -548,7 +605,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
         if(depTestVec(7))
     %         circleDepErr = (circleDep(2,noiseToTest)-circleDep(3,noiseToTest)).^2;
             circleDepErr = abs(circleDep(2,noiseVecToAnalyze)-circleDep(3,noiseVecToAnalyze));
-            if(aggregatefunc(circleDepErr)<=tol)
+            if(aggregatefunc(circleDepErr)<=.01)
                 MVecResults(7) = M;
                 depTestVec(7) = 0;
                 circleDepToPlot = circleDep;
@@ -612,7 +669,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
     hh1 = plot(noiseVecPlot/10,linearDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,linearDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('Noise','FontSize',20);
+%     xlabel('Noise','FontSize',20);
     hLegend = legend('CIM','$$\widehat{CIM}$$');
     set(hLegend,'Interpreter','latex')
     title({'Linear Dependency', sprintf('min(M)=%d',MVecResults(1))},'FontSize',20);
@@ -625,7 +682,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
     hh1 = plot(noiseVecPlot/10,quadraticDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,quadraticDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('Noise','FontSize',20);
+%     xlabel('Noise','FontSize',20);
     title({'Quadratic Dependency', sprintf('min(M)=%d',MVecResults(2))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
@@ -636,7 +693,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
     hh1 = plot(noiseVecPlot/10,cubicDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,cubicDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('Noise','FontSize',20);
+%     xlabel('Noise','FontSize',20);
     title({'Cubic Dependency', sprintf('min(M)=%d',MVecResults(3))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
@@ -647,7 +704,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
     hh1 = plot(noiseVecPlot/10,sinusoidalDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,sinusoidalDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('Noise','FontSize',20);
+%     xlabel('Noise','FontSize',20);
     title({'LF-Sin Dependency', sprintf('min(M)=%d',MVecResults(4))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
@@ -658,7 +715,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
     hh1 = plot(noiseVecPlot/10,hiFreqSinDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,hiFreqSinDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('Noise','FontSize',20);
+%     xlabel('Noise','FontSize',20);
     title({'HF-Sin Dependency', sprintf('min(M)=%d',MVecResults(5))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
@@ -669,7 +726,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
     hh1 = plot(noiseVecPlot/10,fourthRootDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,fourthRootDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('Noise','FontSize',20);
+%     xlabel('Noise','FontSize',20);
     title({'Fourth-Root Dependency', sprintf('min(M)=%d',MVecResults(6))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
@@ -680,7 +737,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
     hh1 = plot(noiseVecPlot/10,circleDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,circleDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('Noise','FontSize',20);
+%     xlabel('Noise','FontSize',20);
     title({'Circular Dependency', sprintf('min(M)=%d',MVecResults(7))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
@@ -691,12 +748,15 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
     hh1 = plot(noiseVecPlot/10,stepDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,stepDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('Noise','FontSize',20);
+%     xlabel('Noise','FontSize',20);
     title({'Step-Function Dependency', sprintf('min(M)=%d',MVecResults(8))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
     h.FontSize = 20;
+    
+    [~,h] = suplabel('Noise','x');
+    set(h,'FontSize',20);
 
     % subplot(3,3,9);
     % hh1 = plot(noiseVec,indep(1,:),'o-.', ...
