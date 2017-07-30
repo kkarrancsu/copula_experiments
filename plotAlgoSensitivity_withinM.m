@@ -60,55 +60,57 @@ for MIdx=1:length(MVecToPlot)
     sinusoidalDep_noCorrection = zeros(2,length(noiseVec));
     hiFreqSinDep_noCorrection = zeros(2,length(noiseVec));
     
+    noiseVecIdx = 1:length(noiseVec);
+    
     % collect all the data for each of the scanincrs we tested and store in
     % a matrix, for each dependency type, we plot the difference between
     % the minimum and the maximum
     for ii=1:length(scanincrsToTest)
         scanincrVal = scanincrsToTest(ii);
         rawData = algoSensitivityData{ii};  % algoSensitivityData is loaded from the file above
-        linearData = rawData.linearDep(CIMVECIDX,noiseVec);
-        quadraticData = rawData.quadraticDep(CIMVECIDX,noiseVec);
-        cubicData = rawData.cubicDep(CIMVECIDX,noiseVec);
-        sinusoidalData = rawData.sinusoidalDep(CIMVECIDX,noiseVec);
-        hiFreqSinData = rawData.hiFreqSinDep(CIMVECIDX,noiseVec);
-        fourthRootData = rawData.fourthRootDep(CIMVECIDX,noiseVec);
-        circleData = rawData.circleDep(CIMVECIDX,noiseVec);
-        stepData = rawData.stepDep(CIMVECIDX,noiseVec);
-        indepData = rawData.indep(CIMVECIDX,noiseVec);
+        linearData = rawData.linearDep(CIMVECIDX,noiseVecIdx);
+        quadraticData = rawData.quadraticDep(CIMVECIDX,noiseVecIdx);
+        cubicData = rawData.cubicDep(CIMVECIDX,noiseVecIdx);
+        sinusoidalData = rawData.sinusoidalDep(CIMVECIDX,noiseVecIdx);
+        hiFreqSinData = rawData.hiFreqSinDep(CIMVECIDX,noiseVecIdx);
+        fourthRootData = rawData.fourthRootDep(CIMVECIDX,noiseVecIdx);
+        circleData = rawData.circleDep(CIMVECIDX,noiseVecIdx);
+        stepData = rawData.stepDep(CIMVECIDX,noiseVecIdx);
+        indepData = rawData.indep(CIMVECIDX,noiseVecIdx);
         
-        cubicDataNoCorrection = rawData.cubicDep(CIMVECIDX,noiseVec);
-        sinusoidalDataNoCorrection = rawData.sinusoidalDep(CIMVECIDX,noiseVec);
-        hiFreqSinDataNoCorrection = rawData.hiFreqSinDep(CIMVECIDX,noiseVec);
+        cubicDataNoCorrection = rawData.cubicDep(CIMVECIDX,noiseVecIdx);
+        sinusoidalDataNoCorrection = rawData.sinusoidalDep(CIMVECIDX,noiseVecIdx);
+        hiFreqSinDataNoCorrection = rawData.hiFreqSinDep(CIMVECIDX,noiseVecIdx);
         
         % seed the data
         if(ii==1)
             for jj=1:2
-                linearDep(jj,noiseVec) = linearData;
-                quadraticDep(jj,noiseVec) = quadraticData;
-                fourthRootDep(jj,noiseVec) = fourthRootData;
-                circleDep(jj,noiseVec) = circleData;
-                cubicDep(jj,noiseVec) = cubicData;
-                stepDep(jj,noiseVec) = stepData;
-                indep(jj,noiseVec) = indepData;
+                linearDep(jj,noiseVecIdx) = linearData;
+                quadraticDep(jj,noiseVecIdx) = quadraticData;
+                fourthRootDep(jj,noiseVecIdx) = fourthRootData;
+                circleDep(jj,noiseVecIdx) = circleData;
+                cubicDep(jj,noiseVecIdx) = cubicData;
+                stepDep(jj,noiseVecIdx) = stepData;
+                indep(jj,noiseVecIdx) = indepData;
                 
-                cubicDep_noCorrection(jj,noiseVec) = cubicDataNoCorrection;
-                sinusoidalDep_noCorrection(jj,noiseVec) = sinusoidalDataNoCorrection;
-                hiFreqSinDep_noCorrection(jj,noiseVec) = hiFreqSinDataNoCorrection;
+                cubicDep_noCorrection(jj,noiseVecIdx) = cubicDataNoCorrection;
+                sinusoidalDep_noCorrection(jj,noiseVecIdx) = sinusoidalDataNoCorrection;
+                hiFreqSinDep_noCorrection(jj,noiseVecIdx) = hiFreqSinDataNoCorrection;
             end
         end
         if(scanincrVal<0.25)
             for jj=1:2
-                cubicDep(jj,noiseVec) = cubicData;
+                cubicDep(jj,noiseVecIdx) = cubicData;
             end
         end
         if(scanincrVal<0.1138)
             for jj=1:2
-                sinusoidalDep(jj,noiseVec) = sinusoidalData;
+                sinusoidalDep(jj,noiseVecIdx) = sinusoidalData;
             end
         end
         if(scanincrVal<0.029)
             for jj=1:2
-                hiFreqSinDep(jj,noiseVec) = hiFreqSinData;
+                hiFreqSinDep(jj,noiseVecIdx) = hiFreqSinData;
             end
         end
 
@@ -352,49 +354,65 @@ for ii=1:length(noiseVec)
     end
 end
 
-noiseVecToPlot = noiseVec-1;
+noiseVecToPlot = noiseVec/10;
 
 figure;
-subplot(2,4,1);
+h = subplot(2,4,1);
 plot(noiseVecToPlot,linearDepToPlot(2,:)-linearDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Linear'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Linear','FontSize',20);
+ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
-subplot(2,4,2);
+h = subplot(2,4,2);
 plot(noiseVecToPlot,quadraticDepToPlot(2,:)-quadraticDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Quadratic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Quadratic','FontSize',20); 
+ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
-subplot(2,4,3);
+h = subplot(2,4,3);
 plot(noiseVecToPlot,cubicDepToPlot(2,:)-cubicDepToPlot(1,:));
 % hold on;
 % plot(noiseVec,cubicDepNoCorrectionToPlot(2,:)-cubicDepNoCorrectionToPlot(1,:));
-grid on; xlabel('Noise'); title('Cubic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Cubic','FontSize',20);
+ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
 % legend({'Correction','No Correction'});
+h.FontSize = 20;
 
-subplot(2,4,4);
+h = subplot(2,4,4);
 plot(noiseVecToPlot,sinusoidalDepToPlot(2,:)-sinusoidalDepToPlot(1,:));
 % hold on;
 % plot(noiseVec,sinusoidalDepNoCorrectionToPlot(2,:)-sinusoidalDepNoCorrectionToPlot(1,:));
-grid on; xlabel('Noise'); title('Sinusoidal'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Sinusoidal','FontSize',20); 
+ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
 % legend({'Correction','No Correction'});
+h.FontSize = 20;
 
-subplot(2,4,5);
+h = subplot(2,4,5);
 plot(noiseVecToPlot,hiFreqSinDepToPlot(2,:)-hiFreqSinDepToPlot(1,:));
 % hold on;
 % plot(noiseVec,hiFreqSinDepNoCorrectionToPlot(2,:)-hiFreqSinDepNoCorrectionToPlot(1,:));
-grid on; xlabel('Noise'); title('Hi-Freq Sin'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Hi-Freq Sin','FontSize',20); 
+ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
 % legend({'Correction','No Correction'});
+h.FontSize = 20;
 
-subplot(2,4,6);
+h = subplot(2,4,6);
 plot(noiseVecToPlot,fourthRootDepToPlot(2,:)-fourthRootDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Fourth-Root'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Fourth-Root','FontSize',20);
+ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
-subplot(2,4,7);
+h = subplot(2,4,7);
 plot(noiseVecToPlot,circleDepToPlot(2,:)-circleDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Circular'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Circular','FontSize',20);
+ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
-subplot(2,4,8);
+h = subplot(2,4,8);
 plot(noiseVecToPlot,stepDepToPlot(2,:)-stepDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Step'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Step','FontSize',20);
+ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
 % subplot(3,3,9);
 % plot(noiseVec,indepToPlot(2,:)-indepToPlot(1,:));

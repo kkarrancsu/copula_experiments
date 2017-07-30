@@ -189,7 +189,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotPower_M500_depMeasures) )
         label = labels{labelIdx};
         % find which index this corresponds to
         fIdx = find(cellfun(cellfind(label),nameIdxCorrelationCell));
-        powerMat(labelIdx,:,:) = powerTensor(MIdx,fIdx,1:length(noiseVec),:);
+        powerMat(labelIdx,:,:) = squeeze(powerTensor(MIdx,fIdx,:,1:length(noiseVec)));
     end
 
     noiseVecToPlot = noiseVec/10;
@@ -228,7 +228,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotPower_M500_miMeasures) )
         label = labels{labelIdx};
         % find which index this corresponds to
         fIdx = find(contains(nameIdxCorrelationCell,label));
-        powerMat(labelIdx,:,:) = powerCurve(MIdx,fIdx,1:length(noiseVec),:);
+        powerMat(labelIdx,:,:) = squeeze(powerTensor(MIdx,fIdx,:,1:length(noiseVec)));
     end
 
     noiseVecToPlot = noiseVec/10;
@@ -302,7 +302,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotPowerSensitivity) )
     num_noise_test_min = 0;
     num_noise_test_max = 20;
     plotPowerSensitivity_withinM(cimVersion,MVecToPlot,num_noise_test_min,num_noise_test_max);
-    figtitle(sprintf('Algorithm Power Sensitivity (M=%d - %d)',min(MVecToPlot),max(MVecToPlot)));
+    figtitle(sprintf('Algorithm Power Sensitivity (M=%d - %d)',min(MVecToPlot),max(MVecToPlot)),'FontSize',20);
 end
 
 
@@ -374,7 +374,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotAlgoSensitivity) )
     num_noise_test_max = 20;
 
     plotAlgoSensitivity_withinM(cimVersion,MVecToPlot,num_noise_test_min,num_noise_test_max);
-    figtitle(sprintf('Algorithm Sensitivity (M=%d - %d)',min(MVecToPlot),max(MVecToPlot)));
+    figtitle(sprintf('Algorithm Sensitivity (M=%d - %d)',min(MVecToPlot),max(MVecToPlot)),'FontSize',20);
 end
 %% simulate the difference between computing monotonic, detecting the region, and theoretical CIM value
 if(~exist('masterCfgRun'))  % means we are running the cell independently
@@ -458,16 +458,13 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
             error('no data exists!');
     end
 
-    MVecDataAvailable = [100:100:1000 2500];  % add 5000 and 10000 to this as they come online
+    MVecDataAvailable = [100:100:1000 2000 5000];  % add 5000 and 10000 to this as they come online
     tol = 0.015;
     noiseMinToAnalyze = 0; noiseMaxToAnalyze = 20;
     noiseVecToAnalyze = noiseMinToAnalyze:noiseMaxToAnalyze;  
 
     % do a +1 to account for matlab indexing
     noiseVecToAnalyze = noiseVecToAnalyze + 1;
-
-    % aggregatefunc = @sum;
-    % aggregatefunc = @max;
     aggregatefunc = @mean;
 
     numDep = 8;
@@ -476,11 +473,11 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
     for MIdx=1:length(MVecDataAvailable)
         M = MVecDataAvailable(MIdx);
         if(ispc)
-            load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_convergence_%s_M_%d.mat', fnameStr, M));
+            load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_fourier_convergence_%s_M_%d.mat', fnameStr, M));
         elseif(ismac)
-            load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_convergence_%s_M_%d.mat', fnameStr, M));
+            load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_fourier_convergence_%s_M_%d.mat', fnameStr, M));
         else
-            load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_convergence_%s_M_%d.mat', fnameStr, M));
+            load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_fourier_convergence_%s_M_%d.mat', fnameStr, M));
         end
 
         % compute error between theoretical CIM and actual CIM for each of the
@@ -576,11 +573,11 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
         if(depTestVec(depTestValIdx)==1)
             M = max(MVecDataAvailable);
             if(ispc)
-                load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_convergence_%s_M_%d.mat', fnameStr, M));
+                load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_fourier_convergence_%s_M_%d.mat', fnameStr, M));
             elseif(ismac)
-                load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_convergence_%s_M_%d.mat', fnameStr, M));
+                load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_fourier_convergence_%s_M_%d.mat', fnameStr, M));
             else
-                load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_convergence_%s_M_%d.mat', fnameStr, M));
+                load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_fourier_convergence_%s_M_%d.mat', fnameStr, M));
             end
             MVecResults(depTestValIdx) = M;
             switch depTestValIdx
@@ -608,91 +605,98 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
 
     noiseVecPlot = noiseVecToAnalyze-1;
 
-    subplot(2,4,1);
+    h = subplot(2,4,1);
     % hh1 = plot(noiseToTest,linearDepToPlot(1,noiseToTest),'o-.', ...
     %      noiseToTest,linearDepToPlot(2,noiseToTest),'+-.', ...
     %      noiseToTest,linearDepToPlot(3,noiseToTest),'d-.');
     hh1 = plot(noiseVecPlot/10,linearDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,linearDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('noise');
-    % legend('\tau','CIM Theoretical',legendStr);
-    h = legend('CIM','$$\widehat{CIM}$$');
-    set(h,'Interpreter','latex')
-    title({'Linear Dependency', sprintf('min(M)=%d',MVecResults(1))});
+    xlabel('Noise','FontSize',20);
+    hLegend = legend('CIM','$$\widehat{CIM}$$');
+    set(hLegend,'Interpreter','latex')
+    title({'Linear Dependency', sprintf('min(M)=%d',MVecResults(1))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
+    h.FontSize = 20;
 
-    subplot(2,4,2);
+    h = subplot(2,4,2);
     hh1 = plot(noiseVecPlot/10,quadraticDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,quadraticDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('noise');
-    title({'Quadratic Dependency', sprintf('min(M)=%d',MVecResults(2))});
+    xlabel('Noise','FontSize',20);
+    title({'Quadratic Dependency', sprintf('min(M)=%d',MVecResults(2))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
+    h.FontSize = 20;
 
-    subplot(2,4,3);
+    h = subplot(2,4,3);
     hh1 = plot(noiseVecPlot/10,cubicDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,cubicDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('noise');
-    title({'Cubic Dependency', sprintf('min(M)=%d',MVecResults(3))});
+    xlabel('Noise','FontSize',20);
+    title({'Cubic Dependency', sprintf('min(M)=%d',MVecResults(3))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
+    h.FontSize = 20;
 
-    subplot(2,4,4);
+    h = subplot(2,4,4);
     hh1 = plot(noiseVecPlot/10,sinusoidalDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,sinusoidalDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('noise');
-    title({'LF-Sin Dependency', sprintf('min(M)=%d',MVecResults(4))});
+    xlabel('Noise','FontSize',20);
+    title({'LF-Sin Dependency', sprintf('min(M)=%d',MVecResults(4))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
+    h.FontSize = 20;
 
-    subplot(2,4,5);
+    h = subplot(2,4,5);
     hh1 = plot(noiseVecPlot/10,hiFreqSinDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,hiFreqSinDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('noise');
-    title({'HF-Sin Dependency', sprintf('min(M)=%d',MVecResults(5))});
+    xlabel('Noise','FontSize',20);
+    title({'HF-Sin Dependency', sprintf('min(M)=%d',MVecResults(5))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
+    h.FontSize = 20;
 
-    subplot(2,4,6);
+    h = subplot(2,4,6);
     hh1 = plot(noiseVecPlot/10,fourthRootDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,fourthRootDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('noise');
-    title({'Fourth-Root Dependency', sprintf('min(M)=%d',MVecResults(6))});
+    xlabel('Noise','FontSize',20);
+    title({'Fourth-Root Dependency', sprintf('min(M)=%d',MVecResults(6))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
+    h.FontSize = 20;
 
-    subplot(2,4,7);
+    h = subplot(2,4,7);
     hh1 = plot(noiseVecPlot/10,circleDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,circleDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('noise');
-    title({'Circular Dependency', sprintf('min(M)=%d',MVecResults(7))});
+    xlabel('Noise','FontSize',20);
+    title({'Circular Dependency', sprintf('min(M)=%d',MVecResults(7))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
+    h.FontSize = 20;
 
-    subplot(2,4,8);
+    h = subplot(2,4,8);
     hh1 = plot(noiseVecPlot/10,stepDepToPlot(2,noiseVecToAnalyze),'+-.', ...
          noiseVecPlot/10,stepDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
-    xlabel('noise');
-    title({'Step-Function Dependency', sprintf('min(M)=%d',MVecResults(8))});
+    xlabel('Noise','FontSize',20);
+    title({'Step-Function Dependency', sprintf('min(M)=%d',MVecResults(8))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
+    h.FontSize = 20;
 
     % subplot(3,3,9);
     % hh1 = plot(noiseVec,indep(1,:),'o-.', ...

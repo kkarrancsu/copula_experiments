@@ -51,20 +51,22 @@ for MIdx=1:length(MVecToPlot)
     circleDep = zeros(2,length(noiseVec));
     stepDep = zeros(2,length(noiseVec));
     
+    noiseVecIdx = 1:length(noiseVec);
+    
     % collect all the data for each of the scanincrs we tested and store in
     % a matrix, for each dependency type, we plot the difference between
     % the minimum and the maximum
     for ii=1:length(scanincrsToTest)
         scanincrVal = scanincrsToTest(ii);
-        % TODO: INDEX PROPERLY
-        linearData     = squeeze(powerCurve(ii,1,noiseVec));
-        quadraticData  = squeeze(powerCurve(ii,2,noiseVec));
-        cubicData      = squeeze(powerCurve(ii,3,noiseVec));
-        sinusoidalData = squeeze(powerCurve(ii,4,noiseVec));
-        hiFreqSinData  = squeeze(powerCurve(ii,5,noiseVec));
-        fourthRootData = squeeze(powerCurve(ii,6,noiseVec));
-        circleData     = squeeze(powerCurve(ii,7,noiseVec));
-        stepData       = squeeze(powerCurve(ii,8,noiseVec));
+        % TODO: INDEX PROPERLY -- currently assumes contiguous noiseVec
+        linearData     = squeeze(powerCurve(ii,1,noiseVecIdx));
+        quadraticData  = squeeze(powerCurve(ii,2,noiseVecIdx));
+        cubicData      = squeeze(powerCurve(ii,3,noiseVecIdx));
+        sinusoidalData = squeeze(powerCurve(ii,4,noiseVecIdx));
+        hiFreqSinData  = squeeze(powerCurve(ii,5,noiseVecIdx));
+        fourthRootData = squeeze(powerCurve(ii,6,noiseVecIdx));
+        circleData     = squeeze(powerCurve(ii,7,noiseVecIdx));
+        stepData       = squeeze(powerCurve(ii,8,noiseVecIdx));
         
         % seed the data
         if(ii==1)
@@ -257,39 +259,55 @@ for ii=1:length(noiseVec)
     end
 end
 
-noiseVecToPlot = noiseVec-1;
+noiseVecToPlot = noiseVec/10;
 
 figure;
-subplot(2,4,1);
+h = subplot(2,4,1);
 plot(noiseVecToPlot,linearDepToPlot(2,:)-linearDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Linear'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Linear','FontSize',20);
+ylabel('$$max[\Delta \Gamma(\widehat{CIM})]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
-subplot(2,4,2);
+h = subplot(2,4,2);
 plot(noiseVecToPlot,quadraticDepToPlot(2,:)-quadraticDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Quadratic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Quadratic','FontSize',20);
+ylabel('$$max[\Delta \Gamma(\widehat{CIM})]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
-subplot(2,4,3);
+h = subplot(2,4,3);
 plot(noiseVecToPlot,cubicDepToPlot(2,:)-cubicDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Cubic'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Cubic','FontSize',20);
+ylabel('$$max[\Delta \Gamma(\widehat{CIM})]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
-subplot(2,4,4);
+h = subplot(2,4,4);
 plot(noiseVecToPlot,sinusoidalDepToPlot(2,:)-sinusoidalDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Sinusoidal'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Sinusoidal','FontSize',20);
+ylabel('$$max[\Delta \Gamma(\widehat{CIM})]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
-subplot(2,4,5);
+h = subplot(2,4,5);
 plot(noiseVecToPlot,hiFreqSinDepToPlot(2,:)-hiFreqSinDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Hi-Freq Sin'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Hi-Freq Sin','FontSize',20); 
+ylabel('$$max[\Delta \Gamma(\widehat{CIM})]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
-subplot(2,4,6);
+h = subplot(2,4,6);
 plot(noiseVecToPlot,fourthRootDepToPlot(2,:)-fourthRootDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Fourth-Root'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Fourth-Root','FontSize',20);
+ylabel('$$max[\Delta \Gamma(\widehat{CIM})]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
-subplot(2,4,7);
+h = subplot(2,4,7);
 plot(noiseVecToPlot,circleDepToPlot(2,:)-circleDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Circular'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Circular','FontSize',20);
+ylabel('$$max[\Delta \Gamma(\widehat{CIM})]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
-subplot(2,4,8);
+h = subplot(2,4,8);
 plot(noiseVecToPlot,stepDepToPlot(2,:)-stepDepToPlot(1,:));
-grid on; xlabel('Noise'); title('Step'); ylabel('$$max[\Delta \widehat{CIM}]$$','interpreter','Latex');
+grid on; xlabel('Noise','FontSize',20); title('Step','FontSize',20);
+ylabel('$$max[\Delta \Gamma(\widehat{CIM})]$$','interpreter','Latex','FontSize',20);
+h.FontSize = 20;
 
 end
