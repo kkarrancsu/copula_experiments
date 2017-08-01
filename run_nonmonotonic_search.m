@@ -139,7 +139,7 @@ fontSize = 20;
 textFontSize = 14;
 
 % OMIM data
-[z1, z2] = cim_v4(omim_c_data,omim_e_data,minscanincrVal);
+[z1, z2] = cim_v8_cc_mex(omim_c_data,omim_e_data,minscanincrVal);
 minestats = mine(omim_c_data',omim_e_data',mine_alpha,mine_c,'mic_e');
 fprintf('CIM=%0.02f dCor=%0.02f MIC=%0.02f RDC=%0.02f CoS=%0.02f cCor=%0.02f\n', ...
     z1,dcor(omim_c_data,omim_e_data),minestats.mic,rdc(omim_c_data,omim_e_data,rdc_k,rdc_s), ...
@@ -168,7 +168,7 @@ set(hh,'rotation',90);
 set(gca,'xscale','log'); 
 
 % acetonitrile data
-[z1, z2] = cim_v4(acetonitrile_c_data,acetonitrile_e_data,minscanincrVal);
+[z1, z2] = cim_v8_cc_mex(acetonitrile_c_data,acetonitrile_e_data,minscanincrVal);
 minestats = mine(acetonitrile_c_data',acetonitrile_e_data',mine_alpha,mine_c,'mic_e');
 fprintf('CIM=%0.02f dCor=%0.02f MIC=%0.02f RDC=%0.02f CoS=%0.02f cCor=%0.02f\n', ...
     z1,dcor(acetonitrile_c_data,acetonitrile_e_data),minestats.mic,rdc(acetonitrile_c_data,acetonitrile_e_data,rdc_k,rdc_s), ...
@@ -199,7 +199,7 @@ set(hh,'rotation',90);
 set(gca,'xscale','log'); 
 
 % Isopropyl Alcohol data
-[z1, z2] = cim_v4(isopropyl_c_data,isopropyl_e_data,minscanincrVal);
+[z1, z2] = cim_v8_cc_mex(isopropyl_c_data,isopropyl_e_data,minscanincrVal);
 minestats = mine(isopropyl_c_data',isopropyl_e_data',mine_alpha,mine_c,'mic_e');
 fprintf('CIM=%0.02f dCor=%0.02f MIC=%0.02f RDC=%0.02f CoS=%0.02f cCor=%0.02f\n', ...
     z1,dcor(isopropyl_c_data,isopropyl_e_data),minestats.mic,rdc(isopropyl_c_data,isopropyl_e_data,rdc_k,rdc_s), ...

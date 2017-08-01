@@ -64,6 +64,16 @@ MVecToPlot = [10 25 50 75 100 250 500 750 1000];
 f1 = figure(1); 
 f2 = figure(2);
 p = numSubplots(length(MVecToPlot));
+noiseVecToPlot = noiseVec/10;
+labelCell = cell(1,length(noiseVecToPlot));
+for ii=1:length(noiseVecToPlot)
+    if(ii==1 || ii==11 || ii==21 || ii==31)
+        labelCell{ii} = sprintf('%0.01f',noiseVecToPlot(ii));
+    else
+        labelCell{ii} = '';
+    end
+end
+fontSizeVal = 20;
 for MIdx=1:length(MVecToPlot)
     M = MVec(MIdx);
 
@@ -71,18 +81,34 @@ for MIdx=1:length(MVecToPlot)
     data = data';  % maek each column the noise
     
     figure(f1);
-    subplot(p(1),p(2),MIdx);
-    boxplot(data,'PlotStyle','compact','Labels',noiseVec); 
-    grid on; xlabel('noise'); ylabel('\tau'); 
-    title(sprintf('M=%d',M));
+    h = subplot(p(1),p(2),MIdx);
+%     boxplot(data,'PlotStyle','compact','Labels',labelCell); 
+    boxplot(data,'Labels',labelCell); 
+    grid on; 
+    title(sprintf('M=%d',M),'FontSize',fontSizeVal);
+    h.FontSize = fontSizeVal;
     
     figure(f2);
     varDataEmpirical = var(data); %compute variance from mean
     meanDataEmpirical = mean(data);
-    subplot(p(1),p(2),MIdx);
+    h = subplot(p(1),p(2),MIdx);
     varTheoretical = ones(1,length(noiseVec))*(2*(2*M+5))./(9*M.*(M-1));
-    plot(noiseVec,sqrt(varDataEmpirical),noiseVec,(1-meanDataEmpirical).*sqrt(varTheoretical));
-    grid on; xlabel('noise'); ylabel('\sigma(\tau)'); 
-    title(sprintf('M=%d',M));
+    plot(noiseVecToPlot,sqrt(varDataEmpirical),noiseVecToPlot,(1-meanDataEmpirical).*sqrt(varTheoretical));
+    grid on; 
+    title(sprintf('M=%d',M),'FontSize',fontSizeVal);
+    h.FontSize = fontSizeVal;
     
 end
+
+figure(f1);
+[~,h] = suplabel('Noise', 'x');
+h.FontSize = fontSizeVal;
+[~,h] = suplabel('\tau','y');
+h.FontSize = fontSizeVal;
+
+figure(f2);
+[~,h] = suplabel('Noise', 'x');
+h.FontSize = fontSizeVal;
+[~,h] = suplabel('\sigma(\tau)','y');
+h.FontSize = fontSizeVal;
+

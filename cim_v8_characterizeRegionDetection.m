@@ -5,6 +5,8 @@ clc;
 close all;
 dbstop if error;
 
+rng(1234);
+
 numMCSims = 500;
 MVec = [50 100 200:100:1000];
 noiseVec = 0:30;
@@ -71,3 +73,66 @@ for mIdx=1:length(MVec)
     end
 end
 
+%% Plot the results
+clear;
+clc;
+
+MVecOfInterest = [100 200 300 400 500];
+noiseOfInterest = [0 10 20];
+cornerPtsOfInterest = [0.4 0.5 0.6];
+fontSizeVal = 20;
+
+M_complete = 600;  % change this tot he latest run that is complete ...
+                   % we unfortuantely did this badly ... the way we saved
+                   % the data
+if(ispc)
+    load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_v8_regionDetection_%d.mat',M_complete));
+elseif(ismac)
+    load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_v8_regionDetection_%d.mat',M_complete));
+else
+    load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_v8_regionDetection_%d.mat',M_complete));
+end
+
+    
+p = numSubplots(length(noiseOfInterest)*length(cornerPtsOfInterest));
+plotIdx = 1;
+for cornerPtIdx=1:length(cornerPtsOfInterest)
+    % find the correct index into the rdData matrix
+    cornerPt = cornerPtsOfInterest(cornerPtIdx);
+    cornerPt_ii = find(cornerPts==cornerPt);
+    for noiseIdx=1:length(noiseOfInterest)
+        noise = noiseOfInterest(noiseIdx);
+        noise_ii = find(noiseVec==noise);
+        
+        boxData = zeros(numMCSims,length(MVecOfInterest));
+        labelCell = cell(1,length(MVecOfInterest));
+        ii = 1;
+        for M=MVecOfInterest
+            MIdx = find(M==MVec);
+            upData = squeeze(rdData_up(MIdx,noise_ii,cornerPt_ii,:));
+            boxData(:,ii) = upData;
+            labelCell{ii} = sprintf('M=%d',M);
+            ii = ii + 1;
+        end
+        subplot(p(1),p(2),plotIdx);
+        if(plotIdx<=3)
+            bh=boxplot(boxData,'Labels',labelCell);
+            if(plotIdx==2)
+                title(sprintf('Noise=%d',noise/10),'FontSize',fontSizeVal);
+            else
+                title(sprintf('Noise=%d',noise/10),'FontSize',fontSizeVal);
+            end
+        else
+            bh=boxplot(boxData,'Labels',{'','','','',''});
+        end
+
+        ylim([0 1])
+        set(bh,'LineWidth',2.5);
+        plotIdx = plotIdx + 1;
+        hh = gca;
+        hh.FontSize = fontSizeVal;
+        hold on;
+        plot(xlim,[cornerPt cornerPt],'g:','LineWidth',2);
+    end
+end
+    
