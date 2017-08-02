@@ -9,6 +9,8 @@ function [metric,regionRectangle] = cim_v8_cc(x, y, minScanIncr)
 %                values will filter out high frequency dependencies, 
 % Outputs:
 %  metric - the calculated dependency metric between x and y
+%  regionRectagle - the regions detected in the unit square, which each
+%                   correspond to a region of monotonicity
 % 
 %**************************************************************************
 %*                                                                        *
