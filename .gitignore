@@ -1,4 +1,4 @@
 *.mexa64
 codegen/
-cim_v4_cc_mex.mexw64
 *.mexmaci64
+*.mexw64
