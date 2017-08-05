@@ -636,6 +636,14 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
             else
                 load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_fourier_convergence_%s_M_%d.mat', fnameStr, M));
             end
+%             if(ispc)
+%                 load(sprintf('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\independence\\cim_convergence_%s_M_%d.mat', fnameStr, M));
+%             elseif(ismac)
+%                 load(sprintf('/Users/Kiran/ownCloud/PhD/sim_results/independence/cim_convergence_%s_M_%d.mat', fnameStr, M));
+%             else
+%                 load(sprintf('/home/kiran/ownCloud/PhD/sim_results/independence/cim_convergence_%s_M_%d.mat', fnameStr, M));
+%             end
+            
             MVecResults(depTestValIdx) = M;
             switch depTestValIdx
                 case 1
@@ -672,7 +680,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
 %     xlabel('Noise','FontSize',20);
     hLegend = legend('CIM','$$\widehat{CIM}$$');
     set(hLegend,'Interpreter','latex')
-    title({'Linear Dependency', sprintf('min(M)=%d',MVecResults(1))},'FontSize',20);
+    title({'Linear', sprintf('min(M)=%d',MVecResults(1))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
@@ -683,7 +691,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
          noiseVecPlot/10,quadraticDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
 %     xlabel('Noise','FontSize',20);
-    title({'Quadratic Dependency', sprintf('min(M)=%d',MVecResults(2))},'FontSize',20);
+    title({'Quadratic', sprintf('min(M)=%d',MVecResults(2))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
@@ -694,7 +702,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
          noiseVecPlot/10,cubicDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
 %     xlabel('Noise','FontSize',20);
-    title({'Cubic Dependency', sprintf('min(M)=%d',MVecResults(3))},'FontSize',20);
+    title({'Cubic', sprintf('min(M)=%d',MVecResults(3))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
@@ -705,7 +713,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
          noiseVecPlot/10,sinusoidalDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
 %     xlabel('Noise','FontSize',20);
-    title({'LF-Sin Dependency', sprintf('min(M)=%d',MVecResults(4))},'FontSize',20);
+    title({'LF-Sin', sprintf('min(M)=%d',MVecResults(4))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
@@ -716,7 +724,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
          noiseVecPlot/10,hiFreqSinDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
 %     xlabel('Noise','FontSize',20);
-    title({'HF-Sin Dependency', sprintf('min(M)=%d',MVecResults(5))},'FontSize',20);
+    title({'HF-Sin', sprintf('min(M)=%d',MVecResults(5))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
@@ -727,7 +735,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
          noiseVecPlot/10,fourthRootDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
 %     xlabel('Noise','FontSize',20);
-    title({'Fourth-Root Dependency', sprintf('min(M)=%d',MVecResults(6))},'FontSize',20);
+    title({'Fourth-Root', sprintf('min(M)=%d',MVecResults(6))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
@@ -738,7 +746,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
          noiseVecPlot/10,circleDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
 %     xlabel('Noise','FontSize',20);
-    title({'Circular Dependency', sprintf('min(M)=%d',MVecResults(7))},'FontSize',20);
+    title({'Circular', sprintf('min(M)=%d',MVecResults(7))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 
@@ -749,7 +757,7 @@ if(~exist('masterCfgRun') || (masterCfgRun==1 && plotConvergence) )
          noiseVecPlot/10,stepDepToPlot(3,noiseVecToAnalyze),'d-.');
     grid on;
 %     xlabel('Noise','FontSize',20);
-    title({'Step-Function Dependency', sprintf('min(M)=%d',MVecResults(8))},'FontSize',20);
+    title({'Step-Function', sprintf('min(M)=%d',MVecResults(8))},'FontSize',20);
     hh1(1).LineWidth = 1.5; 
     hh1(2).LineWidth = 1.5; 
     % hh1(3).LineWidth = 1.5; 

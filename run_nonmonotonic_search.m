@@ -1,62 +1,3 @@
-%% Search for non-monotonic relationships in the wine dataset
-
-%% process the WINE quality
-clear;
-clc;
-
-if(ispc)
-    dataFolder = 'C:\\Users\\Kiran\\Documents\\data\\wine_quality';
-elseif(ismac)
-    dataFolder = '/Users/kiran/Documents/data/wine_quality';
-else
-    dataFolder = '/home/kiran/data/wine_quality';
-end
-
-redwine_dataFile = fullfile(dataFolder, 'winequality-red.csv');
-whitewine_dataFile = fullfile(dataFolder, 'winequality-white.csv');
-
-% ensure dataset is all numeric, and convert categorical data to numeric
-redwine_data = importdata(redwine_dataFile,';');
-whitewine_data = importdata(redwine_dataFile,';');
-
-[R_redwine,RectanglesCell_redwine] = paircim_v4(redwine_data);
-[R_whitewine,RectanglesCell_whitewine] = paircim_v4(whitewine_data);
-
-% store the results
-if(ispc)
-    save('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\rwd\\wine.mat');
-elseif(ismac)
-    save('/Users/Kiran/ownCloud/PhD/sim_results/rwd/wine.mat');
-else
-    save('/home/kiran/ownCloud/PhD/sim_results/rwd/wine.mat');
-end
-
-%% Analyze the WINE data
-clear;
-clc;
-if(ispc)
-    load('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\rwd\\wine.mat');
-elseif(ismac)
-    load('/Users/Kiran/ownCloud/PhD/sim_results/rwd/wine.mat');
-else
-    load('/home/kiran/ownCloud/PhD/sim_results/rwd/wine.mat');
-end
-
-%% process the CRIME data
-clear;
-clc;
-
-if(ispc)
-    dataFolder = 'C:\\Users\\Kiran\\Documents\\data\\crime';
-elseif(ismac)
-    dataFolder = '/Users/kiran/Documents/data/crime';
-else
-    dataFolder = '/home/kiran/data/crime';
-end
-
-crime_dataFile = fullfile(dataFolder, 'crime.csv');
-crime_data = csvread(crime_dataFile,1,0);   % ignore the header
-
 %% NMDR Data -  This data was retrieved from the Supplemental Material for the paper:
 % Modeling non monotonic dose response relationships: Model evaluation
 % and hormetic quantities exploration
@@ -136,10 +77,10 @@ minscanincrVal = 0.015625;
 % plotting settings
 darkGreenRGB = [0 0.5 0];
 fontSize = 20;
-textFontSize = 14;
 
 % OMIM data
-[z1, z2] = cim_v8_cc_mex(omim_c_data,omim_e_data,minscanincrVal);
+% [z1, z2] = cim_v8_cc_mex(omim_c_data,omim_e_data,minscanincrVal);
+[z1, z2] = cim(omim_c_data,omim_e_data,minscanincrVal);
 minestats = mine(omim_c_data',omim_e_data',mine_alpha,mine_c,'mic_e');
 fprintf('CIM=%0.02f dCor=%0.02f MIC=%0.02f RDC=%0.02f CoS=%0.02f cCor=%0.02f\n', ...
     z1,dcor(omim_c_data,omim_e_data),minestats.mic,rdc(omim_c_data,omim_e_data,rdc_k,rdc_s), ...
@@ -161,14 +102,15 @@ actualRegionMapped = 0.013;
 plot([xmin xmax], [0 0], 'k','LineWidth',3);
 jbfill([xmin actualRegionMapped], [ymin ymin], [0 0],'b','k',1,0.2);
 jbfill([actualRegionMapped xmax], [0 0], [ymax ymax],'r','k',1,0.2);
-text(xmin,ymin+fontSize/2,'Hormetic Range','FontSize',textFontSize);
-text(detectedRegionMapped,50,{'CIM Region   ', 'Detection \rightarrow'},'HorizontalAlignment','right', 'FontSize', textFontSize,'Color',darkGreenRGB);
-hh = text(actualRegionMapped+min(omim_c_data)*25,(ymin+ymax)/2,'Inhibition','FontSize',textFontSize,'Color','Red');
+text(xmin,ymin+fontSize/2,'Hormetic Range','FontSize',fontSize);
+text(detectedRegionMapped,50,{'CIM Region   ', 'Detection \rightarrow'},'HorizontalAlignment','right', 'FontSize', fontSize,'Color',darkGreenRGB);
+hh = text(actualRegionMapped+min(omim_c_data)*25,(ymin+ymax)/2,'Inhibition','FontSize',fontSize,'Color','Red');
 set(hh,'rotation',90);
 set(gca,'xscale','log'); 
 
 % acetonitrile data
-[z1, z2] = cim_v8_cc_mex(acetonitrile_c_data,acetonitrile_e_data,minscanincrVal);
+% [z1, z2] = cim_v8_cc_mex(acetonitrile_c_data,acetonitrile_e_data,minscanincrVal);
+[z1, z2] = cim(acetonitrile_c_data,acetonitrile_e_data,minscanincrVal);
 minestats = mine(acetonitrile_c_data',acetonitrile_e_data',mine_alpha,mine_c,'mic_e');
 fprintf('CIM=%0.02f dCor=%0.02f MIC=%0.02f RDC=%0.02f CoS=%0.02f cCor=%0.02f\n', ...
     z1,dcor(acetonitrile_c_data,acetonitrile_e_data),minestats.mic,rdc(acetonitrile_c_data,acetonitrile_e_data,rdc_k,rdc_s), ...
@@ -192,14 +134,15 @@ actualRegionMapped = 0.51;
 plot([xmin xmax], [0 0], 'k','LineWidth',3);
 jbfill([xmin actualRegionMapped], [ymin ymin], [0 0],'b','k',1,0.2);
 jbfill([actualRegionMapped xmax], [0 0], [ymax ymax],'r','k',1,0.2);
-text(xmin,ymin+fontSize/2,'Hormetic Range','FontSize',textFontSize);
-text(detectedRegionMapped,50,{'CIM Region   ', 'Detection \rightarrow'},'HorizontalAlignment','right', 'FontSize', textFontSize,'Color',darkGreenRGB);
-hh = text(actualRegionMapped+min(acetonitrile_c_data)*10,(ymin+ymax)/2,'Inhibition','FontSize',textFontSize,'Color','Red');
+text(xmin,ymin+fontSize/2,'Hormetic Range','FontSize',fontSize);
+text(detectedRegionMapped,50,{'CIM Region   ', 'Detection \rightarrow'},'HorizontalAlignment','right', 'FontSize', fontSize,'Color',darkGreenRGB);
+hh = text(actualRegionMapped+min(acetonitrile_c_data)*10,(ymin+ymax)/2,'Inhibition','FontSize',fontSize,'Color','Red');
 set(hh,'rotation',90);
 set(gca,'xscale','log'); 
 
 % Isopropyl Alcohol data
-[z1, z2] = cim_v8_cc_mex(isopropyl_c_data,isopropyl_e_data,minscanincrVal);
+% [z1, z2] = cim_v8_cc_mex(isopropyl_c_data,isopropyl_e_data,minscanincrVal);
+[z1, z2] = cim(isopropyl_c_data,isopropyl_e_data,minscanincrVal);
 minestats = mine(isopropyl_c_data',isopropyl_e_data',mine_alpha,mine_c,'mic_e');
 fprintf('CIM=%0.02f dCor=%0.02f MIC=%0.02f RDC=%0.02f CoS=%0.02f cCor=%0.02f\n', ...
     z1,dcor(isopropyl_c_data,isopropyl_e_data),minestats.mic,rdc(isopropyl_c_data,isopropyl_e_data,rdc_k,rdc_s), ...
@@ -222,9 +165,9 @@ actualRegionMapped = 0.39;
 plot([xmin xmax], [0 0], 'k','LineWidth',3);
 jbfill([xmin actualRegionMapped], [ymin ymin], [0 0],'b','k',1,0.2);
 jbfill([actualRegionMapped xmax], [0 0], [ymax ymax],'r','k',1,0.2);
-text(xmin,ymin+fontSize/2,'Hormetic Range','FontSize',textFontSize);
-text(detectedRegionMapped,50,{'CIM Region   ', 'Detection \rightarrow'},'HorizontalAlignment','right', 'FontSize', textFontSize,'Color',darkGreenRGB);
-hh = text(actualRegionMapped+min(isopropyl_c_data)*10,(ymin+ymax)/2,'Inhibition','FontSize',textFontSize,'Color','Red');
+text(xmin,ymin+fontSize/2,'Hormetic Range','FontSize',fontSize);
+text(detectedRegionMapped,50,{'CIM Region   ', 'Detection \rightarrow'},'HorizontalAlignment','right', 'FontSize', fontSize,'Color',darkGreenRGB);
+hh = text(actualRegionMapped+min(isopropyl_c_data)*10,(ymin+ymax)/2,'Inhibition','FontSize',fontSize,'Color','Red');
 set(hh,'rotation',90);
 set(gca,'xscale','log'); 
 
@@ -245,7 +188,7 @@ load(fullfile(dataFolder,fname));
 
 % plot settings
 titleFontSize = 20;
-textFontSize = 16;
+fontSize = 16;
 
 M = 100; sigma = 5;
 
@@ -259,7 +202,7 @@ vq(M+1:2*M) = vq(M+1:2*M) + randn(M,1)*sigma;
 vq(2*M+1:3*M) = vq(2*M+1:3*M) + randn(M,1)*sigma;
 
 hmim_tau = corr(xq,vq,'type','kendall');
-[z1, z2] = cim_v4(xq,vq);
+[z1, z2] = cim(xq,vq);
 fprintf('tau=%0.02f cim=%0.02f\n', hmim_tau,z1)
 
 % what would the pseudo-observations of a copula model be, if we used tau
@@ -276,15 +219,15 @@ UU = empcopularnd(c,M);
 % subplot(1,3,1);
 figure;
 scatter(pobs(xq),pobs(vq)); grid on; 
-xlabel('u = F(mol/L)', 'FontSize', textFontSize); 
-ylabel('v = F(Inhibition Rate of RLU [%])', 'FontSize', textFontSize); 
+xlabel('u = F(mol/L)', 'FontSize', fontSize); 
+ylabel('v = F(Inhibition Rate of RLU [%])', 'FontSize', fontSize); 
 title({'Actual OMIM', 'Pseudo-Observations'}, 'FontSize', titleFontSize);
 
 % subplot(1,3,2);
 figure;
 scatter(U(:,1),U(:,2)); grid on; 
-xlabel('u = F(mol/L)', 'FontSize', textFontSize); 
-ylabel('v = F(Inhibition Rate of RLU [%])', 'FontSize', textFontSize); 
+xlabel('u = F(mol/L)', 'FontSize', fontSize); 
+ylabel('v = F(Inhibition Rate of RLU [%])', 'FontSize', fontSize); 
 hold on;
 cutPt = 0.2;
 plot([cutPt cutPt], [0 1], '--','LineWidth',3,'Color','Red');
@@ -294,6 +237,6 @@ title({'Gaussian Model', 'Pseudo-Observations'}, 'FontSize', titleFontSize);
 % subplot(1,3,3);
 figure;
 scatter(UU(:,1),UU(:,2)); grid on; 
-xlabel('u = F(mol/L)', 'FontSize', textFontSize); 
-ylabel('v = F(Inhibition Rate of RLU [%])', 'FontSize', textFontSize); 
+xlabel('u = F(mol/L)', 'FontSize', fontSize); 
+ylabel('v = F(Inhibition Rate of RLU [%])', 'FontSize', fontSize); 
 title({'Empirical Copula Model', 'Pseudo-Observations'}, 'FontSize', titleFontSize);

@@ -59,7 +59,8 @@ else
     load('/home/kiran/ownCloud/PhD/sim_results/independence/tau_variance.mat');
 end
 
-MVecToPlot = [10 25 50 75 100 250 500 750 1000];
+% MVecToPlot = [10 25 50 75 100 250 500 750 1000];
+MVecToPlot = [50 250 500 1000];
 
 f1 = figure(1); 
 f2 = figure(2);
@@ -74,15 +75,15 @@ for ii=1:length(noiseVecToPlot)
     end
 end
 fontSizeVal = 20;
-for MIdx=1:length(MVecToPlot)
-    M = MVec(MIdx);
+for ii=1:length(MVecToPlot)
+    M = MVecToPlot(ii);
+    MIdx = find(M==MVec);
 
     data = squeeze(resultsVec(MIdx,:,:));
     data = data';  % maek each column the noise
     
     figure(f1);
-    h = subplot(p(1),p(2),MIdx);
-%     boxplot(data,'PlotStyle','compact','Labels',labelCell); 
+    h = subplot(p(1),p(2),ii);
     boxplot(data,'Labels',labelCell); 
     grid on; 
     title(sprintf('M=%d',M),'FontSize',fontSizeVal);
@@ -91,7 +92,7 @@ for MIdx=1:length(MVecToPlot)
     figure(f2);
     varDataEmpirical = var(data); %compute variance from mean
     meanDataEmpirical = mean(data);
-    h = subplot(p(1),p(2),MIdx);
+    h = subplot(p(1),p(2),ii);
     varTheoretical = ones(1,length(noiseVec))*(2*(2*M+5))./(9*M.*(M-1));
     plot(noiseVecToPlot,sqrt(varDataEmpirical),noiseVecToPlot,(1-meanDataEmpirical).*sqrt(varTheoretical));
     grid on; 
@@ -111,4 +112,5 @@ figure(f2);
 h.FontSize = fontSizeVal;
 [~,h] = suplabel('\sigma(\tau)','y');
 h.FontSize = fontSizeVal;
+legend('Empirical','Predicted');
 
