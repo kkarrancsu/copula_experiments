@@ -15,8 +15,8 @@ end
 % [E_copula, I] = sort(E_copula);
 % U = U(I,:);
 
-subplot(1,2,1); scatter3(U(:,1),U(:,2),U(:,3));
-subplot(1,2,2); plot(E_copula);
+% subplot(1,2,1); scatter3(U(:,1),U(:,2),U(:,3));
+% subplot(1,2,2); plot(E_copula);
 
 idxVec = 1:n;
 RR = [idxVec' U E_copula ones(n,1)*-999]; % the last column will be filled in by the computed
