@@ -96,8 +96,8 @@ for ii=1:numDomains
         iiMin = min(iMin,iMax);
         iiMax = max(iMin,iMax);
         if((iiMax-iiMin)>=2)  % make sure we have enough points to conduct the tests below
-            loEcopDiffCheckVec = diff(RR(iiMin:iiMin+2,4))<=(1/n);
-            hiEcopDiffCheckVec = diff(RR(iiMax-2:iiMax,4))<=(1/n);
+            loEcopDiffCheckVec = (round(diff(RR(iiMin:iiMin+2,4)),2)<=round(1/n,2));
+            hiEcopDiffCheckVec = (round(diff(RR(iiMax-2:iiMax,4)),2)<=round(1/n,2));
             if(sum(loEcopDiffCheckVec)==2 && sum(hiEcopDiffCheckVec)==2)
                 isLocalOptimum = 1;
             end
