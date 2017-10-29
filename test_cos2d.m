@@ -9,7 +9,7 @@ M = 500;
 x = rand(M,1);
 num_noise = 3;
 noise = 3;                         % A constant to determine the amount of noise
-l = 0.00;
+l = 0.50;
 
 y1 = x + noise*(l/num_noise)*randn(M,1); 
 y2 = 4*(x-.5).^2 + noise*(l/num_noise)*randn(M,1);
@@ -88,18 +88,18 @@ ylabel('v')
 title('C')
 rotate3d on
 
-figure;
-subplot(2,2,1);
-plot(x);
-xlabel('t'); ylabel('x');
-subplot(2,2,2);
-plot(y);
-xlabel('t'); ylabel('y');
-subplot(2,2,3);
-pwelch(x);
-
-subplot(2,2,4);
-pwelch(y);
+% figure;
+% subplot(2,2,1);
+% plot(x);
+% xlabel('t'); ylabel('x');
+% subplot(2,2,2);
+% plot(y);
+% xlabel('t'); ylabel('y');
+% subplot(2,2,3);
+% pwelch(x);
+% 
+% subplot(2,2,4);
+% pwelch(y);
 
 %%
 
