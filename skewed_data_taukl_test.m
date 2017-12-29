@@ -9,9 +9,9 @@ dbstop if error;
 
 scenarios = {'left-skew','no-skew','right-skew'};
 tauVec = linspace(0.01,0.99,15);                    
-copulas = {'Gaussian','Frank','Gumbel','Clayton'};  % should eventually be
+copulas = {'Gaussian','Frank','Gumbel','Clayton'};
 M = 500;
-numMCSims = 500;
+numMCSims = 100;
 
 % manually generate a left-skewed and right-skewed data, from which we
 % construct an empirical cdf
@@ -47,6 +47,7 @@ for continuousDistScenario=scenarios
         
                 iTau = copulaparam(cop,tau);
                 parfor mcSimNum=1:numMCSims
+%                 for mcSimNum=1:numMCSims
                     % generate U
                     U = copularnd(cop,iTau,M);
                     
@@ -82,7 +83,8 @@ for continuousDistScenario=scenarios
                     % compute tau, tau_kl, tau_N and record
                     resVecTauN(mcSimNum,dd,cc,bb,aa) = corr(X,Y,'type','kendall');
                     resVecTauB(mcSimNum,dd,cc,bb,aa) = ktaub([X Y], 0.05, 0);
-                    [u,v] = pobs_sorted_cc(X,Y);  resVecTauKL(mcSimNum,dd,cc,bb,aa) = taukl_cc(u,v);                    
+%                     [u,v] = pobs_sorted_cc(X,Y);  resVecTauKL(mcSimNum,dd,cc,bb,aa) = taukl_cc(u,v);
+                    resVecTauKL(mcSimNum,dd,cc,bb,aa) = taukl_binary_hybrid(X,Y);
                 end                
                 
                 %%%%%%%%%%%%%%%%%%%% MESSY CODE !!!!!! %%%%%%%%%%%%%%%%%%%%
@@ -158,13 +160,13 @@ sampleData2_subplotIdxVec = [2,4,6,   14,16,18, 26,28,30];
 sampleData3_subplotIdxVec = [7,9,11,  19,21,23, 31,33,35];
 results_subplotIdxVec     = [8,10,12, 20,22,24, 32,34,36];
 
-% for ii=1:length(copulas)
-for ii=1:1
+for ii=1:length(copulas)
+% for ii=1:1
     copToVis = copulas{ii};
     % find the appropriate indices
     dd = find(contains(copulas,copToVis));
 
-    figure;
+    f = figure;
     subplotIdx = 1;
     for aa=1:length(scenarios)
         for bb=1:length(scenarios)
@@ -184,9 +186,13 @@ for ii=1:1
             scatter(ovlpPts(:,1),ovlpPts(:,2),'filled','d');
             set(hh,'XTick',[]); set(hh,'YTick',[]); 
             axis([min(X),max(X),0.8,2.2]);
-            xText = min(X)+0.1; yText = (min(Y)+max(Y))/2; 
-            txt = sprintf('%0.02f >> %0.02f | %0.02f', tauVec(tauIdx), length(nonOvlpPts)/M, length(ovlpPts)/M); 
-            text(xText,yText,txt);
+%             xText = min(X)+0.1; yText = (min(Y)+max(Y))/2; 
+%             txt = sprintf('%0.02f >> %0.02f | %0.02f', tauVec(tauIdx), length(nonOvlpPts)/M, length(ovlpPts)/M); 
+%             text(xText,yText,txt);
+%             xText = min(X)+0.1; yText = (min(Y)+max(Y))/2.4; 
+%             txt = sprintf('\t %0.02f | %0.02f', skewness(X), skewness(Y)); 
+%             text(xText,yText,txt);
+%             taukl(X,Y);
             
             % plot the second sample data
             hh = subplot(6,6,sampleData2_subplotIdxVec(subplotIdx));
@@ -200,9 +206,13 @@ for ii=1:1
             scatter(ovlpPts(:,1),ovlpPts(:,2),'filled','d');
             set(hh,'XTick',[]); set(hh,'YTick',[]); 
             axis([min(X),max(X),0.8,2.2]);
-            xText = min(X)+0.1; yText = (min(Y)+max(Y))/2; 
-            txt = sprintf('%0.02f >> %0.02f | %0.02f', tauVec(tauIdx), length(nonOvlpPts)/M, length(ovlpPts)/M); 
-            text(xText,yText,txt);
+%             xText = min(X)+0.1; yText = (min(Y)+max(Y))/2; 
+%             txt = sprintf('%0.02f >> %0.02f | %0.02f', tauVec(tauIdx), length(nonOvlpPts)/M, length(ovlpPts)/M); 
+%             text(xText,yText,txt);
+%             xText = min(X)+0.1; yText = (min(Y)+max(Y))/2.4; 
+%             txt = sprintf('\t %0.02f | %0.02f', skewness(X), skewness(Y)); 
+%             text(xText,yText,txt);
+%             taukl(X,Y);
             
             % plot the third sample data
             hh = subplot(6,6,sampleData3_subplotIdxVec(subplotIdx));
@@ -216,9 +226,13 @@ for ii=1:1
             scatter(ovlpPts(:,1),ovlpPts(:,2),'filled','d');
             set(hh,'XTick',[]); set(hh,'YTick',[]); 
             axis([min(X),max(X),0.8,2.2]);
-            xText = min(X)+0.1; yText = (min(Y)+max(Y))/2; 
-            txt = sprintf('%0.02f >> %0.02f | %0.02f', tauVec(tauIdx), length(nonOvlpPts)/M, length(ovlpPts)/M); 
-            text(xText,yText,txt);
+%             xText = min(X)+0.1; yText = (min(Y)+max(Y))/2; 
+%             txt = sprintf('%0.02f >> %0.02f | %0.02f', tauVec(tauIdx), length(nonOvlpPts)/M, length(ovlpPts)/M); 
+%             text(xText,yText,txt);
+%             xText = min(X)+0.1; yText = (min(Y)+max(Y))/2.4; 
+%             txt = sprintf('\t %0.02f | %0.02f', skewness(X), skewness(Y)); 
+%             text(xText,yText,txt);
+%             taukl(X,Y);
             
             % plot the results
             subplot(6,6,results_subplotIdxVec(subplotIdx));
@@ -226,13 +240,13 @@ for ii=1:1
             xlabel('\tau');
             title(sprintf('%s | %s', scenarios{bb}, scenarios{aa}));
             if(subplotIdx==9)
-                legend('\tau_b','\tau_N','\tau_{KL}', 'location', 'southeast');
+                legend('\tau_b','\tau_N','\tau_{KL}', 'location', 'northwest');
             end
             grid on;
             
             subplotIdx = subplotIdx + 1;
         end
     end
-%     suptitle(copToVis);
+    tightfig;
+    set(f, 'Name', copToVis);
 end
-tightfig;

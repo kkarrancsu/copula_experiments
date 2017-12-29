@@ -1,4 +1,4 @@
-function [outCell] = separateOverlaps_binary(x,y)
+function [outCell,x1OvlpIdxs,x2OvlpIdxs,x1UniqueIdxs,x2UniqueIdxs] = separateOverlaps_binary(x,y)
 % y - the output variable, should be binary
 
 outCell = cell(1,2);
