@@ -47,7 +47,6 @@ for continuousDistScenario=scenarios
         
                 iTau = copulaparam(cop,tau);
                 parfor mcSimNum=1:numMCSims
-%                 for mcSimNum=1:numMCSims
                     % generate U
                     U = copularnd(cop,iTau,M);
                     
@@ -70,7 +69,6 @@ for continuousDistScenario=scenarios
                     end
                     
                     % generate F_Y
-                    numIndepTrials = 1;
                     if(strcmpi('left-skew',discreteDistScenario))
                         distObj = makedist('Multinomial','probabilities',[0.1,0.9]);
                     elseif(strcmpi('no-skew',discreteDistScenario))
@@ -83,8 +81,9 @@ for continuousDistScenario=scenarios
                     % compute tau, tau_kl, tau_N and record
                     resVecTauN(mcSimNum,dd,cc,bb,aa) = corr(X,Y,'type','kendall');
                     resVecTauB(mcSimNum,dd,cc,bb,aa) = ktaub([X Y], 0.05, 0);
-%                     [u,v] = pobs_sorted_cc(X,Y);  resVecTauKL(mcSimNum,dd,cc,bb,aa) = taukl_cc(u,v);
-                    resVecTauKL(mcSimNum,dd,cc,bb,aa) = taukl_binary_hybrid(X,Y);
+                    resVecTauKL(mcSimNum,dd,cc,bb,aa) = taukl_cc_mex_interface(X,Y,0,1,0);
+%                     [u,v] = pobs_sorted_cc(X,Y); 
+%                     resVecTauKL(mcSimNum,dd,cc,bb,aa) = taukl_cc_mex(u,v,int32(0),int32(1),int32(0));
                 end                
                 
                 %%%%%%%%%%%%%%%%%%%% MESSY CODE !!!!!! %%%%%%%%%%%%%%%%%%%%

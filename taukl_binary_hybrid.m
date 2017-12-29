@@ -113,9 +113,14 @@ for ii=1:length(uniqueV)
     v = v + addVal;
 end
 
+% uniqueU'
+% uniqueV'
+% uniqueUCounts
+% uniqueVCounts
+% u
+% v
+
 % special case of hybrid data
-% [~,x1OvlpIdxs,x2OvlpIdxs,x1UniqueIdxs,x2UniqueIdxs] = separateOverlaps_binary(X,Y);
-% numOverlapPtsVec = length(x2OvlpIdxs)/(length(x2OvlpIdxs)+length(x2UniqueIdxs)) * (M/2);
 numOverlapPtsVec = countOverlaps(U, V, 0);
     
 %continuousRvIndicator
