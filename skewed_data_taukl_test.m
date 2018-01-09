@@ -25,9 +25,14 @@ leftSkewContinuousDistInfo = rvEmpiricalInfo(xiLeftSkew,fLeftSkew,FLeftSkew,0);
 FRightSkew = empcdf(xiRightSkew,0);
 rightSkewContinuousDistInfo = rvEmpiricalInfo(xiRightSkew,fRightSkew,FRightSkew,0);
 
-resVecTauB = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
-resVecTauN = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
+resVecTauB  = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
+resVecTauN  = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
 resVecTauKL = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
+resVecKNN1  = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
+resVecKNN6  = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
+resVecKNN20 = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
+resVecVME   = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
+resVecAP = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
 
 sampleDataMat = zeros(M,2,length(copulas),length(tauVec),length(scenarios),length(scenarios));
 
@@ -82,8 +87,11 @@ for continuousDistScenario=scenarios
                     resVecTauN(mcSimNum,dd,cc,bb,aa) = corr(X,Y,'type','kendall');
                     resVecTauB(mcSimNum,dd,cc,bb,aa) = ktaub([X Y], 0.05, 0);
                     resVecTauKL(mcSimNum,dd,cc,bb,aa) = taukl_cc_mex_interface(X,Y,0,1,0);
-%                     [u,v] = pobs_sorted_cc(X,Y); 
-%                     resVecTauKL(mcSimNum,dd,cc,bb,aa) = taukl_cc_mex(u,v,int32(0),int32(1),int32(0));
+                    resVecKNN1(mcSimNum,dd,cc,bb,aa) = KraskovMI_cc_mex(X,Y,1);
+                    resVecKNN6(mcSimNum,dd,cc,bb,aa) = KraskovMI_cc_mex(X,Y,6);
+                    resVecKNN20(mcSimNum,dd,cc,bb,aa) = KraskovMI_cc_mex(X,Y,20);
+                    resVecVME(mcSimNum,dd,cc,bb,aa) = vmeMI_interface(X,Y);
+                    resVecAP(mcSimNum,dd,cc,bb,aa) = apMI_interface(X,Y);
                 end                
                 
                 %%%%%%%%%%%%%%%%%%%% MESSY CODE !!!!!! %%%%%%%%%%%%%%%%%%%%
@@ -140,8 +148,7 @@ else
     save('/home/kiran/ownCloud/PhD/sim_results/skewed_data/binary_output_class.mat');
 end
 
-%% plot the bias
-
+%% plot the bias for tau-variants
 clear;
 clc;
 
@@ -160,7 +167,6 @@ sampleData3_subplotIdxVec = [7,9,11,  19,21,23, 31,33,35];
 results_subplotIdxVec     = [8,10,12, 20,22,24, 32,34,36];
 
 for ii=1:length(copulas)
-% for ii=1:1
     copToVis = copulas{ii};
     % find the appropriate indices
     dd = find(contains(copulas,copToVis));
@@ -185,13 +191,6 @@ for ii=1:length(copulas)
             scatter(ovlpPts(:,1),ovlpPts(:,2),'filled','d');
             set(hh,'XTick',[]); set(hh,'YTick',[]); 
             axis([min(X),max(X),0.8,2.2]);
-%             xText = min(X)+0.1; yText = (min(Y)+max(Y))/2; 
-%             txt = sprintf('%0.02f >> %0.02f | %0.02f', tauVec(tauIdx), length(nonOvlpPts)/M, length(ovlpPts)/M); 
-%             text(xText,yText,txt);
-%             xText = min(X)+0.1; yText = (min(Y)+max(Y))/2.4; 
-%             txt = sprintf('\t %0.02f | %0.02f', skewness(X), skewness(Y)); 
-%             text(xText,yText,txt);
-%             taukl(X,Y);
             
             % plot the second sample data
             hh = subplot(6,6,sampleData2_subplotIdxVec(subplotIdx));
@@ -205,13 +204,6 @@ for ii=1:length(copulas)
             scatter(ovlpPts(:,1),ovlpPts(:,2),'filled','d');
             set(hh,'XTick',[]); set(hh,'YTick',[]); 
             axis([min(X),max(X),0.8,2.2]);
-%             xText = min(X)+0.1; yText = (min(Y)+max(Y))/2; 
-%             txt = sprintf('%0.02f >> %0.02f | %0.02f', tauVec(tauIdx), length(nonOvlpPts)/M, length(ovlpPts)/M); 
-%             text(xText,yText,txt);
-%             xText = min(X)+0.1; yText = (min(Y)+max(Y))/2.4; 
-%             txt = sprintf('\t %0.02f | %0.02f', skewness(X), skewness(Y)); 
-%             text(xText,yText,txt);
-%             taukl(X,Y);
             
             % plot the third sample data
             hh = subplot(6,6,sampleData3_subplotIdxVec(subplotIdx));
@@ -225,13 +217,6 @@ for ii=1:length(copulas)
             scatter(ovlpPts(:,1),ovlpPts(:,2),'filled','d');
             set(hh,'XTick',[]); set(hh,'YTick',[]); 
             axis([min(X),max(X),0.8,2.2]);
-%             xText = min(X)+0.1; yText = (min(Y)+max(Y))/2; 
-%             txt = sprintf('%0.02f >> %0.02f | %0.02f', tauVec(tauIdx), length(nonOvlpPts)/M, length(ovlpPts)/M); 
-%             text(xText,yText,txt);
-%             xText = min(X)+0.1; yText = (min(Y)+max(Y))/2.4; 
-%             txt = sprintf('\t %0.02f | %0.02f', skewness(X), skewness(Y)); 
-%             text(xText,yText,txt);
-%             taukl(X,Y);
             
             % plot the results
             subplot(6,6,results_subplotIdxVec(subplotIdx));
@@ -248,4 +233,234 @@ for ii=1:length(copulas)
     end
     tightfig;
     set(f, 'Name', copToVis);
+end
+
+%% plot the bias for MI-variants
+clear;
+clc;
+
+if(ispc)
+    load('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\skewed_data\\binary_output_class.mat');
+elseif(ismac)
+    load('/Users/Kiran/ownCloud/PhD/sim_results/skewed_data/binary_output_class.mat');
+else
+    load('/home/kiran/ownCloud/PhD/sim_results/skewed_data/binary_output_class.mat');
+end
+
+sampleData1_subplotIdxVec = [1,3,5,   13,15,17, 25,27,29];
+sampleData2_subplotIdxVec = [2,4,6,   14,16,18, 26,28,30];
+sampleData3_subplotIdxVec = [7,9,11,  19,21,23, 31,33,35];
+results_subplotIdxVec     = [8,10,12, 20,22,24, 32,34,36];
+
+for ii=1:length(copulas)
+    copToVis = copulas{ii};
+    % find the appropriate indices
+    dd = find(contains(copulas,copToVis));
+
+    f = figure;
+    subplotIdx = 1;
+    for aa=1:length(scenarios)
+        for bb=1:length(scenarios)
+            resVecKNN1Vec = mean(squeeze(resVecKNN1(:,dd,:,bb,aa)));
+            resVecKNN6Vec = mean(squeeze(resVecKNN6(:,dd,:,bb,aa)));
+            resVecKNN20Vec = mean(squeeze(resVecKNN20(:,dd,:,bb,aa)));
+            resVecVMEVec = mean(squeeze(resVecVME(:,dd,:,bb,aa)));
+            resVecAPVec = mean(squeeze(resVecAP(:,dd,:,bb,aa)));
+            
+            % plot the first sample data
+            hh = subplot(6,6,sampleData1_subplotIdxVec(subplotIdx));
+            tauIdx = 1;
+            X = sampleDataMat(:,1,dd,tauIdx,bb,aa);
+            Y = sampleDataMat(:,2,dd,tauIdx,bb,aa);
+            outCell = separateOverlaps_binary(X,Y);
+            nonOvlpPts = outCell{1}; ovlpPts = outCell{2};
+            scatter(nonOvlpPts(:,1),nonOvlpPts(:,2),'+'); 
+            hold on;
+            scatter(ovlpPts(:,1),ovlpPts(:,2),'filled','d');
+            set(hh,'XTick',[]); set(hh,'YTick',[]); 
+            axis([min(X),max(X),0.8,2.2]);
+            
+            % plot the second sample data
+            hh = subplot(6,6,sampleData2_subplotIdxVec(subplotIdx));
+            tauIdx = floor(length(tauVec)/2);
+            X = sampleDataMat(:,1,dd,tauIdx,bb,aa);
+            Y = sampleDataMat(:,2,dd,tauIdx,bb,aa);
+            outCell = separateOverlaps_binary(X,Y);
+            nonOvlpPts = outCell{1}; ovlpPts = outCell{2};
+            scatter(nonOvlpPts(:,1),nonOvlpPts(:,2),'+'); 
+            hold on;
+            scatter(ovlpPts(:,1),ovlpPts(:,2),'filled','d');
+            set(hh,'XTick',[]); set(hh,'YTick',[]); 
+            axis([min(X),max(X),0.8,2.2]);
+            
+            % plot the third sample data
+            hh = subplot(6,6,sampleData3_subplotIdxVec(subplotIdx));
+            tauIdx = length(tauVec);
+            X = sampleDataMat(:,1,dd,tauIdx,bb,aa);
+            Y = sampleDataMat(:,2,dd,tauIdx,bb,aa);
+            outCell = separateOverlaps_binary(X,Y);
+            nonOvlpPts = outCell{1}; ovlpPts = outCell{2};
+            scatter(nonOvlpPts(:,1),nonOvlpPts(:,2),'+'); 
+            hold on;
+            scatter(ovlpPts(:,1),ovlpPts(:,2),'filled','d');
+            set(hh,'XTick',[]); set(hh,'YTick',[]); 
+            axis([min(X),max(X),0.8,2.2]);
+            
+            % plot the results
+            subplot(6,6,results_subplotIdxVec(subplotIdx));
+            plot(tauVec,resVecKNN1Vec,tauVec,resVecKNN6Vec,tauVec,resVecKNN20Vec, ...
+                 tauVec,resVecVMEVec,tauVec,resVecAPVec);
+            xlabel('\tau');
+            title(sprintf('%s | %s', scenarios{bb}, scenarios{aa}));
+            if(subplotIdx==9)
+                legend('KNN-1','KNN-6','KNN-20', 'vME', 'AP', 'location', 'northwest');
+            end
+            grid on;
+            
+            subplotIdx = subplotIdx + 1;
+        end
+    end
+    tightfig;
+    set(f, 'Name', copToVis);
+end
+
+%% Figure 1 - SHow SKewed Data nature
+clear;
+clc;
+close all;
+
+if(ispc)
+    load('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\skewed_data\\binary_output_class.mat');
+elseif(ismac)
+    load('/Users/Kiran/ownCloud/PhD/sim_results/skewed_data/binary_output_class.mat');
+else
+    load('/home/kiran/ownCloud/PhD/sim_results/skewed_data/binary_output_class.mat');
+end
+
+copToVis = 'Gaussian';
+% find the appropriate indices
+dd = find(contains(copulas,copToVis));
+            
+f = figure;
+
+subplotIdx=1;
+for scenarioIdx=1:length(scenarios)
+    skewIdx = find(contains(scenarios,scenarios{scenarioIdx}));
+    % plot the first sample data
+    hh = subplot(3,3,subplotIdx);
+    tauIdx = 1;
+    X = sampleDataMat(:,1,dd,tauIdx,skewIdx,skewIdx);
+    Y = sampleDataMat(:,2,dd,tauIdx,skewIdx,skewIdx);
+    scatter(X,Y);
+    set(hh,'XTick',[]); set(hh,'YTick',[]); 
+    axis([min(X),max(X),0.8,2.2]);
+    if(subplotIdx==1 || subplotIdx==4 || subplotIdx==7)
+        ylabel(scenarios{scenarioIdx});
+    end
+    if(subplotIdx==7)
+        xlabel(sprintf('\\tau=%0.02f',tauVec(tauIdx)));
+    end
+    subplotIdx = subplotIdx + 1;
+
+    % plot the second sample data
+    hh = subplot(3,3,subplotIdx);
+    tauIdx = floor(length(tauVec)/2);
+    X = sampleDataMat(:,1,dd,tauIdx,skewIdx,skewIdx);
+    Y = sampleDataMat(:,2,dd,tauIdx,skewIdx,skewIdx);
+    scatter(X,Y);
+    set(hh,'XTick',[]); set(hh,'YTick',[]); 
+    axis([min(X),max(X),0.8,2.2]);
+    if(subplotIdx==8)
+        xlabel(sprintf('\\tau=%0.02f',tauVec(tauIdx)));
+    end
+    subplotIdx = subplotIdx + 1;
+    
+    % plot the third sample data
+    hh = subplot(3,3,subplotIdx);
+    tauIdx = length(tauVec);
+    X = sampleDataMat(:,1,dd,tauIdx,skewIdx,skewIdx);
+    Y = sampleDataMat(:,2,dd,tauIdx,skewIdx,skewIdx);
+    scatter(X,Y);
+    set(hh,'XTick',[]); set(hh,'YTick',[]); 
+    axis([min(X),max(X),0.8,2.2]);
+    if(subplotIdx==9)
+        xlabel(sprintf('\\tau=%0.02f',tauVec(tauIdx)));
+    end
+    subplotIdx = subplotIdx + 1;
+    
+end
+tightfig;
+% suptitle(copToVis);
+
+%% make the plots for the paper - Figure 2 - synth data results
+clear;
+clc;
+close all;
+
+if(ispc)
+    load('C:\\Users\\Kiran\\ownCloud\\PhD\\sim_results\\skewed_data\\binary_output_class.mat');
+elseif(ismac)
+    load('/Users/Kiran/ownCloud/PhD/sim_results/skewed_data/binary_output_class.mat');
+else
+    load('/home/kiran/ownCloud/PhD/sim_results/skewed_data/binary_output_class.mat');
+end
+
+fontSize = 16;
+
+for dd=1:length(copulas)
+% for dd=1:1
+    copToVis = copulas{dd};
+    width = 20; height = width/3.5;
+    figure('paperpositionmode', 'auto', 'units', 'centimeters', 'position', [0 0 width height])
+    subplotIdx=1;
+    linkList = [];
+    for scenarioIdx=1:length(scenarios)
+        skewIdx = find(contains(scenarios,scenarios{scenarioIdx}));
+
+        % plot the first sample data
+        hh = subplot(1,3,subplotIdx); linkList = [linkList hh];
+        tauNVec = mean(squeeze(resVecTauN(:,dd,:,skewIdx,skewIdx)));
+        tauKLVec = mean(squeeze(resVecTauKL(:,dd,:,skewIdx,skewIdx)));
+        resVecKNN20Vec = mean(squeeze(resVecKNN20(:,dd,:,skewIdx,skewIdx)));
+        resVecVMEVec = mean(squeeze(resVecVME(:,dd,:,skewIdx,skewIdx)));
+        resVecAPVec = mean(squeeze(resVecAP(:,dd,:,skewIdx,skewIdx)));
+        
+        hln(:,1) = plot(tauVec,tauKLVec, tauVec,tauNVec,tauVec,resVecKNN20Vec, ...
+                     tauVec,resVecVMEVec,tauVec,resVecAPVec, tauVec,tauVec,'*k');
+        hln(1).LineWidth = 2.5;
+        
+        grid on;
+        if(subplotIdx==1)
+            ylabel('Measure','FontSize',fontSize);
+        end
+        % remove y ticks when plotting subplot 2 & 3
+        if(subplotIdx==2 || subplotIdx==3)
+            hh.YTickLabel = [];
+        end
+        if(subplotIdx==1)
+            title('Left-Skew','FontSize',fontSize);
+        elseif(subplotIdx==2)
+            title({copToVis,'No-Skew'},'FontSize',fontSize);
+        elseif(subplotIdx==3)
+            title('Right-Skew','FontSize',fontSize);
+        end
+        if(subplotIdx==2)
+            xlabel('\tau','FontSize',fontSize);            
+            if(dd==1)
+                legendCell = {'\tau_{KL}','\tau_N','KNN_{20}','vME','AP'};
+                [hl(1).leg, hl(1).obj, hl(1).hout, hl(1).mout] = ...
+                    legendflex(hln(:,1), legendCell, 'anchor', {'nw','nw'}, ...
+                    'buffer', [5 30], ...
+                    'ncol', 2, ...
+                    'fontsize', fontSize-5, ...
+                    'xscale', 0.4, ...
+                    'box', 'off');
+            end
+        end
+        
+        subplotIdx = subplotIdx + 1;
+    end
+    linkaxes(linkList,'xy');
+%     h = suptitle(copToVis);
+%     h.FontSize = fontSize+2;
 end

@@ -1,4 +1,4 @@
-function [metric] = cim_v2_hybrid(x, y)
+function [miVal] = cim_v2_hybrid_mi(x, y)
 %CIM - Copula Index for Detecting Dependence and Monotonicity between
 %Stochastic Signals.  See associated paper... to be published and preprint
 %located here: https://arxiv.org/abs/1703.06686
@@ -33,3 +33,4 @@ function [metric] = cim_v2_hybrid(x, y)
 
 msi = 0.015625;
 metric = cim_v2_hybrid_cc_mex(x,y,msi,0.2);
+miVal = dep2mi(metric);

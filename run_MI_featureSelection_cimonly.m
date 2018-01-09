@@ -7,7 +7,7 @@ dbstop if error;
 % setup the estimators of MI
 minScanIncr = 0.015625;
 
-functionHandlesCell = {@cim_v2_hybrid;};
+functionHandlesCell = {@cim_v2_hybrid_mi;};
 
 functionArgsCell    = {{}};
 fNames = {'cim'};
