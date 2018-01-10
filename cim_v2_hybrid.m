@@ -33,3 +33,4 @@ function [metric] = cim_v2_hybrid(x, y)
 
 msi = 0.015625;
 metric = cim_v2_hybrid_cc_mex(x,y,msi,0.2);
+% metric = cim_v2_hybrid_cc(x,y,msi,0.2);

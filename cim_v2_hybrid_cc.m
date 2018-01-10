@@ -175,7 +175,12 @@ for jj=1:ax2minmaxCfgLen
 end
 
 % combine group metrics
-metric = sum( metrics(2,:)/sum(metrics(2,:)).*metrics(1,:) );
+if(any(metrics(1,:)==0))
+    % account for ill-conditioned data 
+    metric = 0;
+else
+    metric = sum( metrics(2,:)/sum(metrics(2,:)).*metrics(1,:) );
+end
 
 end
 
