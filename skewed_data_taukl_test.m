@@ -11,7 +11,7 @@ scenarios = {'left-skew','no-skew','right-skew'};
 tauVec = linspace(0.01,0.99,15);                    
 copulas = {'Gaussian','Frank','Gumbel','Clayton'};
 M = 500;
-numMCSims = 100;
+numMCSims = 10;
 
 % manually generate a left-skewed and right-skewed data, from which we
 % construct an empirical cdf
@@ -28,6 +28,7 @@ rightSkewContinuousDistInfo = rvEmpiricalInfo(xiRightSkew,fRightSkew,FRightSkew,
 resVecTauB  = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
 resVecTauN  = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
 resVecTauKL = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
+resVecTauKL_v2 = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
 resVecKNN1  = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
 resVecKNN6  = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
 resVecKNN20 = zeros(numMCSims,length(copulas),length(tauVec),length(scenarios),length(scenarios));
@@ -52,6 +53,7 @@ for continuousDistScenario=scenarios
         
                 iTau = copulaparam(cop,tau);
                 parfor mcSimNum=1:numMCSims
+%                 for mcSimNum=1:numMCSims
                     % generate U
                     U = copularnd(cop,iTau,M);
                     
@@ -82,16 +84,19 @@ for continuousDistScenario=scenarios
                         distObj = makedist('Multinomial','probabilities',[0.9,0.1]);
                     end
                     Y = icdf(distObj,U(:,2));
+                    [X,Y] = pobs_sorted_cc(X,Y);
 
                     % compute tau, tau_kl, tau_N and record
                     resVecTauN(mcSimNum,dd,cc,bb,aa) = corr(X,Y,'type','kendall');
                     resVecTauB(mcSimNum,dd,cc,bb,aa) = ktaub([X Y], 0.05, 0);
-                    resVecTauKL(mcSimNum,dd,cc,bb,aa) = taukl_cc_mex_interface(X,Y,0,1,0);
-                    resVecKNN1(mcSimNum,dd,cc,bb,aa) = KraskovMI_cc_mex(X,Y,1);
-                    resVecKNN6(mcSimNum,dd,cc,bb,aa) = KraskovMI_cc_mex(X,Y,6);
-                    resVecKNN20(mcSimNum,dd,cc,bb,aa) = KraskovMI_cc_mex(X,Y,20);
-                    resVecVME(mcSimNum,dd,cc,bb,aa) = vmeMI_interface(X,Y);
-                    resVecAP(mcSimNum,dd,cc,bb,aa) = apMI_interface(X,Y);
+                    resVecTauKL(mcSimNum,dd,cc,bb,aa) = taukl_cc(X,Y,0,1,0);
+%                     resVecTauKL_v2(mcSimNum,dd,cc,bb,aa) = taukl_cc_v2(X,Y,0,1,0);
+                    
+%                     resVecKNN1(mcSimNum,dd,cc,bb,aa) = KraskovMI_cc_mex(X,Y,1);
+%                     resVecKNN6(mcSimNum,dd,cc,bb,aa) = KraskovMI_cc_mex(X,Y,6);
+%                     resVecKNN20(mcSimNum,dd,cc,bb,aa) = KraskovMI_cc_mex(X,Y,20);
+%                     resVecVME(mcSimNum,dd,cc,bb,aa) = vmeMI_interface(X,Y);
+%                     resVecAP(mcSimNum,dd,cc,bb,aa) = apMI_interface(X,Y);
                 end                
                 
                 %%%%%%%%%%%%%%%%%%%% MESSY CODE !!!!!! %%%%%%%%%%%%%%%%%%%%
@@ -178,6 +183,7 @@ for ii=1:length(copulas)
             tauNVec = mean(squeeze(resVecTauN(:,dd,:,bb,aa)));
             tauBVec = mean(squeeze(resVecTauB(:,dd,:,bb,aa)));
             tauKLVec = mean(squeeze(resVecTauKL(:,dd,:,bb,aa)));
+            tauKLVec_v2 = mean(squeeze(resVecTauKL_v2(:,dd,:,bb,aa)));
             
             % plot the first sample data
             hh = subplot(6,6,sampleData1_subplotIdxVec(subplotIdx));
@@ -220,11 +226,12 @@ for ii=1:length(copulas)
             
             % plot the results
             subplot(6,6,results_subplotIdxVec(subplotIdx));
-            plot(tauVec,tauBVec,tauVec,tauNVec,tauVec,tauKLVec);
+            plot(tauVec,tauBVec,tauVec,tauNVec,tauVec,tauKLVec);%,tauVec,tauKLVec_v2);
             xlabel('\tau');
             title(sprintf('%s | %s', scenarios{bb}, scenarios{aa}));
             if(subplotIdx==9)
                 legend('\tau_b','\tau_N','\tau_{KL}', 'location', 'northwest');
+%                 legend('\tau_b','\tau_N','\tau_{KL}','v2_\tau_{KL}', 'location', 'northwest');
             end
             grid on;
             
