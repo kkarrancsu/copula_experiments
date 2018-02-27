@@ -2,13 +2,14 @@
 
 clear;
 clc;
+close all;
 dbstop if error;
 
 M = 500;
 
 x = rand(M,1);
 num_noise = 3;
-noise = 3;                         % A constant to determine the amount of noise
+noise = 0.0;                         % A constant to determine the amount of noise
 l = 0.50;
 
 y1 = x + noise*(l/num_noise)*randn(M,1); 
@@ -20,13 +21,13 @@ y6 = x.^(1/4) + noise*(l/num_noise)*randn(M,1);
 y7 =(2*binornd(1,0.5,M,1)-1) .* (sqrt(1 - (2*x - 1).^2)) + noise/4*l/num_noise*randn(M,1);
 y8 = (x > 0.5) + noise*5*l/num_noise*randn(M,1);
 
-y = y3;
+y = y4;
 
-% rho = .7;
-% Z = mvnrnd([0 0], [1 rho; rho 1], n);
+% rho = 0.0;
+% Z = mvnrnd([0 0], [1 rho; rho 1], M);
 % U = normcdf(Z);
 % X = [gaminv(U(:,1),2,1) tinv(U(:,2),5)];
-% x = X(:,1); y = X(:,2);
+% x = Z(:,1); y = Z(:,2);
 
 u = pobs(x);
 v = pobs(y);
@@ -41,10 +42,15 @@ scatter(u,v)
 grid on;
 xlabel('u'); ylabel('v');
 
-[cosValue,RR] = cos2d_v3(x,y);
+[cosValue,RR] = cos2d_v4(x,y);
+cosValue
+[cosdv_value,numDomains] = cosdv(x,y)
+
 
 W = max(0,1-2+RR(:,2)+RR(:,3));
 M = min(RR(:,2),RR(:,3));
+Pi = RR(:,5);
+E = RR(:,4);
 
 % fprintf('CoS(x,y1)=%0.2f CoS(x,y2)=%0.02f\n',cosValue1,cosValue2);
 
@@ -66,16 +72,11 @@ for domain=numDomains
     vals = RR(II,end-2);
     plot(uu,vals,c);
 end
-% plot(RR(:,2),RR(:,4),'o-.'); hold on;
-% plot(RR(:,2),M,'+-.'); 
-% plot(RR(:,2),W,'d-.');
-plot(RR(:,2),RR(:,5),'gv-.'); hold on;
 xlabel('u'); ylabel('C(u,v)');
 title(sprintf('CoS=%0.02f',cosValue));
-% legend('C','M','W','Pi','location','northwest')
-% legend('C','Pi','location','northwest')
 grid on;
 
+% plot the 3d
 subplot(2,2,4);
 K = 25;
 U = [u v]; 
@@ -87,6 +88,20 @@ xlabel('u')
 ylabel('v')
 title('C')
 rotate3d on
+
+% subplot(2,2,4);
+% % plot(RR(:,2),E,'o-.'); hold on;
+% % plot(RR(:,2),M,'+-.'); 
+% % plot(RR(:,2),W,'d-.');
+% % plot(RR(:,2),Pi,'v-.'); hold on;
+% plot(E); hold on;
+% plot(Pi); 
+% plot(M,'.'); 
+% plot(W,'.');
+% plot(E>Pi);
+% legend('C','Pi','M','W','location','northwest')
+% % legend('C','Pi','location','northwest')
+% grid on;
 
 % figure;
 % subplot(2,2,1);
@@ -106,15 +121,16 @@ rotate3d on
 clear;
 clc;
 
-numMCSim = 500;
+numMCSim = 200;
 
-M = 2000;
+M = 500;
 
 R = [1 0.1; 0.1 1];
 cosValVec = zeros(1,numMCSim);
 for mcSim=1:numMCSim
     X = mvnrnd([0 0],R,M);
-    cosVal = cos2d_v3(X(:,1),X(:,2));
+    cosVal = cos2d_v4(X(:,1),X(:,2));
+%     cosVal = cosdv(X(:,1),X(:,2));
     cosValVec(mcSim) = cosVal;    
 end
 
@@ -124,7 +140,8 @@ R = [1 0.3; 0.3 1];
 cosValVec = zeros(1,numMCSim);
 for mcSim=1:numMCSim
     X = mvnrnd([0 0],R,M);
-    cosVal = cos2d_v3(X(:,1),X(:,2));
+    cosVal = cos2d_v4(X(:,1),X(:,2));
+%     cosVal = cosdv(X(:,1),X(:,2));
     cosValVec(mcSim) = cosVal;
 end
 
@@ -134,7 +151,8 @@ R = [1 0.5; 0.5 1];
 cosValVec = zeros(1,numMCSim);
 for mcSim=1:numMCSim
     X = mvnrnd([0 0],R,M);
-    cosVal = cos2d_v3(X(:,1),X(:,2));
+    cosVal = cos2d_v4(X(:,1),X(:,2));
+%     cosVal = cosdv(X(:,1),X(:,2));
     cosValVec(mcSim) = cosVal;
 end
 fprintf('rho=0.5 E[CoS]=%0.02f sigma[CoS]=%0.02f\n', mean(cosValVec), std(cosValVec));
@@ -143,7 +161,8 @@ R = [1 0.7; 0.7 1];
 cosValVec = zeros(1,numMCSim);
 for mcSim=1:numMCSim
     X = mvnrnd([0 0],R,M);
-    cosVal = cos2d_v3(X(:,1),X(:,2));
+    cosVal = cos2d_v4(X(:,1),X(:,2));
+%     cosVal = cosdv(X(:,1),X(:,2));
     cosValVec(mcSim) = cosVal;
 end
 
@@ -154,7 +173,8 @@ R = [1 0.9; 0.9 1];
 cosValVec = zeros(1,numMCSim);
 for mcSim=1:numMCSim
     X = mvnrnd([0 0],R,M);
-    cosVal = cos2d_v3(X(:,1),X(:,2));
+    cosVal = cos2d_v4(X(:,1),X(:,2));
+%     cosVal = cosdv(X(:,1),X(:,2));
     cosValVec(mcSim) = cosVal;
 end
 
